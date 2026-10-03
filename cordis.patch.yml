@@ -1,0 +1,9 @@
+- insert:
+    - id: meihua
+      name: dsh-meihua
+      config:
+        timeZone: Asia/Shanghai
+        animationMs: 4800
+        interpretationTimeoutMs: 120000
+        maxOutputTokens: 3000
+        pollIntervalMs: 250

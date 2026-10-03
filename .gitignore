@@ -1,0 +1,8 @@
+node_modules/
+lib/
+.local/
+.cache/
+artifacts/*.tgz
+artifacts/preview.log
+artifacts/verification-*/
+.DS_Store
