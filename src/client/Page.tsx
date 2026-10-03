@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { CastInput, Hexagram, RuleInfo } from '../core/types.ts';
 import { localTimestamp, wallTimeToInstant } from '../core/calendar.ts';
 import type { ModelRoute, Reading } from '../shared/protocol.ts';
-import type { PageState } from './controller.ts';
+import { initialMeihuaDraft, type MeihuaDraft, type PageState } from './controller.ts';
 import type { LocaleKey, Translate } from './locales.ts';
 
 export interface PageProps {
@@ -13,6 +13,7 @@ export interface PageProps {
   onCancel:()=>Promise<void>;
   onRefresh:()=>Promise<void>;
   onSkip:()=>void;
+  onDraftChange?:(patch:Partial<MeihuaDraft>)=>void;
 }
 
 /** Six lines are always drawn bottom-to-top; the displayed stack reverses their positions. */
@@ -72,16 +73,18 @@ function formatCopy(reading:Reading,t:Translate):string {
   return `${t('panel')}\n${t('question')}：${r.input.question}\n${t('localTime')}：${r.lunar.localTime.replace('T',' ')} (${r.input.environment.timeZone})\n${t('primary')}：${r.primary.title}\n${t('mutual')}：${r.mutual.title}\n${t('changed')}：${r.changed.title}\n${t('moving')}：${r.movingLine}\n${t('body')}：${r.body.name}（${r.body.element}） · ${t('application')}：${r.application.name}（${r.application.element}） · ${r.relationship}\n\n${r.steps.join('\n')}\n\n${reading.route?`${t('source')}：${reading.route.provider} / ${reading.route.model}\n\n`:''}${reading.text}`;
 }
 
-export function Page({t,useMeihua,onCast,onInterpret,onCancel,onRefresh,onSkip}:PageProps) {
+export function Page({t,useMeihua,onCast,onInterpret,onCancel,onRefresh,onSkip,onDraftChange}:PageProps) {
   const state=useMeihua(state=>state),{catalog,reading}=state;
-  const [question,setQuestion]=useState(''),[ruleId,setRule]=useState('time');
-  const [numbers,setNumbers]=useState<Record<string,string>>({a:'',b:'',c:''});
-  const [customTime,setCustomTime]=useState(false),[date,setDate]=useState(''),[context,setContext]=useState('');
-  const [route,setRoute]=useState<ModelRoute>({provider:'',model:''});
+  const draft=state.draft??initialMeihuaDraft;
+  const [question,setQuestion]=useState(draft.question),[ruleId,setRule]=useState(draft.ruleId);
+  const [numbers,setNumbers]=useState<Record<string,string>>(draft.numbers);
+  const [customTime,setCustomTime]=useState(draft.customTime),[date,setDate]=useState(draft.date),[context,setContext]=useState(draft.context);
+  const [route,setRoute]=useState<ModelRoute>(draft.route);
+  useEffect(()=>{onDraftChange?.({question,ruleId,numbers,customTime,date,context,route});},[question,ruleId,numbers,customTime,date,context,route,onDraftChange]);
   const [localError,setError]=useState(''),[copyStatus,setCopyStatus]=useState<LocaleKey>('copy'),[submitting,setSubmitting]=useState(false);
   const rule:RuleInfo | undefined = catalog?.rules.find(r=>r.id===ruleId);
   const providers=catalog?.providers ?? [],group=providers.find(p=>p.id===route.provider);
-  const busy=reading?.status==='streaming',animating=state.animationStartedAt!==null;
+  const busy=reading?.status==='streaming'||!!state.interpreting,animating=state.animationStartedAt!==null;
   useEffect(()=>{
     if (!catalog) return;
     if (providers.some(p=>p.id===route.provider && p.models.some(m=>m.id===route.model))) return;
@@ -107,6 +110,7 @@ export function Page({t,useMeihua,onCast,onInterpret,onCancel,onRefresh,onSkip}:
   const statusKey:LocaleKey=reading?.status==='complete'?'complete':reading?.status==='cancelled'?'cancelled':reading?.status==='failed'?'failed':'interpreting';
   const failureKey=(code:string):LocaleKey=>code==='CANCELLED'?'cancelled':code==='TIMEOUT'?'timeout':['AUTH','MISSING_CREDENTIAL','INVALID_CREDENTIAL'].includes(code)?'authFailure':['QUOTA','ACCOUNT_QUOTA','RATE_LIMIT'].includes(code)?'quotaFailure':'genericFailure';
   return <main className="mh-page">
+    <div className="mh-landscape" aria-hidden="true"><svg viewBox="0 0 1400 360" preserveAspectRatio="none"><path d="M0 310 130 253 235 284 402 166 518 230 680 86 807 199 946 139 1054 240 1220 180 1400 302V360H0Z"/><path d="M0 328 164 303 351 244 468 291 665 203 855 282 990 219 1167 291 1400 247V360H0Z"/></svg></div>
     <header className="mh-header"><div><p className="mh-eyebrow">{t('eyebrow')}</p><h1>{t('title')}<span className="mh-seal" aria-hidden="true">梅<br/>花</span></h1><p className="mh-subtitle">{t('subtitle')}</p></div><div className="mh-header-mark"><Bagua size={83}/></div></header>
     {state.loading ? <div className="mh-loading" role="status"><Bagua size={56} spinning/><span>{t('loading')}</span></div> : !catalog ? <div className="mh-notice" role="alert">{t('loadFailed')}<p>{error}</p><button className="mh-link" onClick={()=>void onRefresh()}>{t('refresh')}</button></div> : <div className="mh-workspace">
       <section className="mh-input-panel"><form onSubmit={event=>void cast(event)}>

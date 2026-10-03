@@ -6,12 +6,16 @@ export interface PageState {
   reading:Reading | null;
   loading:boolean;
   casting:boolean;
+  interpreting?:boolean;
   animationStartedAt:number | null;
   error:string;
+  draft?:MeihuaDraft;
 }
+export interface MeihuaDraft { question:string;ruleId:string;numbers:Record<string,string>;customTime:boolean;date:string;context:string;route:ModelRoute }
+export const initialMeihuaDraft:MeihuaDraft={question:'',ruleId:'time',numbers:{a:'',b:'',c:''},customTime:false,date:'',context:'',route:{provider:'',model:''}};
 /** Registration-private source; DSH binds its observable to the component's useMeihua hook. */
 export class MeihuaController {
-  private state:PageState = { catalog:null,reading:null,loading:true,casting:false,animationStartedAt:null,error:'' };
+  private state:PageState = { catalog:null,reading:null,loading:true,casting:false,interpreting:false,animationStartedAt:null,error:'',draft:{...initialMeihuaDraft} };
   private listeners = new Set<()=>void>();
   private abort = new AbortController();
   private animationTimer:ReturnType<typeof setTimeout> | undefined;
@@ -24,6 +28,7 @@ export class MeihuaController {
     this.state = { ...this.state,...patch };
     for (const listener of this.listeners) listener();
   }
+  updateDraft=(patch:Partial<MeihuaDraft>):void=>{this.update({draft:{...(this.state.draft??initialMeihuaDraft),...patch}});};
   private async call<T>(endpoint:string,payload:unknown = {}):Promise<T> {
     const response = await this.rpc.call('/api',`meihua/${endpoint}`,payload,this.abort.signal);
     if (!response.ok) throw new Error(response.error.message);
@@ -37,7 +42,7 @@ export class MeihuaController {
     } catch (error) { this.update({loading:false,error:message(error)}); }
   }
   async cast(input:CastInput):Promise<void> {
-    if (this.state.casting || this.state.reading?.status === 'streaming') return;
+    if (this.state.casting || this.state.interpreting || this.state.reading?.status === 'streaming') return;
     this.update({casting:true,error:''});
     try {
       const reading = await this.call<Reading>('cast',input);
@@ -51,10 +56,11 @@ export class MeihuaController {
   skipAnimation = ():void => { clearTimeout(this.animationTimer); this.update({animationStartedAt:null}); };
   async interpret(route:ModelRoute):Promise<void> {
     const reading = this.state.reading;
-    if (!reading || reading.status !== 'ready') return;
-    this.update({error:''});
+    if (!reading || reading.status !== 'ready' || this.state.interpreting || this.state.casting) return;
+    this.update({error:'',interpreting:true});
     try { this.update({reading:await this.call<Reading>('interpret',{id:reading.id,...route})}); await this.poll(); }
     catch (error) { this.update({error:message(error)}); }
+    finally {this.update({interpreting:false});}
   }
   private polling = false;
   private async poll():Promise<void> {

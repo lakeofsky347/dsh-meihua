@@ -7,6 +7,7 @@ import type { Catalog, ModelRoute, PluginConfig, Reading, RpcResult } from '../s
 import type { HostContext, LogSession, PersistenceHandle } from './platform.ts';
 import { INTERPRETATION_SYSTEM, interpretationInput } from './prompt.ts';
 import { object, parseInput, text } from './validation.ts';
+import type { GenerationGate } from './generation-gate.ts';
 
 /** One current reading and one first interpretation; lifetime belongs to the plugin. */
 export class MeihuaService {
@@ -16,7 +17,7 @@ export class MeihuaService {
   private controller:AbortController | undefined;
   private job:Promise<void> | undefined;
   private disposed = false;
-  constructor(private readonly ctx:HostContext, readonly config:PluginConfig) {}
+  constructor(private readonly ctx:HostContext, readonly config:PluginConfig, private readonly gate?:GenerationGate) {}
 
   registerRule(rule:DivinationRule):()=>void { return this.rules.register(rule); }
   registerEnvironment(id:string, contributor:EnvironmentContributor):()=>void {
@@ -34,6 +35,7 @@ export class MeihuaService {
   }
   async cast(payload:unknown):Promise<Reading> {
     if (this.disposed) throw new Error('插件已停止');
+    this.gate?.assertIdle();
     if (this.current?.status === 'streaming') throw new Error('请等待本次解读结束，或先取消');
     const input = parseInput(payload,this.config);
     for (const [id,contribute] of this.contributors) {
@@ -42,6 +44,7 @@ export class MeihuaService {
       input.environment.details[id] = details;
     }
     if (this.disposed || this.snapshot()?.status === 'streaming') throw new Error('插件状态已变化，请重新起卦');
+    this.gate?.assertIdle();
     this.current = { id:`meihua-${randomUUID()}`, result:this.rules.calculate(input), status:'ready', text:'' };
     return this.snapshot()!;
   }
@@ -52,9 +55,10 @@ export class MeihuaService {
     const models = await this.ctx.llm.listModels(route.provider);
     if (!models.some(m=>m.id === route.model)) throw new Error('所选模型已不可用，请刷新模型目录');
     if (this.current !== reading || reading.status !== 'ready' || this.disposed) throw new Error('本次卜算状态已变化');
+    const release = this.gate?.acquire(reading.id);
     reading.status = 'streaming'; reading.route = { ...route };
     this.controller = new AbortController();
-    this.job = this.generate(reading,this.controller);
+    this.job = this.generate(reading,this.controller).finally(()=>release?.());
     return this.snapshot()!;
   }
   cancel(id:string):Reading {

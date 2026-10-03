@@ -1,4 +1,5 @@
 export const zh = {
+  hubPanel:'问象 · 占卜',
   panel:'梅花易数', eyebrow:'闲处观象 · 一念成卦', title:'梅花易数', subtitle:'把片刻闲暇，留给一卦与一份思考。',
   question:'所问之事', questionPlaceholder:'此刻，想问些什么？留空则作今日随占', questionHint:'一卦一问，写下心中所想即可',
   rule:'起卦方式', timeRule:'时间起卦', numberRule:'三数起卦', timeNow:'以此刻起卦', timeCustom:'指定时间', timeHint:'点击起卦时固定时间，以配置时区换算农历与时辰',
@@ -21,6 +22,7 @@ export const zh = {
 export type LocaleKey = keyof typeof zh;
 export type Translate = (key:LocaleKey)=>string;
 export const en:Record<LocaleKey,string> = {
+  hubPanel:'Wenxiang · Divination',
   panel:'Meihua',eyebrow:'A quiet moment · A new reading',title:'Meihua Yishu',subtitle:'A small pause for symbols and reflection.',
   question:'Your question',questionPlaceholder:'What is on your mind? Leave blank for a daily reading.',questionHint:'One question for one reading',
   rule:'Casting method',timeRule:'Time',numberRule:'Three numbers',timeNow:'Use this moment',timeCustom:'Choose a time',timeHint:'The instant is fixed when you cast, using the configured time zone.',

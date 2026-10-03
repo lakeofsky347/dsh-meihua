@@ -1,4 +1,5 @@
 import type { CastResult, RuleInfo } from '../core/types.ts';
+import type { TarotDeckInfo, TarotDrawnCard, TarotSpread } from '../tarot/types.ts';
 
 export interface PluginConfig {
   timeZone: string;
@@ -23,6 +24,24 @@ export interface Reading {
   route?: ModelRoute;
   error?: { code: string; message: string };
   logSessionId?: string;
+}
+export interface TarotCatalog { spreads:readonly TarotSpread[]; providers:ProviderGroup[]; config:PluginConfig; deck:TarotDeckInfo }
+export interface TarotReading {
+  id:string;
+  moduleId:'tarot';
+  algorithmVersion:'tarot-v1';
+  spread:TarotSpread;
+  question:string;
+  includeReversed:boolean;
+  createdAt:string;
+  selectionCount:number;
+  selectedSlots:number[];
+  cards:TarotDrawnCard[];
+  status:'selecting' | 'revealing' | 'ready' | 'streaming' | 'complete' | 'failed' | 'cancelled';
+  text:string;
+  route?:ModelRoute;
+  error?:{code:string;message:string};
+  logSessionId?:string;
 }
 export type RpcResult = { ok: true; value: unknown } | { ok: false; error: { code: string; message: string; details: object } };
 export interface ClientRpc {
