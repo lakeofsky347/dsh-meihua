@@ -5,4 +5,6 @@ lib/
 artifacts/*.tgz
 artifacts/preview.log
 artifacts/verification-*/
+# 宣传片工作区：本地渲染产出，不进入版本库（见 scripts/git-hooks/）
+video/
 .DS_Store

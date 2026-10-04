@@ -1,0 +1,31 @@
+#!/bin/sh
+# 问象 · 占卜 —— 提交守卫
+#
+# 规则：
+#   1. video/ 是本地产出工作区（宣传片渲染、临时帧、体积大），永不入库；
+#   2. 新增文件若被 .gitignore 忽略，一律拒绝（禁止 git add -f 把
+#      lib/、artifacts/*.tgz、.local/ 之类的构建产物塞进提交）。
+#
+# 启用方式（仓库级，一次即可）：git config core.hooksPath scripts/git-hooks
+# 绕过方式（仅在确有必要时）：git commit --no-verify
+set -u
+status=0
+
+staged=$(git diff --cached --name-only --diff-filter=ACMR)
+video_paths=$(printf '%s\n' "$staged" | grep -E '^video/' || true)
+if [ -n "$video_paths" ]; then
+	echo "pre-commit: video/ 是本地宣传片工作区，不进入版本库：" >&2
+	printf '%s\n' "$video_paths" | sed 's/^/  - /' >&2
+	echo "  取消暂存：git restore --staged video/" >&2
+	status=1
+fi
+
+added=$(git diff --cached --name-only --diff-filter=A)
+forced=$(printf '%s\n' "$added" | git check-ignore --stdin 2>/dev/null || true)
+if [ -n "$forced" ]; then
+	echo "pre-commit: 以下新增文件已被 .gitignore 忽略，禁止强制加入：" >&2
+	printf '%s\n' "$forced" | sed 's/^/  - /' >&2
+	status=1
+fi
+
+exit $status

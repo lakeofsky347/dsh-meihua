@@ -84,6 +84,23 @@ npm pack --pack-destination artifacts
 
 当前版本验收记录见 `docs/v2-acceptance.md`；v1 记录保留在 `docs/v1-acceptance.md`。测试与模拟供应商验证不代表真实模型联调。
 
+### 提交与推送规则
+
+`video/` 是宣传片的本地工作区（渲染产出体积大、可随时重建），不进入版本库：
+
+- `.gitignore` 已忽略 `video/`；
+- `scripts/git-hooks/pre-commit` 拒绝提交任何 `video/` 路径，并拒绝把被 `.gitignore` 忽略的新增文件强制加入提交；
+- `scripts/git-hooks/pre-push` 拒绝推送任何包含 `video/` 内容的提交（含历史中曾出现过后被删除的情况）。
+
+钩子通过仓库级配置生效，克隆后执行一次即可：
+
+```sh
+git config core.hooksPath scripts/git-hooks
+sh scripts/test-git-hooks.sh   # 验证三类拦截确实生效
+```
+
+确有必要时可用 `git commit --no-verify` / `git push --no-verify` 绕过。
+
 ## 扩展接口
 
 门户由内置模块清单组织，当前内置 `meihua` 与 `tarot`。`dsh-meihua/tarot` 导出牌组/牌阵类型、定义、查找与可注入测试随机源的纯洗牌函数。认证塔罗 RPC 为 `/api/tarot/{catalog,current,start,select,reveal,interpret,cancel}`；未揭牌位不包含 card/orientation。原有下列梅花接口保持兼容。
