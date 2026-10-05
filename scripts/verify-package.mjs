@@ -8,9 +8,10 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const archive=path.resolve(root,process.argv[2]??'artifacts/dsh-meihua-0.2.0.tgz');
-const installed=path.resolve(root,process.argv[3]??'.local/v2-package/package');
-const output=path.resolve(root,process.argv[4]??'artifacts/verification-v2-2026-10-03/package-integrity.json');
+const localManifest=JSON.parse(await readFile(path.join(root,'package.json'),'utf8'));
+const archive=path.resolve(root,process.argv[2]??`artifacts/dsh-meihua-${localManifest.version}.tgz`);
+const installed=path.resolve(root,process.argv[3]??'.local/package-readback/package');
+const output=path.resolve(root,process.argv[4]??'artifacts/verification-package/package-integrity.json');
 const sha256=bytes=>createHash('sha256').update(bytes).digest('hex');
 const sha1=bytes=>createHash('sha1').update(bytes).digest('hex');
 const archiveBytes=await readFile(archive);
@@ -49,7 +50,7 @@ for(const name of [...names].sort()){
 
 const provenance=JSON.parse(await readFile(path.join(installed,'lib/tarot-assets-sources.json'),'utf8'));
 const manifest=JSON.parse(await readFile(path.join(installed,'package.json'),'utf8'));
-assert.equal(manifest.name,'dsh-meihua');assert.equal(manifest.version,'0.2.0');
+assert.equal(manifest.name,'dsh-meihua');assert.match(manifest.version,/^\d+\.\d+\.\d+$/);
 const expected=[...Array.from({length:22},(_,n)=>`major-${String(n).padStart(2,'0')}`),...['wands','cups','swords','pentacles'].flatMap(suit=>Array.from({length:14},(_,n)=>`${suit}-${String(n+1).padStart(2,'0')}`))];
 assert.equal(provenance.cards.length,78);
 assert.deepEqual(provenance.cards.map(card=>card.id).sort(),[...expected].sort());

@@ -1,6 +1,6 @@
 {
   "name": "dsh-meihua",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "问象 · 占卜：星空门户、水墨梅花易数与完整伟特塔罗，复用 DSH 已配置模型",
   "type": "module",
   "license": "MIT",

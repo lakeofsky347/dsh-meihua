@@ -3,11 +3,13 @@ import { createUserMessage, createSystemMessage } from '@deepseek-ai/dsh-llm/mes
 import { AssistantStreamAccumulator, assembleAssistantStream } from '@deepseek-ai/dsh-llm/assistant-stream';
 import { RuleRegistry, freezeJson, isJsonValue } from '../core/rules.ts';
 import type { DivinationRule, EnvironmentContributor } from '../core/types.ts';
-import type { Catalog, ModelRoute, PluginConfig, Reading, RpcResult } from '../shared/protocol.ts';
+import { readingIsBusy } from '../shared/protocol.ts';
+import type { Catalog, ConversationTurn, ModelRoute, PluginConfig, Reading, RpcResult } from '../shared/protocol.ts';
 import type { HostContext, LogSession, PersistenceHandle } from './platform.ts';
 import { INTERPRETATION_SYSTEM, interpretationInput } from './prompt.ts';
 import { object, parseInput, text } from './validation.ts';
 import type { GenerationGate } from './generation-gate.ts';
+import { conversationMessages, followupSystem, generateConversation, validateCancellation, validateFollowup } from './conversation.ts';
 
 /** One current reading and one first interpretation; lifetime belongs to the plugin. */
 export class MeihuaService {
@@ -36,37 +38,56 @@ export class MeihuaService {
   async cast(payload:unknown):Promise<Reading> {
     if (this.disposed) throw new Error('插件已停止');
     this.gate?.assertIdle();
-    if (this.current?.status === 'streaming') throw new Error('请等待本次解读结束，或先取消');
+    if (readingIsBusy(this.current)) throw new Error('请等待本次解读结束，或先取消');
     const input = parseInput(payload,this.config);
     for (const [id,contribute] of this.contributors) {
       const details = await contribute(freezeJson(input.environment));
       if (!isJsonValue(details) || Array.isArray(details) || details === null || typeof details !== 'object' || JSON.stringify(details).length > 4000) throw new Error(`环境来源 ${id} 返回了无效信息`);
       input.environment.details[id] = details;
     }
-    if (this.disposed || this.snapshot()?.status === 'streaming') throw new Error('插件状态已变化，请重新起卦');
+    if (this.disposed || readingIsBusy(this.current)) throw new Error('插件状态已变化，请重新起卦');
     this.gate?.assertIdle();
     this.current = { id:`meihua-${randomUUID()}`, result:this.rules.calculate(input), status:'ready', text:'' };
     return this.snapshot()!;
   }
   async interpret(id:string, route:ModelRoute):Promise<Reading> {
     const reading = this.requireReading(id);
+    if (readingIsBusy(reading)) throw new Error('请等待本次解读或追问结束，或先取消');
     if (reading.status !== 'ready') throw new Error('每卦只保留第一次解读，请重新起卦开始新的一次');
     if (!this.ctx.llm.listProviders().some(p=>p.id === route.provider)) throw new Error('所选供应商已不可用');
     const models = await this.ctx.llm.listModels(route.provider);
     if (!models.some(m=>m.id === route.model)) throw new Error('所选模型已不可用，请刷新模型目录');
-    if (this.current !== reading || reading.status !== 'ready' || this.disposed) throw new Error('本次卜算状态已变化');
+    if (this.current !== reading || reading.status !== 'ready' || readingIsBusy(reading) || this.disposed) throw new Error('本次卜算状态已变化');
     const release = this.gate?.acquire(reading.id);
     reading.status = 'streaming'; reading.route = { ...route };
     this.controller = new AbortController();
     this.job = this.generate(reading,this.controller).finally(()=>release?.());
     return this.snapshot()!;
   }
-  cancel(id:string):Reading {
+  async followup(id:string,question:unknown,expectedTurnCount:unknown):Promise<Reading> {
+    const reading=this.requireReading(id),parsed=validateFollowup(reading,question,expectedTurnCount);
+    this.gate?.assertIdle();
+    const route=reading.route!;
+    if(!this.ctx.llm.listProviders().some(provider=>provider.id===route.provider))throw new Error('首次解读的供应商已不可用，请恢复配置后继续');
+    const models=await this.ctx.llm.listModels(route.provider);
+    if(!models.some(model=>model.id===route.model))throw new Error('首次解读的模型已不可用，请刷新模型目录');
+    if(this.current!==reading||this.disposed)throw new Error('本次卜算状态已变化');
+    validateFollowup(reading,question,expectedTurnCount);
+    const system=followupSystem('meihua'),messages=conversationMessages(reading,interpretationInput(reading.result),parsed,system);
+    const turn:ConversationTurn={id:`${reading.id}-followup-${randomUUID()}`,question:parsed,text:'',status:'streaming',route:{...route},createdAt:new Date().toISOString()};
+    const release=this.gate?.acquire(turn.id);
+    (reading.conversation??=[]).push(turn);
+    this.controller=new AbortController();
+    this.job=generateConversation(this.ctx,this.config,turn,messages,system,this.controller).finally(()=>release?.());
+    return this.snapshot()!;
+  }
+  cancel(id:string,turnId?:string):Reading {
     const reading = this.requireReading(id);
-    if (reading.status === 'streaming') this.controller?.abort(new Error('已取消解读'));
+    if (validateCancellation(reading,turnId)) this.controller?.abort(new Error('已取消解读'));
     return this.snapshot()!;
   }
   private requireReading(id:string):Reading {
+    if(this.disposed)throw new Error('插件已停止');
     if (!this.current || this.current.id !== id) throw new Error('本次卜算已不存在，请重新起卦');
     return this.current;
   }
@@ -137,7 +158,8 @@ export class MeihuaService {
           const data = object(payload);
           return {ok:true,value:await this.interpret(text(data.id,100),{provider:text(data.provider,100),model:text(data.model,200)})};
         }
-        case 'cancel': return {ok:true,value:this.cancel(text(object(payload).id,100))};
+        case 'followup': { const data=object(payload); return {ok:true,value:await this.followup(text(data.id,100),data.question,data.expectedTurnCount)}; }
+        case 'cancel': { const data=object(payload); return {ok:true,value:this.cancel(text(data.id,100),data.turnId===undefined?undefined:text(data.turnId,160))}; }
         default: return {ok:false,error:{code:'NOT_FOUND',message:'未找到插件操作',details:{}}};
       }
     } catch (error) { return {ok:false,error:{code:errorCode(error),message:error instanceof Error ? error.message : '操作未完成',details:{}}}; }

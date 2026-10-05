@@ -1,5 +1,6 @@
 import type { CastInput } from '../core/types.ts';
 import type { Catalog, ClientRpc, ModelRoute, Reading } from '../shared/protocol.ts';
+import { readingIsBusy } from '../shared/protocol.ts';
 
 export interface PageState {
   catalog:Catalog | null;
@@ -11,7 +12,7 @@ export interface PageState {
   error:string;
   draft?:MeihuaDraft;
 }
-export interface MeihuaDraft { question:string;ruleId:string;numbers:Record<string,string>;customTime:boolean;date:string;context:string;route:ModelRoute }
+export interface MeihuaDraft { question:string;ruleId:string;numbers:Record<string,string>;customTime:boolean;date:string;context:string;route:ModelRoute;followupQuestion?:string }
 export const initialMeihuaDraft:MeihuaDraft={question:'',ruleId:'time',numbers:{a:'',b:'',c:''},customTime:false,date:'',context:'',route:{provider:'',model:''}};
 /** Registration-private source; DSH binds its observable to the component's useMeihua hook. */
 export class MeihuaController {
@@ -20,6 +21,8 @@ export class MeihuaController {
   private abort = new AbortController();
   private animationTimer:ReturnType<typeof setTimeout> | undefined;
   private disposed = false;
+  private revision = 0;
+  private snapshotRequest = 0;
   constructor(private readonly rpc:ClientRpc) {}
   getSnapshot = ():PageState => this.state;
   subscribe = (listener:()=>void):(()=>void) => { this.listeners.add(listener); return ()=>{this.listeners.delete(listener);}; };
@@ -35,21 +38,28 @@ export class MeihuaController {
     return response.value as T;
   }
   async load():Promise<void> {
+    const revision=this.revision;
+    const snapshotRequest=++this.snapshotRequest;
     try {
       const [catalog,reading] = await Promise.all([this.call<Catalog>('catalog'),this.call<Reading|null>('current')]);
-      this.update({catalog,reading,loading:false,error:''});
-      if (reading?.status === 'streaming') void this.poll();
-    } catch (error) { this.update({loading:false,error:message(error)}); }
+      if(revision!==this.revision||snapshotRequest!==this.snapshotRequest)return;
+      const changed=reading?.id!==this.state.reading?.id;
+      this.update({catalog,reading,loading:false,error:'',...(changed?{draft:{...(this.state.draft??initialMeihuaDraft),followupQuestion:''}}:{})});
+      if (readingIsBusy(reading)) void this.poll();
+    } catch (error) { if(revision===this.revision&&snapshotRequest===this.snapshotRequest)this.update({loading:false,error:message(error)}); }
   }
   async cast(input:CastInput):Promise<void> {
-    if (this.state.casting || this.state.interpreting || this.state.reading?.status === 'streaming') return;
+    if (this.state.casting || this.state.interpreting || readingIsBusy(this.state.reading)) return;
+    const revision=++this.revision;
     this.update({casting:true,error:''});
     try {
       const reading = await this.call<Reading>('cast',input);
+      if(revision!==this.revision)return;
+      ++this.snapshotRequest;
       clearTimeout(this.animationTimer);
       const duration = this.state.catalog?.config.animationMs ?? 0;
       const reduce = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-      this.update({reading,casting:false,animationStartedAt:reduce || duration === 0 ? null : Date.now()});
+      this.update({reading,casting:false,draft:{...(this.state.draft??initialMeihuaDraft),followupQuestion:''},animationStartedAt:reduce || duration === 0 ? null : Date.now()});
       if (!reduce && duration > 0) this.animationTimer = setTimeout(()=>this.skipAnimation(),duration);
     } catch (error) { this.update({casting:false,error:message(error)}); }
   }
@@ -57,17 +67,39 @@ export class MeihuaController {
   async interpret(route:ModelRoute):Promise<void> {
     const reading = this.state.reading;
     if (!reading || reading.status !== 'ready' || this.state.interpreting || this.state.casting) return;
+    const revision=++this.revision;
     this.update({error:'',interpreting:true});
-    try { this.update({reading:await this.call<Reading>('interpret',{id:reading.id,...route})}); await this.poll(); }
+    try {
+      const next=await this.call<Reading>('interpret',{id:reading.id,...route});
+      if(revision!==this.revision||this.state.reading?.id!==reading.id)return;
+      ++this.snapshotRequest;
+      this.update({reading:next});await this.poll();
+    }
     catch (error) { this.update({error:message(error)}); }
     finally {this.update({interpreting:false});}
+  }
+  /** Resolves at accepted submission so clearing a sent draft never removes a later draft. */
+  async followup(question:string):Promise<boolean> {
+    const reading=this.state.reading,trimmed=question.trim();
+    if(!reading||!['complete','failed','cancelled'].includes(reading.status)||!reading.text.trim()||!trimmed||trimmed.length>2000||this.state.interpreting||this.state.casting||readingIsBusy(reading))return false;
+    const revision=++this.revision,expectedTurnCount=reading.conversation?.length??0;
+    this.update({interpreting:true,error:''});
+    try {
+      const next=await this.call<Reading>('followup',{id:reading.id,question:trimmed,expectedTurnCount});
+      if(revision!==this.revision||this.state.reading?.id!==reading.id)return false;
+      ++this.snapshotRequest;
+      this.update({reading:next,interpreting:false});
+      if(readingIsBusy(next))void this.poll();
+      return (next.conversation?.length??0)>expectedTurnCount;
+    } catch(error) {if(revision===this.revision)this.update({error:message(error)});return false;}
+    finally {if(revision===this.revision)this.update({interpreting:false});}
   }
   private polling = false;
   private async poll():Promise<void> {
     if (this.polling) return;
     this.polling = true;
     try {
-      while (!this.disposed && this.state.reading?.status === 'streaming') {
+      while (!this.disposed && readingIsBusy(this.state.reading)) {
         await new Promise<void>(resolve=>{
           const timer = setTimeout(finish,this.state.catalog?.config.pollIntervalMs ?? 250);
           const signal = this.abort.signal;
@@ -75,15 +107,28 @@ export class MeihuaController {
           signal.addEventListener('abort',finish,{once:true});
         });
         if (this.disposed) break;
-        this.update({reading:await this.call<Reading|null>('current')});
+        const revision=this.revision,id=this.state.reading?.id;
+        const snapshotRequest=++this.snapshotRequest;
+        try {
+          const reading=await this.call<Reading|null>('current');
+          if(revision===this.revision&&snapshotRequest===this.snapshotRequest&&id===this.state.reading?.id)this.update({reading});
+        } catch(error) {
+          if(revision===this.revision&&snapshotRequest===this.snapshotRequest&&id===this.state.reading?.id){this.update({error:message(error)});break;}
+        }
       }
     } catch (error) { this.update({error:message(error)}); }
     finally { this.polling = false; }
   }
   async cancel():Promise<void> {
     const reading = this.state.reading;
-    if (!reading) return;
-    try { this.update({reading:await this.call<Reading>('cancel',{id:reading.id})}); }
+    if (!reading||!readingIsBusy(reading)) return;
+    const turn=reading.status==='streaming'?undefined:reading.conversation?.find(value=>value.status==='streaming');
+    const payload={id:reading.id,...(turn?{turnId:turn.id}:{})};
+    const revision=++this.revision;
+    try {
+      const next=await this.call<Reading>('cancel',payload);
+      if(revision===this.revision&&this.state.reading?.id===reading.id){++this.snapshotRequest;this.update({reading:next,error:''});if(readingIsBusy(next))void this.poll();}
+    }
     catch (error) { this.update({error:message(error)}); }
   }
   dispose():void { this.disposed=true;this.abort.abort();clearTimeout(this.animationTimer);this.listeners.clear(); }

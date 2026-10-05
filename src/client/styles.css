@@ -102,6 +102,25 @@
 .mh-reading-text h4 { font-family:var(--mh-serif);font-size:15px;font-weight:500;margin:8px 0; }
 .mh-reading-text p { white-space:pre-wrap; }
 .mh-pending { font-size:12px;color:var(--mh-muted);padding:26px 0; }
+/* Shared conversation geometry inherits each module's own palette and controls. */
+.wx-conversation-mh { --wx-chat-line:var(--mh-line);--wx-chat-wash:var(--mh-wash);--wx-chat-muted:var(--mh-muted);--wx-chat-serif:var(--mh-serif); }
+.wx-conversation-tr { --wx-chat-line:var(--tr-line);--wx-chat-wash:var(--tr-wash);--wx-chat-muted:var(--tr-muted);--wx-chat-serif:var(--tr-serif); }
+.wx-conversation { margin-top:25px;padding-top:22px;border-top:1px solid var(--wx-chat-line);min-width:0; }
+.wx-conversation h3 { font-family:var(--wx-chat-serif);font-size:18px;font-weight:400;letter-spacing:.06em; }
+.wx-conversation-turns { list-style:none;margin:21px 0 0;padding:0;display:grid;gap:18px; }
+.wx-conversation-turn { min-width:0;border:1px solid var(--wx-chat-line);border-radius:4px;overflow:hidden; }
+.wx-conversation-question { padding:13px 15px;background:var(--wx-chat-wash);border-bottom:1px solid var(--wx-chat-line);white-space:pre-wrap;overflow-wrap:anywhere; }
+.wx-conversation-label { font-size:10px;color:var(--wx-chat-muted);letter-spacing:.06em;margin-bottom:6px!important; }
+.wx-conversation-answer { padding:14px 15px;min-width:0; }
+.wx-conversation-answer-heading { display:flex;align-items:center;justify-content:space-between;gap:12px; }
+.wx-conversation-answer-heading .wx-conversation-label { margin-bottom:0!important; }
+.wx-conversation-text { margin-top:10px;line-height:1.95;white-space:pre-wrap;overflow-wrap:anywhere; }
+.wx-conversation-form { margin-top:22px; }
+.wx-conversation-form textarea { line-height:1.8; }
+.wx-conversation-send { display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:10px; }
+.wx-conversation-send button { flex-shrink:0; }
+.wx-conversation-send p { margin-top:0!important; }
+@media(max-width:420px) { .wx-conversation-question,.wx-conversation-answer { padding:12px; }.wx-conversation-send { align-items:flex-start;flex-direction:column;gap:10px; }.wx-conversation-send button { align-self:flex-end; } }
 .mh-copy-row { display:flex;justify-content:space-between;align-items:center;margin-top:24px;padding-top:16px;border-top:1px solid var(--mh-line); }
 .mh-animation { min-height:510px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:35px; }
 .mh-ritual-circle { position:relative;width:300px;height:300px;display:grid;place-items:center; }

@@ -4,6 +4,8 @@ import { TarotPage } from './TarotPage.tsx';
 import type { TarotPageState, TarotDraft } from './tarot-controller.ts';
 import type { TarotStartInput } from '../tarot/types.ts';
 import type { ModelRoute } from '../shared/protocol.ts';
+import { readingIsBusy } from '../shared/protocol.ts';
+import type { TarotPageProps } from './TarotPage.tsx';
 import type { HubState, ModuleId, ViewId } from './hub-controller.ts';
 import { Portal, Starfield, CosmosMark } from './Portal.tsx';
 
@@ -12,16 +14,18 @@ export interface HubProps {
   useTarot:<T>(selector:(state:TarotPageState)=>T)=>T;
   onNavigate:(view:ViewId,origin?:{x:number;y:number})=>void;onSkipJourney:()=>void;
   onMeihuaCast:PageProps['onCast'];onMeihuaInterpret:PageProps['onInterpret'];onMeihuaCancel:PageProps['onCancel'];
+  onMeihuaFollowup?:PageProps['onFollowup'];
   onMeihuaRefresh:PageProps['onRefresh'];onMeihuaSkip:PageProps['onSkip'];onMeihuaDraft:NonNullable<PageProps['onDraftChange']>;
   onTarotStart:(input:TarotStartInput)=>Promise<void>;onTarotSelect:(slot:number)=>Promise<void>;
   onTarotReveal:(position?:number,all?:boolean)=>Promise<void>;onTarotInterpret:(route:ModelRoute)=>Promise<void>;
+  onTarotFollowup?:TarotPageProps['onFollowup'];
   onTarotCancel:()=>Promise<void>;onTarotRefresh:()=>Promise<void>;onTarotSkip:()=>void;
   onTarotDraft:(patch:Partial<TarotDraft>)=>void;onTarotActive:(active:boolean)=>void;
 }
 
 export function Hub(props:HubProps) {
   const hub=props.useHub(s=>s),meihua=props.useMeihua(s=>s),tarot=props.useTarot(s=>s),ref=useRef<HTMLElement>(null);
-  const busy=meihua.reading?.status==='streaming'||tarot.reading?.status==='streaming';
+  const busy=readingIsBusy(meihua.reading)||readingIsBusy(tarot.reading);
   const pending=meihua.casting||meihua.interpreting||tarot.acting;
   useEffect(()=>{
     if(hub.journey){ref.current?.querySelector<HTMLButtonElement>('.wx-journey button')?.focus({preventScroll:true});return;}
@@ -39,8 +43,8 @@ export function Hub(props:HubProps) {
       <span className="wx-nav-note">{busy?'解读进行中 · 取消后可切换':'问象 · 占卜'}</span>
     </nav>
     <div className="wx-view wx-view-portal" {...viewInteraction} hidden={view!=='portal'}><Portal active={view==='portal'&&!hub.journey} onEnter={navigate}/></div>
-    <div className="wx-view wx-view-module" {...viewInteraction} hidden={view!=='meihua'}><Page t={props.t} useMeihua={props.useMeihua} onCast={props.onMeihuaCast} onInterpret={props.onMeihuaInterpret} onCancel={props.onMeihuaCancel} onRefresh={props.onMeihuaRefresh} onSkip={props.onMeihuaSkip} onDraftChange={props.onMeihuaDraft}/></div>
-    <div className="wx-view wx-view-module" {...viewInteraction} hidden={view!=='tarot'}><TarotPage useTarot={props.useTarot} onStart={props.onTarotStart} onSelect={props.onTarotSelect} onReveal={props.onTarotReveal} onInterpret={props.onTarotInterpret} onCancel={props.onTarotCancel} onRefresh={props.onTarotRefresh} onSkip={props.onTarotSkip} onDraftChange={props.onTarotDraft} onActivityChange={props.onTarotActive} active={view==='tarot'&&!hub.journey} scheme={hub.scheme}/></div>
+    <div className="wx-view wx-view-module" {...viewInteraction} hidden={view!=='meihua'}><Page t={props.t} useMeihua={props.useMeihua} onCast={props.onMeihuaCast} onInterpret={props.onMeihuaInterpret} onFollowup={props.onMeihuaFollowup} onCancel={props.onMeihuaCancel} onRefresh={props.onMeihuaRefresh} onSkip={props.onMeihuaSkip} onDraftChange={props.onMeihuaDraft}/></div>
+    <div className="wx-view wx-view-module" {...viewInteraction} hidden={view!=='tarot'}><TarotPage useTarot={props.useTarot} onStart={props.onTarotStart} onSelect={props.onTarotSelect} onReveal={props.onTarotReveal} onInterpret={props.onTarotInterpret} onFollowup={props.onTarotFollowup} onCancel={props.onTarotCancel} onRefresh={props.onTarotRefresh} onSkip={props.onTarotSkip} onDraftChange={props.onTarotDraft} onActivityChange={props.onTarotActive} active={view==='tarot'&&!hub.journey} scheme={hub.scheme}/></div>
     {hub.error&&<p className="wx-hub-error" role="alert">{hub.error}</p>}
     {hub.journey&&<div className={`wx-journey ${hub.journey.to==='portal'?'wx-journey-return':'wx-journey-enter'}`} style={{'--wx-journey-ms':`${hub.journey.duration}ms`,'--wx-origin-x':`${hub.journey.origin.x*100}%`,'--wx-origin-y':`${hub.journey.origin.y*100}%`} as React.CSSProperties} aria-label="星空转场" role="status" onKeyDown={event=>{if(event.key==='Tab'){event.preventDefault();event.currentTarget.querySelector<HTMLButtonElement>('button')?.focus();}}}>
       <Starfield active journey={hub.journey}/><div className="wx-journey-wash"/><p>{hub.journey.to==='portal'?'归于星河':hub.journey.to==='meihua'?'墨生万象':'星启秘仪'}</p><button onClick={props.onSkipJourney}>跳过转场 ↗</button>

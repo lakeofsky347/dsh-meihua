@@ -82,11 +82,15 @@ test('环境补充和额外数字方式可注册、冻结、撤销；缺失模�
   remove();assert.equal((await s.service.cast(input)).result.input.environment.details.weather,undefined);await s.service.dispose();
 });
 test('官方 Connection 精确路由支持完整 RPC 信封，错误信封被拒绝，贡献能撤销',async()=>{
-  const s=setup(complete);registerTransport(s.ctx,s.service);assert.equal(s.routes.size,5);
+  const s=setup(complete);registerTransport(s.ctx,s.service);assert.equal(s.routes.size,6);
   const endpoint=s.routes.get('/api/meihua/cast')!;
   const response=await endpoint.fetch(new Request('http://localhost/api/meihua/cast',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({type:'client-request',rpcId:'cast-1',method:'meihua/cast',payload:input})}));
   const envelope=await response.json() as {type:string;rpcId:string;result:{ok:boolean;value:Reading}};
   assert.equal(envelope.type,'server-response');assert.equal(envelope.rpcId,'cast-1');assert.equal(envelope.result.value.result.primary.number,49);
+  const followup=s.routes.get('/api/meihua/followup')!;
+  const noReading=await followup.fetch(new Request('http://localhost/api/meihua/followup',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({type:'client-request',rpcId:'followup-1',method:'meihua/followup',payload:{id:envelope.result.value.id,question:'解释依据',expectedTurnCount:0}})}));
+  const denied=await noReading.json() as {type:string;rpcId:string;result:{ok:boolean}};
+  assert.equal(denied.type,'server-response');assert.equal(denied.rpcId,'followup-1');assert.equal(denied.result.ok,false);
   assert.equal((await endpoint.fetch(new Request('http://localhost',{method:'POST',headers:{'content-type':'application/json'},body:'{}'}))).status,400);
   for(const dispose of s.disposers)await dispose();assert.equal(s.routes.size,0);await s.service.dispose();
 });

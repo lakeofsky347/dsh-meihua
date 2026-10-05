@@ -9,6 +9,20 @@ export interface PluginConfig {
   pollIntervalMs: number;
 }
 export interface ModelRoute { provider: string; model: string }
+export interface ConversationTurn {
+  id:string;
+  question:string;
+  text:string;
+  status:'streaming' | 'complete' | 'failed' | 'cancelled';
+  route:ModelRoute;
+  createdAt:string;
+  error?:{code:string;message:string};
+  logSessionId?:string;
+}
+/** Older in-memory snapshots remain readable; first interpretation stays independent. */
+export function readingIsBusy(reading:{status:string;conversation?:readonly ConversationTurn[]}|null|undefined):boolean {
+  return reading?.status==='streaming'||!!reading?.conversation?.some(turn=>turn.status==='streaming');
+}
 export interface ProviderGroup {
   id: string;
   name: string;
@@ -24,6 +38,7 @@ export interface Reading {
   route?: ModelRoute;
   error?: { code: string; message: string };
   logSessionId?: string;
+  conversation?:ConversationTurn[];
 }
 export interface TarotCatalog { spreads:readonly TarotSpread[]; providers:ProviderGroup[]; config:PluginConfig; deck:TarotDeckInfo }
 export interface TarotReading {
@@ -42,6 +57,7 @@ export interface TarotReading {
   route?:ModelRoute;
   error?:{code:string;message:string};
   logSessionId?:string;
+  conversation?:ConversationTurn[];
 }
 export type RpcResult = { ok: true; value: unknown } | { ok: false; error: { code: string; message: string; details: object } };
 export interface ClientRpc {

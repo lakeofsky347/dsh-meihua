@@ -8,7 +8,7 @@ import type { RpcResult } from '../shared/protocol.ts';
  * the supported exact-route registry avoids that scope dependency.
  */
 export function registerTransport(ctx:HostContext,service:MeihuaService):void {
-  registerModuleTransport(ctx,'meihua',service,['catalog','current','cast','interpret','cancel']);
+  registerModuleTransport(ctx,'meihua',service,['catalog','current','cast','interpret','followup','cancel']);
 }
 
 export function registerModuleTransport(ctx:HostContext,namespace:string,service:{rpc(endpoint:string,payload:unknown):Promise<RpcResult>},endpoints:readonly string[]):void {

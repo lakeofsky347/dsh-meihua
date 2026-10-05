@@ -17,5 +17,5 @@ export function apply(ctx:HostContext, config:unknown):void {
   ctx.effect(()=>ctx.reflect.provide('meihua',service),'meihua: extensions');
   ctx.effect(()=>()=>tarot.dispose(),'tarot: generation lifetime');
   registerTransport(ctx,service);
-  registerModuleTransport(ctx,'tarot',tarot,['catalog','current','start','select','reveal','interpret','cancel']);
+  registerModuleTransport(ctx,'tarot',tarot,['catalog','current','start','select','reveal','interpret','followup','cancel']);
 }

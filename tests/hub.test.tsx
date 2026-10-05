@@ -93,9 +93,10 @@ test('门户的两种入口和导航按钮按模块生成与请求状态禁用�
   assert.ok(entrances[1]!.textContent?.includes('塔罗牌'));
   await act(async()=>entrances[1]!.click());assert.deepEqual(navigation,['tarot']);
   hubState={...hubState,view:'meihua'};
-  for(const lock of ['meihua-streaming','tarot-streaming','casting','interpreting','acting'] as const) {
-    meihuaState={...meihuaState,reading:lock==='meihua-streaming'?{...reading,status:'streaming'}:reading,casting:lock==='casting',interpreting:lock==='interpreting'};
-    tarotState={...tarotState,reading:lock==='tarot-streaming'?{...tarotReading,status:'streaming'}:null,acting:lock==='acting'};
+  const streamingTurn={id:'pending-followup',question:'请解释',text:'流式前缀',status:'streaming' as const,route:{provider:'local',model:'offline'},createdAt:new Date().toISOString()};
+  for(const lock of ['meihua-streaming','tarot-streaming','meihua-followup','tarot-followup','casting','interpreting','acting'] as const) {
+    meihuaState={...meihuaState,reading:lock==='meihua-streaming'?{...reading,status:'streaming'}:lock==='meihua-followup'?{...reading,status:'complete',text:'首份解读',conversation:[streamingTurn]}:reading,casting:lock==='casting',interpreting:lock==='interpreting'};
+    tarotState={...tarotState,reading:lock==='tarot-streaming'?{...tarotReading,status:'streaming'}:lock==='tarot-followup'?{...tarotReading,status:'complete',text:'首份解读',conversation:[streamingTurn]}:null,acting:lock==='acting'};
     await render();
     const buttons=container.querySelectorAll<HTMLButtonElement>('.wx-topbar button');
     assert.equal(buttons.length,3);
@@ -214,18 +215,19 @@ test('梅花解读请求尚未回应时锁住重起卦、重复解读和导航�
 test('发行版重新注册客户端时自动显示正在生成的模块，取消按钮不会藏在门户',async()=>{
   media(false);
   const bundle=await readFile('lib/client.js','utf8'),require=createRequire(import.meta.url);
-  for(const moduleId of ['meihua','tarot'] as const) {
+  for(const moduleId of ['meihua','tarot'] as const) for(const mode of ['interpretation','followup'] as const) {
     let exported:unknown;
     runInNewContext(bundle,{AbortController,document,setTimeout,clearTimeout,window:{__ModuleLoader__:{load:({factory}:{factory:(require:NodeJS.Require)=>unknown})=>{exported=factory(require);}}}});
     const client=exported as {apply(ctx:object):void};
     const disposers:(()=>void)[]=[],registered:{name:string;inject?:()=>unknown}[]=[];
     let current:Reading|TarotReading=moduleId==='meihua'?{...reading,status:'streaming',text:'恢复中的梅花输出'}:{...tarotReading,status:'streaming',text:'恢复中的塔罗输出',selectionCount:1,selectedSlots:[0],cards:[{positionIndex:0,positionLabel:'当下需要关注的主题',revealed:true,card:TAROT_CARDS[0]!,orientation:'upright'}]};
+    if(mode==='followup')current={...current,status:'complete',route:{provider:'local',model:'offline'},conversation:[{id:'restored-turn',question:'解释依据',text:'恢复中的追问前缀',status:'streaming',route:{provider:'local',model:'offline'},createdAt:new Date().toISOString()}]};
     const rpc:ClientRpc={call:async(_channel,endpoint)=>{
       if(endpoint==='meihua/catalog')return {ok:true,value:catalog};
       if(endpoint==='tarot/catalog')return {ok:true,value:tarotCatalog};
       if(endpoint===`${moduleId}/current`)return {ok:true,value:current};
       if(endpoint.endsWith('/current'))return {ok:true,value:null};
-      if(endpoint===`${moduleId}/cancel`){current={...current,status:'cancelled'};return {ok:true,value:current};}
+      if(endpoint===`${moduleId}/cancel`){current=mode==='followup'?{...current,conversation:current.conversation!.map(turn=>({...turn,status:'cancelled'}))}:{...current,status:'cancelled'};return {ok:true,value:current};}
       throw new Error(`Unexpected restored-reading RPC: ${endpoint}`);
     }};
     client.apply({connection:{rpc},locale:{register:()=>()=>{},bind:()=>((key:keyof typeof zh)=>zh[key])},on:()=>()=>{},theme:{getTheme:()=>({active:{colorScheme:'dark'}})},
@@ -252,7 +254,12 @@ test('发行版重新注册客户端时自动显示正在生成的模块，取�
     assert.ok(cancel,`${moduleId} cancellation is visible`);
     assert.ok(Array.from(container.querySelectorAll<HTMLButtonElement>('.wx-topbar button')).every(button=>button.disabled));
     await act(async()=>cancel.click());
-    assert.equal((moduleId==='meihua'?hooks.meihua:hooks.tarot).getSnapshot().reading?.status,'cancelled');
+    assert.equal((moduleId==='meihua'?hooks.meihua:hooks.tarot).getSnapshot().reading?.status,mode==='followup'?'complete':'cancelled');
+    if(mode==='followup'){
+      const restored=(moduleId==='meihua'?hooks.meihua:hooks.tarot).getSnapshot().reading!;
+      assert.equal(restored.conversation![0]!.status,'cancelled');
+      assert.equal(restored.conversation![0]!.text,'恢复中的追问前缀');
+    }
     assert.equal((moduleId==='meihua'?hooks.meihua:hooks.tarot).getSnapshot().reading?.text,moduleId==='meihua'?'恢复中的梅花输出':'恢复中的塔罗输出');
     assert.equal(container.querySelector<HTMLButtonElement>('.wx-home')!.disabled,false);
     } finally {

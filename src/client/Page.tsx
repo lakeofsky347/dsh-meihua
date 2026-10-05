@@ -2,14 +2,17 @@ import { useEffect, useState } from 'react';
 import type { CastInput, Hexagram, RuleInfo } from '../core/types.ts';
 import { localTimestamp, wallTimeToInstant } from '../core/calendar.ts';
 import type { ModelRoute, Reading } from '../shared/protocol.ts';
+import { readingIsBusy } from '../shared/protocol.ts';
 import { initialMeihuaDraft, type MeihuaDraft, type PageState } from './controller.ts';
 import type { LocaleKey, Translate } from './locales.ts';
+import { Conversation, formatConversationCopy } from './Conversation.tsx';
 
 export interface PageProps {
   t:Translate;
   useMeihua:<T>(selector:(state:PageState)=>T)=>T;
   onCast:(input:CastInput)=>Promise<void>;
   onInterpret:(route:ModelRoute)=>Promise<void>;
+  onFollowup?:(question:string)=>Promise<boolean|void>;
   onCancel:()=>Promise<void>;
   onRefresh:()=>Promise<void>;
   onSkip:()=>void;
@@ -70,10 +73,11 @@ function InterpretationText({text}:{text:string}) {
 
 function formatCopy(reading:Reading,t:Translate):string {
   const r=reading.result;
-  return `${t('panel')}\n${t('question')}：${r.input.question}\n${t('localTime')}：${r.lunar.localTime.replace('T',' ')} (${r.input.environment.timeZone})\n${t('primary')}：${r.primary.title}\n${t('mutual')}：${r.mutual.title}\n${t('changed')}：${r.changed.title}\n${t('moving')}：${r.movingLine}\n${t('body')}：${r.body.name}（${r.body.element}） · ${t('application')}：${r.application.name}（${r.application.element}） · ${r.relationship}\n\n${r.steps.join('\n')}\n\n${reading.route?`${t('source')}：${reading.route.provider} / ${reading.route.model}\n\n`:''}${reading.text}`;
+  const status:LocaleKey=reading.status==='complete'?'complete':reading.status==='cancelled'?'cancelled':reading.status==='failed'?'failed':'interpreting';
+  return `${t('panel')}\n${t('question')}：${r.input.question}\n${t('localTime')}：${r.lunar.localTime.replace('T',' ')} (${r.input.environment.timeZone})\n${t('primary')}：${r.primary.title}\n${t('mutual')}：${r.mutual.title}\n${t('changed')}：${r.changed.title}\n${t('moving')}：${r.movingLine}\n${t('body')}：${r.body.name}（${r.body.element}） · ${t('application')}：${r.application.name}（${r.application.element}） · ${r.relationship}\n\n${r.steps.join('\n')}\n\n${reading.route?`${t('source')}：${reading.route.provider} / ${reading.route.model}\n\n`:''}${reading.status!=='ready'?`${t('readingStatus')}：${t(status)}\n`:''}${reading.text}${reading.error?`\n${reading.error.message}`:''}${formatConversationCopy(reading.conversation,t)}`;
 }
 
-export function Page({t,useMeihua,onCast,onInterpret,onCancel,onRefresh,onSkip,onDraftChange}:PageProps) {
+export function Page({t,useMeihua,onCast,onInterpret,onFollowup,onCancel,onRefresh,onSkip,onDraftChange}:PageProps) {
   const state=useMeihua(state=>state),{catalog,reading}=state;
   const draft=state.draft??initialMeihuaDraft;
   const [question,setQuestion]=useState(draft.question),[ruleId,setRule]=useState(draft.ruleId);
@@ -84,7 +88,7 @@ export function Page({t,useMeihua,onCast,onInterpret,onCancel,onRefresh,onSkip,o
   const [localError,setError]=useState(''),[copyStatus,setCopyStatus]=useState<LocaleKey>('copy'),[submitting,setSubmitting]=useState(false);
   const rule:RuleInfo | undefined = catalog?.rules.find(r=>r.id===ruleId);
   const providers=catalog?.providers ?? [],group=providers.find(p=>p.id===route.provider);
-  const busy=reading?.status==='streaming'||!!state.interpreting,animating=state.animationStartedAt!==null;
+  const busy=readingIsBusy(reading)||!!state.interpreting,animating=state.animationStartedAt!==null;
   useEffect(()=>{
     if (!catalog) return;
     if (providers.some(p=>p.id===route.provider && p.models.some(m=>m.id===route.model))) return;
@@ -121,7 +125,7 @@ export function Page({t,useMeihua,onCast,onInterpret,onCancel,onRefresh,onSkip,o
         <details className="mh-context"><summary>{t('context')} <span>＋</span></summary><p className="mh-hint">{t('contextHint')}</p><textarea value={context} maxLength={800} onChange={e=>setContext(e.target.value)} rows={2} aria-label={t('context')} placeholder={t('contextPlaceholder')} disabled={busy}/></details>
         <button className="mh-button mh-cast" type="submit" disabled={busy || state.casting || animating}><Bagua size={20}/>{state.casting?t('casting'):reading?t('newCast'):t('cast')}<span aria-hidden="true">→</span></button>
         {busy && <p className="mh-hint">{t('inputLocked')}</p>}
-        {error && <p className="mh-notice" role="alert">{error}</p>}
+        {error && <div className="mh-notice" role="alert"><p>{error}</p>{state.error&&<button className="mh-link" type="button" disabled={!!state.interpreting||state.casting} onClick={()=>void onRefresh()}>{t('refreshReading')}</button>}</div>}
       </form><footer className="mh-input-footer"><span className="mh-footer-line"/>{t('entertainment')}</footer></section>
       <section className="mh-result-panel" aria-label={t('primary')}>
         {!reading ? <div className="mh-empty"><Bagua size={195}/><h2>{t('waiting')}</h2><p>{t('waitingText')}</p></div> : animating ? <Animation reading={reading} startedAt={state.animationStartedAt!} duration={catalog.config.animationMs} t={t} onSkip={onSkip}/> : <>
@@ -135,9 +139,9 @@ export function Page({t,useMeihua,onCast,onInterpret,onCancel,onRefresh,onSkip,o
               {group?.error && <p className="mh-notice">{group.error}</p>}<div className="mh-actions"><button className="mh-button mh-interpret-button" onClick={()=>void interpret()} disabled={!route.provider || !route.model || submitting}>{submitting?t('interpreting'):t('interpret')} <span aria-hidden="true">↗</span></button><button className="mh-link" onClick={()=>void onRefresh()}>{t('refresh')}</button></div>
             </> : <><p className="mh-route">{reading.route?.provider} / {reading.route?.model}</p>{reading.text?<InterpretationText text={reading.text}/>:<p className="mh-pending" role="status">{t('outputPending')}</p>}
               {reading.error && <p className="mh-notice" role="alert">{reading.error.code==='LOG_WRITE'?reading.error.message:t(failureKey(reading.error.code))}</p>}
-              <div className="mh-actions">{busy?<button className="mh-link" onClick={()=>void onCancel()}>{t('cancel')}</button>:<span className="mh-hint">{t('firstOnly')}</span>}</div>
+              <div className="mh-actions">{reading.status==='streaming'?<button className="mh-link" onClick={()=>void onCancel()}>{t('cancel')}</button>:<span className="mh-hint">{t('firstOnly')}</span>}</div>
             </>}
-          </section><div className="mh-copy-row"><button className="mh-link" onClick={()=>void copy()}>{t(copyStatus)}</button><span className="mh-hint">{reading.result.algorithmVersion}</span></div>
+          </section>{onFollowup&&['complete','failed','cancelled'].includes(reading.status)&&!!reading.text.trim()&&<Conversation key={reading.id} readingId={reading.id} turns={reading.conversation??[]} busy={readingIsBusy(reading)} pending={!!state.interpreting} draft={draft.followupQuestion} theme="mh" t={t} onDraftChange={value=>onDraftChange?.({followupQuestion:value})} onSend={onFollowup} onCancel={onCancel}/>}<div className="mh-copy-row"><button className="mh-link" onClick={()=>void copy()}>{t(copyStatus)}</button><span className="mh-hint">{reading.result.algorithmVersion}</span></div>
         </>}
       </section>
     </div>}

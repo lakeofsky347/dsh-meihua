@@ -2,6 +2,7 @@
 declare module '@deepseek-ai/dsh-llm/message' {
   export function createUserMessage(input:{ content:{ type:'text'; text:string }[]; source:{ kind:'user' } }): import('../src/host/platform.ts').DurableMessage;
   export function createSystemMessage(text:string): import('../src/host/platform.ts').DurableMessage;
+  export function createAssistantMessage(input:{ content:{ type:'text'; text:string }[]; source:{provider:string;model:string} }): import('../src/host/platform.ts').DurableMessage;
 }
 declare module '@deepseek-ai/dsh-llm/assistant-stream' {
   export class AssistantStreamAccumulator {

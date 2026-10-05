@@ -1,4 +1,5 @@
 import type { ClientRpc } from '../shared/protocol.ts';
+import { readingIsBusy } from '../shared/protocol.ts';
 import { MeihuaController } from './controller.ts';
 import { Hub } from './Hub.tsx';
 import { CosmosMark } from './Portal.tsx';
@@ -21,8 +22,8 @@ export const inject = ['slots','locale','connection','theme'];
 export function apply(ctx:ClientContext):void {
   const controller = new MeihuaController(ctx.connection.rpc);
   const tarot = new TarotController(ctx.connection.rpc);
-  const hub = new HubController(()=>{const m=controller.getSnapshot(),r=tarot.getSnapshot();return m.casting||!!m.interpreting||r.acting||m.reading?.status==='streaming'||r.reading?.status==='streaming';});
-  const restoreActiveReading=()=>{if(controller.getSnapshot().reading?.status==='streaming')hub.restoreReading('meihua');else if(tarot.getSnapshot().reading?.status==='streaming')hub.restoreReading('tarot');};
+  const hub = new HubController(()=>{const m=controller.getSnapshot(),r=tarot.getSnapshot();return m.casting||!!m.interpreting||r.acting||readingIsBusy(m.reading)||readingIsBusy(r.reading);});
+  const restoreActiveReading=()=>{if(readingIsBusy(controller.getSnapshot().reading))hub.restoreReading('meihua');else if(readingIsBusy(tarot.getSnapshot().reading))hub.restoreReading('tarot');};
   ctx.effect(()=>{const a=controller.subscribe(restoreActiveReading),b=tarot.subscribe(restoreActiveReading);return ()=>{a();b();};},'divination: restore active reading');
   ctx.effect(()=>()=>controller.dispose(),'meihua: page lifetime');
   ctx.effect(()=>()=>tarot.dispose(),'tarot: page lifetime');
@@ -38,9 +39,11 @@ export function apply(ctx:ClientContext):void {
   ctx.slots.inject('main',()=>ctx.slots.register({name:'main',key:'meihua',locale:'meihua',inject:()=>({
     hooks:{hub,meihua:controller,tarot},onNavigate:hub.navigate,onSkipJourney:hub.skip,
     onMeihuaCast:controller.cast.bind(controller),onMeihuaInterpret:controller.interpret.bind(controller),
+    onMeihuaFollowup:controller.followup.bind(controller),
     onMeihuaCancel:controller.cancel.bind(controller),onMeihuaRefresh:controller.load.bind(controller),onMeihuaSkip:controller.skipAnimation,onMeihuaDraft:controller.updateDraft,
     onTarotStart:tarot.start.bind(tarot),onTarotSelect:tarot.select.bind(tarot),onTarotReveal:tarot.reveal.bind(tarot),
     onTarotInterpret:tarot.interpret.bind(tarot),onTarotCancel:tarot.cancel.bind(tarot),onTarotRefresh:tarot.load.bind(tarot),
+    onTarotFollowup:tarot.followup.bind(tarot),
     onTarotSkip:tarot.skipShuffle,onTarotDraft:tarot.updateDraft,onTarotActive:tarot.setActive
   })},Hub));
   ctx.slots.inject('sidebar.panellist',()=>ctx.slots.register({name:'sidebar.panellist',id:'meihua',order:30,label:()=>t('hubPanel'),locale:'meihua'},CosmosMark));
