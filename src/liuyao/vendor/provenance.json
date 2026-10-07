@@ -1,0 +1,19 @@
+{
+  "name": "lunar-javascript",
+  "version": "1.7.7",
+  "license": "MIT",
+  "author": "6tail",
+  "gitHead": "eecd5d12c8221b82ce574dc2bad2d7aefcb46e56",
+  "repository": "https://github.com/6tail/lunar-javascript",
+  "source": "https://github.com/6tail/lunar-javascript/blob/eecd5d12c8221b82ce574dc2bad2d7aefcb46e56/lunar.js",
+  "tarball": "https://registry.npmjs.org/lunar-javascript/-/lunar-javascript-1.7.7.tgz",
+  "tarballSha256": "d1359ab9ca4913d1db3978a42ddfc290eb8ea9de54ce043f5b1f718ff71eea36",
+  "verifiedNpmIntegrity": "sha512-u/KYiwPIBo/0bT+WWfU7qO1d+aqeB90Tuy4ErXenr2Gam0QcWeezUvtiOIyXR7HbVnW2I1DKfU0NBvzMZhbVQw==",
+  "files": {
+    "lunar.cjs": { "originalPath": "package/lunar.js", "bytes": 435942, "sha256": "9750324bfe1aa63c146f8c72b1143df924466c11c8a5277d7d9225c541a18aaa" },
+    "LICENSE": { "originalPath": "package/LICENSE", "bytes": 1061, "sha256": "d9210caf1844dcf410095cea464b79800aad30dbd49df092076b9f0ddc015404" }
+  },
+  "modifications": "Source bytes unchanged; lunar.js renamed lunar.cjs for explicit CommonJS isolation. Local narrow lunar.d.cts describes the calendar functions consumed by our adapter.",
+  "use": "Offline solar-term instants and civil-date day stem/branch only. No provider, user profile, network or persistence API is called by the adapter.",
+  "verifiedAt": "2026-10-07"
+}

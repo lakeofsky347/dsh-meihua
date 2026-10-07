@@ -1,0 +1,170 @@
+{
+  "checkedAt": "2026-10-07",
+  "purpose": "G9 dependency metadata and first-party rule fixtures; no install or execution",
+  "sources": {
+    "lunar-package": {
+      "url": "https://raw.githubusercontent.com/6tail/lunar-javascript/master/package.json",
+      "content": "{\n  \"name\": \"lunar-javascript\",\n  \"version\": \"1.7.7\",\n  \"description\": \"lunar是一款无第三方依赖的公历(阳历)、农历(阴历、老黄历)、佛历和道历工具，支持星座、儒略日、干支、生肖、节气、节日、彭祖百忌、每日宜忌、吉神宜趋、凶煞宜忌、吉神(喜神/福神/财神/阳贵神/阴贵神)方位、胎神方位、冲煞、纳音、星宿、八字、五行、十神、建除十二值星、青龙名堂等十二神、黄道日及吉凶等。lunar is a calendar library for Solar and Chinese Lunar.\",\n  \"main\": \"index.js\",\n  \"scripts\": {\n    \"test\": \"jest\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/6tail/lunar-javascript.git\"\n  },\n  \"keywords\": [\n    \"calendar\",\n    \"lunar\",\n    \"solar\",\n    \"节假日\",\n    \"星座\",\n    \"儒略日\",\n    \"干支\",\n    \"生肖\",\n    \"节气\",\n    \"节日\",\n    \"彭祖百忌\",\n    \"每日宜忌\",\n    \"时辰宜忌\",\n    \"吉神宜趋\",\n    \"凶煞宜忌\",\n    \"喜神\",\n    \"福神\",\n    \"财神\",\n    \"阳贵神\",\n    \"阴贵神\",\n    \"胎神\",\n    \"冲煞\",\n    \"纳音\",\n    \"星宿\",\n    \"八字\",\n    \"五行\",\n    \"十神\",\n    \"建除十二值星\",\n    \"青龙名堂等十二神\",\n    \"黄道黑道日\"\n  ],\n  \"author\": \"6tail <6tail@6tail.cn> (https://6tail.cn)\",\n  \"license\": \"MIT\",\n  \"bugs\": {\n    \"url\": \"https://github.com/6tail/lunar-javascript/issues\"\n  },\n  \"homepage\": \"https://github.com/6tail/lunar-javascript\",\n  \"devDependencies\": {\n    \"jest\": \"^26.6.3\"\n  }\n}\n",
+      "checkedOn": "2026-10-07",
+      "contentSha256": "39b062864077ca2980683db5f209cb78339f74e4d5c1dea77b4a6263da116c02",
+      "retrievalKind": "PUBLIC_SOURCE_DOWNLOAD_NO_LIBRARY_EXECUTION"
+    },
+    "lunar-license": {
+      "url": "https://raw.githubusercontent.com/6tail/lunar-javascript/master/LICENSE",
+      "content": "MIT License\n\nCopyright (c) 2018 6tail\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+      "checkedOn": "2026-10-07",
+      "contentSha256": "d9210caf1844dcf410095cea464b79800aad30dbd49df092076b9f0ddc015404",
+      "retrievalKind": "PUBLIC_SOURCE_DOWNLOAD_NO_LIBRARY_EXECUTION"
+    },
+    "lunar-bazi-tests": {
+      "url": "https://raw.githubusercontent.com/6tail/lunar-javascript/master/__tests__/EightChar.test.js",
+      "content": "var {Solar, Lunar} = require('../lunar');\n\ntest('test1', () => {\n  const solar = Solar.fromYmdHms(2005, 12, 23, 8, 37, 0);\n  const lunar = solar.getLunar();\n  const eightChar = lunar.getEightChar();\n  expect(eightChar.getYear()).toBe('乙酉');\n  expect(eightChar.getMonth()).toBe('戊子');\n  expect(eightChar.getDay()).toBe('辛巳');\n  expect(eightChar.getTime()).toBe('壬辰');\n});\n\ntest('test2', () => {\n  const solar = Solar.fromYmdHms(1988, 2, 15, 23, 30, 0);\n  const lunar = solar.getLunar();\n  const eightChar = lunar.getEightChar();\n  expect(eightChar.getYear()).toBe('戊辰');\n  expect(eightChar.getMonth()).toBe('甲寅');\n  expect(eightChar.getDay()).toBe('庚子');\n  expect(eightChar.getTime()).toBe('戊子');\n});\n\ntest('test2a', () => {\n  const solar = Solar.fromYmdHms(1988, 2, 15, 23, 30, 0);\n  const lunar = solar.getLunar();\n  const eightChar = lunar.getEightChar();\n\n  eightChar.setSect(1);\n\n  expect(eightChar.getYear()).toBe('戊辰');\n  expect(eightChar.getMonth()).toBe('甲寅');\n  expect(eightChar.getDay()).toBe('辛丑');\n  expect(eightChar.getTime()).toBe('戊子');\n});\n\ntest('test3', () => {\n  const solar = Solar.fromYmdHms(1988, 2, 15, 22, 30, 0);\n  const lunar = solar.getLunar();\n  const eightChar = lunar.getEightChar();\n  expect(eightChar.getYear()).toBe('戊辰');\n  expect(eightChar.getMonth()).toBe('甲寅');\n  expect(eightChar.getDay()).toBe('庚子');\n  expect(eightChar.getTime()).toBe('丁亥');\n});\n\ntest('test4', () => {\n  const solar = Solar.fromYmdHms(1988, 2, 2, 22, 30, 0);\n  const lunar = solar.getLunar();\n  const eightChar = lunar.getEightChar();\n  expect(eightChar.getYear()).toBe('丁卯');\n  expect(eightChar.getMonth()).toBe('癸丑');\n  expect(eightChar.getDay()).toBe('丁亥');\n  expect(eightChar.getTime()).toBe('辛亥');\n});\n\ntest('test5', () => {\n  const lunar = Lunar.fromYmdHms(2019,12,12,11,22,0);\n  const eightChar = lunar.getEightChar();\n  expect(eightChar.getYear()).toBe('己亥');\n  expect(eightChar.getMonth()).toBe('丁丑');\n  expect(eightChar.getDay()).toBe('戊申');\n  expect(eightChar.getTime()).toBe('戊午');\n});\n\ntest('地支藏干', () => {\n  const solar = Solar.fromYmdHms(2005, 12, 23, 8, 37, 0);\n  const lunar = solar.getLunar();\n  const eightChar = lunar.getEightChar();\n  expect(eightChar.getYearHideGan() + '').toBe('辛');\n  expect(eightChar.getMonthHideGan() + '').toBe('癸');\n  expect(eightChar.getDayHideGan() + '').toBe('丙,庚,戊');\n  expect(eightChar.getTimeHideGan() + '').toBe('戊,乙,癸');\n});\n\ntest('天干十神', () => {\n  const solar = Solar.fromYmdHms(2005, 12, 23, 8, 37, 0);\n  const lunar = solar.getLunar();\n  const eightChar = lunar.getEightChar();\n  expect(eightChar.getYearShiShenGan()).toBe('偏财');\n  expect(eightChar.getMonthShiShenGan()).toBe('正印');\n  expect(eightChar.getDayShiShenGan()).toBe('日主');\n  expect(eightChar.getTimeShiShenGan()).toBe('伤官');\n});\n\ntest('地支十神', () => {\n  const solar = Solar.fromYmdHms(2005, 12, 23, 8, 37, 0);\n  const lunar = solar.getLunar();\n  const eightChar = lunar.getEightChar();\n  expect(eightChar.getYearShiShenZhi() + '').toBe('比肩');\n  expect(eightChar.getMonthShiShenZhi() + '').toBe('食神');\n  expect(eightChar.getDayShiShenZhi() + '').toBe('正官,劫财,正印');\n  expect(eightChar.getTimeShiShenZhi() + '').toBe('正印,偏财,食神');\n});\n\ntest('地势', () => {\n  const solar = Solar.fromYmdHms(2005, 12, 23, 8, 37, 0);\n  const lunar = solar.getLunar();\n  const eightChar = lunar.getEightChar();\n  expect(eightChar.getYearDiShi()).toBe('临官');\n  expect(eightChar.getMonthDiShi()).toBe('长生');\n  expect(eightChar.getDayDiShi()).toBe('死');\n  expect(eightChar.getTimeDiShi()).toBe('墓');\n});\n\ntest('纳音', () => {\n  const solar = Solar.fromYmdHms(2005, 12, 23, 8, 37, 0);\n  const lunar = solar.getLunar();\n  const eightChar = lunar.getEightChar();\n  expect(eightChar.getYearNaYin()).toBe('泉中水');\n  expect(eightChar.getMonthNaYin()).toBe('霹雳火');\n  expect(eightChar.getDayNaYin()).toBe('白蜡金');\n  expect(eightChar.getTimeNaYin()).toBe('长流水');\n});\n\ntest('胎元', () => {\n  let solar = Solar.fromYmdHms(2005, 12, 23, 8, 37, 0);\n  let lunar = solar.getLunar();\n  let eightChar = lunar.getEightChar();\n  expect(eightChar.getTaiYuan()).toBe('己卯');\n\n  solar = Solar.fromYmdHms(1995, 12, 18, 10, 28, 0);\n  lunar = solar.getLunar();\n  eightChar = lunar.getEightChar();\n  expect(eightChar.getTaiYuan()).toBe('己卯');\n});\n\ntest('命宫', () => {\n  let solar = Solar.fromYmdHms(2005, 12, 23, 8, 37, 0);\n  let lunar = solar.getLunar();\n  let eightChar = lunar.getEightChar();\n  expect(eightChar.getMingGong()).toBe('己丑');\n\n  solar = Solar.fromYmdHms(1998, 6, 11, 4, 28, 0);\n  lunar = solar.getLunar();\n  eightChar = lunar.getEightChar();\n  expect(eightChar.getMingGong()).toBe('辛酉');\n\n  solar = Solar.fromYmdHms(1995, 12, 18, 10, 28, 0);\n  lunar = solar.getLunar();\n  eightChar = lunar.getEightChar();\n  expect(eightChar.getMingGong()).toBe('戊子');\n});\n\ntest('身宫', () => {\n  const solar = Solar.fromYmdHms(1995, 12, 18, 10, 28, 0);\n  const lunar = solar.getLunar();\n  const eightChar = lunar.getEightChar();\n  expect(eightChar.getShenGong()).toBe('壬午');\n});\n\ntest('身宫1', () => {\n  const solar = Solar.fromYmdHms(1994, 12, 6, 2, 0, 0);\n  const lunar = solar.getLunar();\n  const eightChar = lunar.getEightChar();\n  expect(eightChar.getShenGong()).toBe('丁丑');\n});\n\ntest('身宫2', () => {\n  const solar = Solar.fromYmdHms(1990, 12, 11, 6, 0, 0);\n  const lunar = solar.getLunar();\n  const eightChar = lunar.getEightChar();\n  expect(eightChar.getShenGong()).toBe('庚辰');\n});\n\ntest('身宫3', () => {\n  const solar = Solar.fromYmdHms(1993, 5, 23, 4, 0, 0);\n  const lunar = solar.getLunar();\n  const eightChar = lunar.getEightChar();\n  expect(eightChar.getShenGong()).toBe('庚申');\n});\n\ntest('test11', () => {\n  const lunar = Lunar.fromYmdHms(1987, 12, 28, 23, 30, 0);\n  const eightChar = lunar.getEightChar();\n  expect(eightChar.getYear()).toBe('戊辰');\n  expect(eightChar.getMonth()).toBe('甲寅');\n  expect(eightChar.getDay()).toBe('庚子');\n  expect(eightChar.getTime()).toBe('戊子');\n});\n\ntest('test12', () => {\n  expect(Solar.fromYmdHms('1999', '06', '07', '09', '11', '00').getLunar().getEightChar().toString()).toBe('己卯 庚午 庚寅 辛巳');\n});\n\ntest('流月', () => {\n  const solar = Solar.fromYmdHms(2023, 5, 3, 9, 0, 0);\n  const lunar = solar.getLunar();\n  const eightChar = lunar.getEightChar();\n  const yun = eightChar.getYun(1);\n  expect(yun.getDaYun()[0].getLiuNian()[0].getLiuYue()[0].getGanZhi()).toBe('甲寅');\n});\n\ntest('test19', () => {\n  const solarList = Solar.fromBaZi('丁丑','癸卯','癸丑','辛酉', 2, 1900);\n  const timeList = [];\n  solarList.forEach(solar => {\n    timeList.push(solar.toYmdHms());\n  })\n  expect(timeList).toStrictEqual(['1937-03-27 18:00:00', '1997-03-12 18:00:00']);\n});\n\ntest('test20', () => {\n  const lunar = Solar.fromYmdHms(2024, 1, 29, 9, 30, 0).getLunar();\n  const eightChar = lunar.getEightChar();\n  expect(eightChar.getMingGong()).toBe('癸亥');\n  expect(eightChar.getShenGong()).toBe('己未');\n});\n\n\ntest('test21', () => {\n  expect(Solar.fromYmdHms(1990, 1, 27, 0, 0, 0).getLunar().getEightChar().getShenGong()).toBe('丙寅');\n});\n\n\ntest('test23', () => {\n  expect(Solar.fromYmdHms(2019, 3, 7, 8, 0, 0).getLunar().getEightChar().getMingGong()).toBe('甲戌');\n});\n\n\ntest('test24', () => {\n  expect(Solar.fromYmdHms(2019, 3, 27, 2, 0, 0).getLunar().getEightChar().getMingGong()).toBe('丁丑');\n});\n\n\ntest('test25', () => {\n  expect(Lunar.fromYmdHms(1994, 5, 20, 18, 0 ,0).getEightChar().getMingGong()).toBe('丙寅');\n});\n\n\ntest('test26', () => {\n  const lunar = Solar.fromYmdHms(1986, 2, 16, 8, 0, 0).getLunar();\n  const eightChar = lunar.getEightChar();\n  expect(eightChar.getMingGong()).toBe('己亥');\n  expect(eightChar.getShenGong()).toBe('乙未');\n});\n\n\ntest('test27', () => {\n  const lunar = Solar.fromYmdHms(1972, 11, 27, 10, 0, 0).getLunar();\n  const eightChar = lunar.getEightChar();\n  expect(eightChar.getShenGong()).toBe('乙巳');\n});\n\ntest('test28', () => {\n  const solarList = Solar.fromBaZi('丁卯','丁未','甲申','乙丑', 1, 1900);\n  const timeList = [];\n  solarList.forEach(solar => {\n    timeList.push(solar.toYmdHms());\n  })\n  expect(timeList).toStrictEqual(['1987-08-03 02:00:00']);\n});\n\ntest('test29', () => {\n  const solarList = Solar.fromBaZi('壬申','壬寅','庚辰','甲申', 1, 1801);\n  const timeList = [];\n  solarList.forEach(solar => {\n    timeList.push(solar.toYmdHms());\n  })\n  expect(timeList).toStrictEqual(['1812-02-18 16:00:00', '1992-03-05 15:00:00']);\n});\n",
+      "checkedOn": "2026-10-07",
+      "contentSha256": "8fce30491bd33cc07ab3434be7e5ef7c8f48d0023c33ae3be43ee3f691042a9b",
+      "retrievalKind": "PUBLIC_SOURCE_DOWNLOAD_NO_LIBRARY_EXECUTION"
+    },
+    "astronomy-package": {
+      "url": "https://registry.npmjs.org/astronomy-engine/latest",
+      "content": "{\"bugs\":{\"url\":\"https://github.com/cosinekitty/astronomy/issues\"},\"dist\":{\"shasum\":\"41b9fd2afb7eba3485e3803cbd9033011f8557af\",\"tarball\":\"https://registry.npmjs.org/astronomy-engine/-/astronomy-engine-2.1.19.tgz\",\"fileCount\":8,\"integrity\":\"sha512-8yWKNf7UeNbH458h3sAJ6ZgAjE5jTXp/mNNRFoC20j2SHwZIjAQeEsBB2Q3uCFRaTCCJRv33K2XhkhZQMXoX6w==\",\"signatures\":[{\"sig\":\"MEYCIQCd++J2RtzAE5Pi54uMPGRs1KGrBtCTYcMg2SQnkRWa8gIhANsXa4DhhNGdY2ZbVxhyLd48B0CtgYPaY0lVtrFNluEy\",\"keyid\":\"SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA\"}],\"unpackedSize\":1838627},\"main\":\"./astronomy.js\",\"name\":\"astronomy-engine\",\"types\":\"./astronomy.d.ts\",\"author\":{\"name\":\"Donald Cross\"},\"module\":\"./esm/astronomy.js\",\"exports\":{\".\":{\"types\":\"./astronomy.d.ts\",\"import\":\"./esm/astronomy.js\",\"require\":\"./astronomy.js\"}},\"gitHead\":\"61dc07020aaa6885d2c7f688a4d82beaf6edb9ef\",\"license\":\"MIT\",\"scripts\":{},\"_npmUser\":{\"name\":\"cosinekitty\",\"email\":\"cosinekitty@gmail.com\"},\"homepage\":\"https://github.com/cosinekitty/astronomy#readme\",\"keywords\":[\"astronomy\",\"ephemeris\",\"planet\",\"sun\",\"moon\",\"solar\",\"system\",\"sunrise\",\"sunset\",\"equinox\",\"solstice\",\"constellation\",\"orbit\"],\"repository\":{\"url\":\"git+https://github.com/cosinekitty/astronomy.git\",\"type\":\"git\"},\"_npmVersion\":\"10.2.5\",\"description\":\"Astronomy calculation for Sun, Moon, and planets.\",\"directories\":{},\"maintainers\":[{\"name\":\"cosinekitty\",\"email\":\"cosinekitty@gmail.com\"}],\"sideEffects\":false,\"_nodeVersion\":\"18.18.0\",\"_hasShrinkwrap\":false,\"_npmOperationalInternal\":{\"tmp\":\"tmp/astronomy-engine_2.1.19_1702578031306_0.5580061241163354\",\"host\":\"s3://npm-registry-packages\"},\"_id\":\"astronomy-engine@2.1.19\",\"version\":\"2.1.19\"}",
+      "checkedOn": "2026-10-07",
+      "contentSha256": "b755250242589d86527538b881b51bd4714b72ca90d645f2ea4cf80d8315591e",
+      "retrievalKind": "PUBLIC_SOURCE_DOWNLOAD_NO_LIBRARY_EXECUTION",
+      "metadata": {
+        "name": "astronomy-engine",
+        "version": "2.1.19",
+        "license": "MIT",
+        "dependencies": null,
+        "gitHead": "61dc07020aaa6885d2c7f688a4d82beaf6edb9ef"
+      }
+    },
+    "astronomy-license": {
+      "url": "https://raw.githubusercontent.com/cosinekitty/astronomy/master/LICENSE",
+      "content": "MIT License\n\nCopyright (c) 2019-2025 Don Cross <cosinekitty@gmail.com>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n",
+      "checkedOn": "2026-10-07",
+      "contentSha256": "a76df666a7db8a06f599d08e07c3ff74c4b250b50b49c43353af2bd5bb34604e",
+      "retrievalKind": "PUBLIC_SOURCE_DOWNLOAD_NO_LIBRARY_EXECUTION"
+    },
+    "swiss-license": {
+      "url": "https://raw.githubusercontent.com/aloistr/swisseph/master/LICENSE",
+      "content": "/* Copyright (C) 1997 - 2021 Astrodienst AG, Switzerland.  All rights reserved.\n\n  License conditions\n  ------------------\n\n  This file is part of Swiss Ephemeris.\n\n  Swiss Ephemeris is distributed with NO WARRANTY OF ANY KIND.  No author\n  or distributor accepts any responsibility for the consequences of using it,\n  or for whether it serves any particular purpose or works at all, unless he\n  or she says so in writing.  \n\n  Swiss Ephemeris is made available by its authors under a dual licensing\n  system. The software developer, who uses any part of Swiss Ephemeris\n  in his or her software, must choose between one of the two license models,\n  which are\n  a) GNU Affero General Public License (AGPL)\n  b) Swiss Ephemeris Professional License\n\n  The choice must be made before the software developer distributes software\n  containing parts of Swiss Ephemeris to others, and before any public\n  service using the developed software is activated.\n\n  If the developer choses the AGPL software license, he or she must fulfill\n  the conditions of that license, which includes the obligation to place his\n  or her whole software project under the AGPL or a compatible license.\n  See https://www.gnu.org/licenses/agpl-3.0.html\n\n  If the developer choses the Swiss Ephemeris Professional license,\n  he must follow the instructions as found in http://www.astro.com/swisseph/ \n  and purchase the Swiss Ephemeris Professional Edition from Astrodienst\n  and sign the corresponding license contract.\n\n  The License grants you the right to use, copy, modify and redistribute\n  Swiss Ephemeris, but only under certain conditions described in the License.\n  Among other things, the License requires that the copyright notices and\n  this notice be preserved on all copies.\n\n  Authors of the Swiss Ephemeris: Dieter Koch and Alois Treindl\n\n  The authors of Swiss Ephemeris have no control or influence over any of\n  the derived works, i.e. over software or services created by other\n  programmers which use Swiss Ephemeris functions.\n\n  The names of the authors or of the copyright holder (Astrodienst) must not\n  be used for promoting any software, product or service which uses or contains\n  the Swiss Ephemeris. This copyright notice is the ONLY place where the\n  names of the authors can legally appear, except in cases where they have\n  given special permission in writing.\n*/\n\n\n",
+      "checkedOn": "2026-10-07",
+      "contentSha256": "b6345743292c516d07799dfad46f1a641e5270da2160cc4d6bd54594d6faa991",
+      "retrievalKind": "PUBLIC_SOURCE_DOWNLOAD_NO_LIBRARY_EXECUTION"
+    },
+    "swiss-header": {
+      "url": "https://raw.githubusercontent.com/aloistr/swisseph/master/swephexp.h",
+      "checkedOn": "2026-10-07",
+      "retrievalKind": "PUBLIC_SOURCE_DOWNLOAD_NO_LIBRARY_EXECUTION",
+      "downloadedBytes": 40912,
+      "downloadedSha256": "53647b650504bbdec65166af1fbdb8580fa26a2ec821d5f50f032f5b0745b3cc",
+      "readbackFacts": {
+        "exportedApiNamesChecked": [
+          "swe_calc_ut",
+          "swe_houses_ex"
+        ],
+        "snapshot": "Metadata only; downloaded API header not redistributed or executed."
+      }
+    },
+    "lunar-latest": {
+      "url": "https://registry.npmjs.org/lunar-javascript/latest",
+      "content": "{\"bugs\":{\"url\":\"https://github.com/6tail/lunar-javascript/issues\"},\"dist\":{\"shasum\":\"2c7a359f2ffc414ce2b0214f59148ff7a823851f\",\"tarball\":\"https://registry.npmjs.org/lunar-javascript/-/lunar-javascript-1.7.7.tgz\",\"fileCount\":30,\"integrity\":\"sha512-u/KYiwPIBo/0bT+WWfU7qO1d+aqeB90Tuy4ErXenr2Gam0QcWeezUvtiOIyXR7HbVnW2I1DKfU0NBvzMZhbVQw==\",\"signatures\":[{\"sig\":\"MEUCID3weZ1ScaGXi0iU2s3uhlO7GIW9NfQ6Uwt0WcyjP/nmAiEAxxSd7WP8uich41Va1ueBDCALypm/Suh4Ia6lnh1+g4Y=\",\"keyid\":\"SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U\"}],\"unpackedSize\":511830},\"main\":\"index.js\",\"name\":\"lunar-javascript\",\"author\":{\"url\":\"https://6tail.cn\",\"name\":\"6tail\",\"email\":\"6tail@6tail.cn\"},\"gitHead\":\"eecd5d12c8221b82ce574dc2bad2d7aefcb46e56\",\"license\":\"MIT\",\"scripts\":{\"test\":\"jest\"},\"_npmUser\":{\"name\":\"6tail\",\"email\":\"6tail@6tail.cn\"},\"homepage\":\"https://github.com/6tail/lunar-javascript\",\"keywords\":[\"calendar\",\"lunar\",\"solar\",\"节假日\",\"星座\",\"儒略日\",\"干支\",\"生肖\",\"节气\",\"节日\",\"彭祖百忌\",\"每日宜忌\",\"时辰宜忌\",\"吉神宜趋\",\"凶煞宜忌\",\"喜神\",\"福神\",\"财神\",\"阳贵神\",\"阴贵神\",\"胎神\",\"冲煞\",\"纳音\",\"星宿\",\"八字\",\"五行\",\"十神\",\"建除十二值星\",\"青龙名堂等十二神\",\"黄道黑道日\"],\"repository\":{\"url\":\"git+https://github.com/6tail/lunar-javascript.git\",\"type\":\"git\"},\"_npmVersion\":\"8.1.0\",\"description\":\"lunar是一款无第三方依赖的公历(阳历)、农历(阴历、老黄历)、佛历和道历工具，支持星座、儒略日、干支、生肖、节气、节日、彭祖百忌、每日宜忌、吉神宜趋、凶煞宜忌、吉神(喜神/福神/财神/阳贵神/阴贵神)方位、胎神方位、冲煞、纳音、星宿、八字、五行、十神、建除十二值星、青龙名堂等十二神、黄道日及吉凶等。lunar is a calendar library for Solar and Chinese Lunar.\",\"directories\":{},\"maintainers\":[{\"name\":\"6tail\",\"email\":\"6tail@6tail.cn\"}],\"_nodeVersion\":\"16.13.0\",\"_hasShrinkwrap\":false,\"devDependencies\":{\"jest\":\"^26.6.3\"},\"_npmOperationalInternal\":{\"tmp\":\"tmp/lunar-javascript_1.7.7_1762311816666_0.2395189494160168\",\"host\":\"s3://npm-registry-packages-npm-production\"},\"_id\":\"lunar-javascript@1.7.7\",\"version\":\"1.7.7\"}",
+      "checkedOn": "2026-10-07",
+      "contentSha256": "83cbefe78fc968b0c9c513bfa3de2782f460d5e1c0cdd16518dca849924956cb",
+      "retrievalKind": "PUBLIC_SOURCE_DOWNLOAD_NO_LIBRARY_EXECUTION",
+      "metadata": {
+        "name": "lunar-javascript",
+        "version": "1.7.7",
+        "license": "MIT",
+        "dependencies": null,
+        "gitHead": "eecd5d12c8221b82ce574dc2bad2d7aefcb46e56"
+      }
+    }
+  },
+  "primaryReadings": [
+    {
+      "id": "lunar-bazi-docs",
+      "url": "https://6tail.cn/calendar/lunar.bazi.html",
+      "checkedOn": "2026-10-07",
+      "verification": "OFFICIAL_SEARCH_INDEX_AND_UPSTREAM_TESTS",
+      "note": "Direct web fetch timed out; relevant rules cross-checked with saved maintainer tests, not claimed a downloaded full page."
+    },
+    {
+      "id": "iana-time-zones",
+      "url": "https://www.iana.org/time-zones",
+      "checkedOn": "2026-10-07",
+      "verification": "OFFICIAL_PAGE_READ",
+      "facts": {
+        "latest": "2026e",
+        "released": "2026-09-29"
+      },
+      "note": "Actual host tzdb version NOT_CHECKED."
+    },
+    {
+      "id": "astronomy-maintainer",
+      "url": "https://github.com/cosinekitty/astronomy",
+      "checkedOn": "2026-10-07",
+      "verification": "MAINTAINER_README_AND_LICENSE_READ",
+      "note": "Dependency not installed; precision and house suitability not locally benchmarked."
+    },
+    {
+      "id": "swiss-programmer",
+      "url": "https://www.astro.com/swisseph/swephprg.htm",
+      "checkedOn": "2026-10-07",
+      "verification": "OFFICIAL_DOCUMENT_READ",
+      "note": "UT APIs and coordinate signs checked; no binding executed."
+    },
+    {
+      "id": "swiss-price",
+      "url": "https://www.astro.com/swisseph/swephprice_e.htm",
+      "checkedOn": "2026-10-07",
+      "verification": "OFFICIAL_PRICE_PAGE_READ",
+      "facts": {
+        "freeCHF": 0,
+        "professionalUnlimitedCHF": 700
+      },
+      "note": "Not a purchase or quote for development; supersedes prices in older manuals."
+    },
+    {
+      "id": "swiss-license",
+      "url": "https://www.astro.com/swisseph/swephinfo_e.htm",
+      "checkedOn": "2026-10-07",
+      "verification": "OFFICIAL_LICENSE_PAGE_READ",
+      "note": "AGPL/Professional route must be selected before integration."
+    },
+    {
+      "id": "swiss-contract",
+      "url": "https://www.astro.com/swisseph/secont_e_2609.pdf",
+      "checkedOn": "2026-10-07",
+      "verification": "OFFICIAL_CONTRACT_TEXT_READ",
+      "note": "No contract signed or approval requested; assessment only."
+    },
+    {
+      "id": "qimen-original",
+      "url": "https://zh.wikisource.org/wiki/奇門遁甲元靈經",
+      "checkedOn": "2026-10-07",
+      "verification": "ANCIENT_PRIMARY_TEXT_READ",
+      "note": "Qimen vol.1 term table and two given-condition earth-plate examples read; complete chart implementation NOT_CHECKED."
+    },
+    {
+      "id": "runes-original",
+      "url": "https://en.wikisource.org/w/index.php?title=Rune_poems&oldid=10795428",
+      "checkedOn": "2026-10-07",
+      "verification": "ANCIENT_PRIMARY_POEMS_READ",
+      "note": "Different rune alphabets not silently merged; no new rune content package claimed."
+    },
+    {
+      "id": "runes-dickins-preface",
+      "url": "https://en.wikisource.org/wiki/Runic_and_Heroic_Poems_of_the_Old_Teutonic_Peoples/Preface",
+      "checkedOn": "2026-10-07",
+      "verification": "1915_ORIGINAL_SCHOLARLY_EDITION_READ",
+      "note": "English translation not reused or assumed worldwide public domain."
+    },
+    {
+      "id": "runes-kylver-museum",
+      "url": "https://historiska.se/historien-om-sverige-kylverstenen/?exhibition=true",
+      "checkedOn": "2026-10-07",
+      "verification": "HOLDING_MUSEUM_DESCRIPTION_READ",
+      "note": "24 older runes versus 16 Viking-age runes checked; museum photograph not downloaded or reused."
+    }
+  ]
+}

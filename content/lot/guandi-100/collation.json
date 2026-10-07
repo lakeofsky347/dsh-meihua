@@ -1,0 +1,1133 @@
+{
+  "checkedOn": "2026-10-07",
+  "reviewerType": "agent",
+  "humanSecondReview": "NOT_CHECKED",
+  "lotCount": 100,
+  "scanPagesRead": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89,
+    90,
+    91,
+    92,
+    93,
+    94,
+    95,
+    96,
+    97,
+    98,
+    99,
+    100,
+    101,
+    102
+  ],
+  "entries": [
+    {
+      "number": 1,
+      "pdfPage": 3,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 2610595,
+      "changes": [
+        {
+          "field": "poemLines[1]",
+          "transcriptionReading": "玉殿千官第一班",
+          "scanReading": "玉殿仙官第一班",
+          "chosenReading": "玉殿仙官第一班",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "pdfPage": 4,
+      "status": "scan_collated",
+      "revisionId": 2376270,
+      "changes": []
+    },
+    {
+      "number": 3,
+      "pdfPage": 5,
+      "status": "scan_collated",
+      "revisionId": 2376475,
+      "changes": []
+    },
+    {
+      "number": 4,
+      "pdfPage": 6,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 2376477,
+      "changes": [
+        {
+          "field": "traditionalGrade",
+          "transcriptionReading": "下吉",
+          "scanReading": "下下",
+          "chosenReading": "下下",
+          "reason": "等级依PDF原刻标题。"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "pdfPage": 7,
+      "status": "scan_collated",
+      "revisionId": 2376479,
+      "changes": []
+    },
+    {
+      "number": 6,
+      "pdfPage": 8,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 2376481,
+      "changes": [
+        {
+          "field": "traditionalGrade",
+          "transcriptionReading": "下平",
+          "scanReading": "下下",
+          "chosenReading": "下下",
+          "reason": "等级依PDF原刻标题。"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "pdfPage": 9,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 2376483,
+      "changes": [
+        {
+          "field": "poemLines[0]",
+          "transcriptionReading": "仙風道骨本天生",
+          "scanReading": "仙風道骨本天成",
+          "chosenReading": "仙風道骨本天成",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "pdfPage": 10,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 2376485,
+      "changes": [
+        {
+          "field": "poemLines[3]",
+          "transcriptionReading": "士農工賈百無憂",
+          "scanReading": "士農商賈百無憂",
+          "chosenReading": "士農商賈百無憂",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "pdfPage": 11,
+      "status": "scan_collated",
+      "revisionId": 2376488,
+      "changes": []
+    },
+    {
+      "number": 10,
+      "pdfPage": 12,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 814488,
+      "changes": [
+        {
+          "field": "traditionalGrade",
+          "transcriptionReading": "下吉",
+          "scanReading": "下下",
+          "chosenReading": "下下",
+          "reason": "等级依PDF原刻标题。"
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "pdfPage": 13,
+      "status": "scan_collated",
+      "revisionId": 1496521,
+      "changes": []
+    },
+    {
+      "number": 12,
+      "pdfPage": 14,
+      "status": "scan_collated",
+      "revisionId": 1496522,
+      "changes": []
+    },
+    {
+      "number": 13,
+      "pdfPage": 15,
+      "status": "scan_collated",
+      "revisionId": 1496523,
+      "changes": []
+    },
+    {
+      "number": 14,
+      "pdfPage": 16,
+      "status": "scan_collated",
+      "revisionId": 1496524,
+      "changes": []
+    },
+    {
+      "number": 15,
+      "pdfPage": 17,
+      "status": "scan_collated",
+      "revisionId": 1496525,
+      "changes": []
+    },
+    {
+      "number": 16,
+      "pdfPage": 18,
+      "status": "scan_collated",
+      "revisionId": 1496526,
+      "changes": []
+    },
+    {
+      "number": 17,
+      "pdfPage": 19,
+      "status": "scan_collated",
+      "revisionId": 1496527,
+      "changes": []
+    },
+    {
+      "number": 18,
+      "pdfPage": 20,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496528,
+      "changes": [
+        {
+          "field": "poemLines[0]",
+          "transcriptionReading": "知君指擬是空華",
+          "scanReading": "知君指擬似空華",
+          "chosenReading": "知君指擬似空華",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 19,
+      "pdfPage": 21,
+      "status": "scan_collated",
+      "revisionId": 1496529,
+      "changes": []
+    },
+    {
+      "number": 20,
+      "pdfPage": 22,
+      "status": "scan_collated",
+      "revisionId": 1496530,
+      "changes": []
+    },
+    {
+      "number": 21,
+      "pdfPage": 23,
+      "status": "scan_collated",
+      "revisionId": 1496531,
+      "changes": []
+    },
+    {
+      "number": 22,
+      "pdfPage": 24,
+      "status": "scan_collated",
+      "revisionId": 1496533,
+      "changes": []
+    },
+    {
+      "number": 23,
+      "pdfPage": 25,
+      "status": "scan_collated",
+      "revisionId": 1496534,
+      "changes": []
+    },
+    {
+      "number": 24,
+      "pdfPage": 26,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496535,
+      "changes": [
+        {
+          "field": "poemLines[0]",
+          "transcriptionReading": "一春萬事苦憂煎",
+          "scanReading": "一春無事苦憂煎",
+          "chosenReading": "一春無事苦憂煎",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 25,
+      "pdfPage": 27,
+      "status": "scan_collated",
+      "revisionId": 1496536,
+      "changes": []
+    },
+    {
+      "number": 26,
+      "pdfPage": 28,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496537,
+      "changes": [
+        {
+          "field": "poemLines[3]",
+          "transcriptionReading": "田疇霑足雨滂沱",
+          "scanReading": "田疇沾足雨滂沱",
+          "chosenReading": "田疇沾足雨滂沱",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 27,
+      "pdfPage": 29,
+      "status": "scan_collated",
+      "revisionId": 1496538,
+      "changes": []
+    },
+    {
+      "number": 28,
+      "pdfPage": 30,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496539,
+      "changes": [
+        {
+          "field": "poemLines[2]",
+          "transcriptionReading": "人事盡從天理見",
+          "scanReading": "人事即從天理見",
+          "chosenReading": "人事即從天理見",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 29,
+      "pdfPage": 31,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1625654,
+      "changes": [
+        {
+          "field": "poemLines[2]",
+          "transcriptionReading": "若更操修無倦已",
+          "scanReading": "更若操修無倦已",
+          "chosenReading": "更若操修無倦已",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 30,
+      "pdfPage": 32,
+      "status": "scan_collated",
+      "revisionId": 1496541,
+      "changes": []
+    },
+    {
+      "number": 31,
+      "pdfPage": 33,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496542,
+      "changes": [
+        {
+          "field": "poemLines[1]",
+          "transcriptionReading": "春到門庭漸吉昌",
+          "scanReading": "春到門庭大吉昌",
+          "chosenReading": "春到門庭大吉昌",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        },
+        {
+          "field": "poemLines[3]",
+          "scanReading": "菅堂快樂未渠央",
+          "chosenReading": "萱堂快樂未渠央",
+          "reason": "原刻菅字；采用固定转录版本的萱堂校订，意指母亲。保留原刻异文，不声称字形完全相同。"
+        }
+      ]
+    },
+    {
+      "number": 32,
+      "pdfPage": 34,
+      "status": "scan_collated",
+      "revisionId": 1496543,
+      "changes": []
+    },
+    {
+      "number": 33,
+      "pdfPage": 35,
+      "status": "scan_collated",
+      "revisionId": 1496544,
+      "changes": []
+    },
+    {
+      "number": 34,
+      "pdfPage": 36,
+      "status": "scan_collated",
+      "revisionId": 1496545,
+      "changes": []
+    },
+    {
+      "number": 35,
+      "pdfPage": 37,
+      "status": "scan_collated",
+      "revisionId": 1496546,
+      "changes": []
+    },
+    {
+      "number": 36,
+      "pdfPage": 38,
+      "status": "scan_collated",
+      "revisionId": 1496548,
+      "changes": []
+    },
+    {
+      "number": 37,
+      "pdfPage": 39,
+      "status": "scan_collated",
+      "revisionId": 1496549,
+      "changes": []
+    },
+    {
+      "number": 38,
+      "pdfPage": 40,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496550,
+      "changes": [
+        {
+          "field": "poemLines[2]",
+          "transcriptionReading": "等得榮華公子到",
+          "scanReading": "等待榮華貴公子",
+          "chosenReading": "等待榮華貴公子",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 39,
+      "pdfPage": 41,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496551,
+      "changes": [
+        {
+          "field": "poemLines[0]",
+          "transcriptionReading": "北山門下好安居",
+          "scanReading": "北山門外好安居",
+          "chosenReading": "北山門外好安居",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 40,
+      "pdfPage": 42,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496552,
+      "changes": [
+        {
+          "field": "poemLines[3]",
+          "transcriptionReading": "崎嶇歷盡見亨衢",
+          "scanReading": "崎嶇歷遍見亨衢",
+          "chosenReading": "崎嶇歷遍見亨衢",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 41,
+      "pdfPage": 43,
+      "status": "scan_collated",
+      "revisionId": 1496553,
+      "changes": []
+    },
+    {
+      "number": 42,
+      "pdfPage": 44,
+      "status": "scan_collated",
+      "revisionId": 1496554,
+      "changes": []
+    },
+    {
+      "number": 43,
+      "pdfPage": 45,
+      "status": "scan_collated",
+      "revisionId": 1496555,
+      "changes": []
+    },
+    {
+      "number": 44,
+      "pdfPage": 46,
+      "status": "scan_collated",
+      "revisionId": 1496556,
+      "changes": []
+    },
+    {
+      "number": 45,
+      "pdfPage": 47,
+      "status": "scan_collated",
+      "revisionId": 1496557,
+      "changes": []
+    },
+    {
+      "number": 46,
+      "pdfPage": 48,
+      "status": "scan_collated",
+      "revisionId": 1496558,
+      "changes": []
+    },
+    {
+      "number": 47,
+      "pdfPage": 49,
+      "status": "scan_collated",
+      "revisionId": 1496559,
+      "changes": []
+    },
+    {
+      "number": 48,
+      "pdfPage": 50,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496560,
+      "changes": [
+        {
+          "field": "poemLines[2]",
+          "transcriptionReading": "幸遇虎頭人一喚",
+          "scanReading": "不遇虎頭人一喚",
+          "chosenReading": "不遇虎頭人一喚",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        },
+        {
+          "field": "poemLines[3]",
+          "transcriptionReading": "全家遂保汝重歡",
+          "scanReading": "全家誰保汝重歡",
+          "chosenReading": "全家誰保汝重歡",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 49,
+      "pdfPage": 51,
+      "status": "scan_collated",
+      "revisionId": 1496561,
+      "changes": []
+    },
+    {
+      "number": 50,
+      "pdfPage": 52,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496562,
+      "changes": [
+        {
+          "field": "poemLines[1]",
+          "transcriptionReading": "也須步多要周旋",
+          "scanReading": "也須步步要周旋",
+          "chosenReading": "也須步步要周旋",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        },
+        {
+          "field": "traditionalGrade",
+          "transcriptionReading": "上平",
+          "scanReading": "上吉",
+          "chosenReading": "上吉",
+          "reason": "等级依PDF原刻标题。"
+        }
+      ]
+    },
+    {
+      "number": 51,
+      "pdfPage": 53,
+      "status": "scan_collated",
+      "revisionId": 1496563,
+      "changes": []
+    },
+    {
+      "number": 52,
+      "pdfPage": 54,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496564,
+      "changes": [
+        {
+          "field": "poemLines[3]",
+          "transcriptionReading": "活計扁舟渡北朝",
+          "scanReading": "決計扁舟渡北朝",
+          "chosenReading": "決計扁舟渡北朝",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 53,
+      "pdfPage": 55,
+      "status": "scan_collated",
+      "revisionId": 1496565,
+      "changes": []
+    },
+    {
+      "number": 54,
+      "pdfPage": 56,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496566,
+      "changes": [
+        {
+          "field": "poemLines[2]",
+          "transcriptionReading": "爭奈承流風未便",
+          "scanReading": "爭奈乘風流未便",
+          "chosenReading": "爭奈乘風流未便",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 55,
+      "pdfPage": 57,
+      "status": "scan_collated",
+      "revisionId": 1496567,
+      "changes": []
+    },
+    {
+      "number": 56,
+      "pdfPage": 58,
+      "status": "scan_collated",
+      "revisionId": 1496568,
+      "changes": []
+    },
+    {
+      "number": 57,
+      "pdfPage": 59,
+      "status": "scan_collated",
+      "revisionId": 1496569,
+      "changes": []
+    },
+    {
+      "number": 58,
+      "pdfPage": 60,
+      "status": "scan_collated",
+      "revisionId": 1496570,
+      "changes": []
+    },
+    {
+      "number": 59,
+      "pdfPage": 61,
+      "status": "scan_collated",
+      "revisionId": 1496571,
+      "changes": []
+    },
+    {
+      "number": 60,
+      "pdfPage": 62,
+      "status": "scan_collated",
+      "revisionId": 1496572,
+      "changes": []
+    },
+    {
+      "number": 61,
+      "pdfPage": 63,
+      "status": "scan_collated",
+      "revisionId": 1496573,
+      "changes": []
+    },
+    {
+      "number": 62,
+      "pdfPage": 64,
+      "status": "scan_collated",
+      "revisionId": 1496574,
+      "changes": []
+    },
+    {
+      "number": 63,
+      "pdfPage": 65,
+      "status": "scan_collated",
+      "revisionId": 1496575,
+      "changes": []
+    },
+    {
+      "number": 64,
+      "pdfPage": 66,
+      "status": "scan_collated",
+      "revisionId": 1496576,
+      "changes": []
+    },
+    {
+      "number": 65,
+      "pdfPage": 67,
+      "status": "scan_collated",
+      "revisionId": 1496577,
+      "changes": []
+    },
+    {
+      "number": 66,
+      "pdfPage": 68,
+      "status": "scan_collated",
+      "revisionId": 1496578,
+      "changes": []
+    },
+    {
+      "number": 67,
+      "pdfPage": 69,
+      "status": "scan_collated",
+      "revisionId": 1496579,
+      "changes": []
+    },
+    {
+      "number": 68,
+      "pdfPage": 70,
+      "status": "scan_collated",
+      "revisionId": 1496580,
+      "changes": []
+    },
+    {
+      "number": 69,
+      "pdfPage": 71,
+      "status": "scan_collated",
+      "revisionId": 1496581,
+      "changes": []
+    },
+    {
+      "number": 70,
+      "pdfPage": 72,
+      "status": "scan_collated",
+      "revisionId": 1496582,
+      "changes": []
+    },
+    {
+      "number": 71,
+      "pdfPage": 73,
+      "status": "scan_collated",
+      "revisionId": 1496583,
+      "changes": []
+    },
+    {
+      "number": 72,
+      "pdfPage": 74,
+      "status": "scan_collated",
+      "revisionId": 1496584,
+      "changes": []
+    },
+    {
+      "number": 73,
+      "pdfPage": 75,
+      "status": "scan_collated",
+      "revisionId": 1496585,
+      "changes": []
+    },
+    {
+      "number": 74,
+      "pdfPage": 76,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496586,
+      "changes": [
+        {
+          "field": "poemLines[3]",
+          "transcriptionReading": "長安一道放春回",
+          "scanReading": "長江一道放春回",
+          "chosenReading": "長江一道放春回",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        },
+        {
+          "field": "poemLines[0]",
+          "scanReading": "崔巍崔魏復崔巍（巍/魏字形相近）",
+          "chosenReading": "崔巍崔魏復崔巍",
+          "reason": "固定转录所读；保留巍/魏的字形说明，不统一为现代通行写法。"
+        }
+      ]
+    },
+    {
+      "number": 75,
+      "pdfPage": 77,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496587,
+      "changes": [
+        {
+          "field": "poemLines[0]",
+          "transcriptionReading": "生前結得好緣姻",
+          "scanReading": "生前結得好姻緣",
+          "chosenReading": "生前結得好姻緣",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 76,
+      "pdfPage": 78,
+      "status": "scan_collated",
+      "revisionId": 1496588,
+      "changes": []
+    },
+    {
+      "number": 77,
+      "pdfPage": 79,
+      "status": "scan_collated",
+      "revisionId": 1496589,
+      "changes": []
+    },
+    {
+      "number": 78,
+      "pdfPage": 80,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496590,
+      "changes": [
+        {
+          "field": "poemLines[0]",
+          "transcriptionReading": "家道豊腴自飽溫",
+          "scanReading": "家道豐腴自飽溫",
+          "chosenReading": "家道豐腴自飽溫",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 79,
+      "pdfPage": 81,
+      "status": "scan_collated",
+      "revisionId": 1496591,
+      "changes": []
+    },
+    {
+      "number": 80,
+      "pdfPage": 82,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496592,
+      "changes": [
+        {
+          "field": "traditionalGrade",
+          "transcriptionReading": "中平",
+          "scanReading": "下下",
+          "chosenReading": "下下",
+          "reason": "等级依PDF原刻标题。"
+        }
+      ]
+    },
+    {
+      "number": 81,
+      "pdfPage": 83,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496593,
+      "changes": [
+        {
+          "field": "poemLines[2]",
+          "transcriptionReading": "幸有高臺明月鏡",
+          "scanReading": "幸有當堂明月鏡",
+          "chosenReading": "幸有當堂明月鏡",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 82,
+      "pdfPage": 84,
+      "status": "scan_collated",
+      "revisionId": 1496594,
+      "changes": []
+    },
+    {
+      "number": 83,
+      "pdfPage": 85,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496595,
+      "changes": [
+        {
+          "field": "poemLines[2]",
+          "transcriptionReading": "主張門戶誠難事",
+          "scanReading": "主張門戶成難事",
+          "chosenReading": "主張門戶成難事",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        },
+        {
+          "field": "traditionalGrade",
+          "transcriptionReading": "下下",
+          "scanReading": "中平",
+          "chosenReading": "中平",
+          "reason": "等级依PDF原刻标题。"
+        }
+      ]
+    },
+    {
+      "number": 84,
+      "pdfPage": 86,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496596,
+      "changes": [
+        {
+          "field": "traditionalGrade",
+          "transcriptionReading": "中平",
+          "scanReading": "下下",
+          "chosenReading": "下下",
+          "reason": "等级依PDF原刻标题。"
+        },
+        {
+          "field": "poemLines[0]",
+          "scanReading": "箇中事緒更紛狀",
+          "chosenReading": "箇中事緒更紛然",
+          "reason": "原刻末字为狀；采用固定转录的然作明确校订，原刻读法留在记录。"
+        }
+      ]
+    },
+    {
+      "number": 85,
+      "pdfPage": 87,
+      "status": "scan_collated",
+      "revisionId": 1496597,
+      "changes": []
+    },
+    {
+      "number": 86,
+      "pdfPage": 88,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496598,
+      "changes": [
+        {
+          "field": "poemLines[0]",
+          "transcriptionReading": "一舟行貨好招邀",
+          "scanReading": "一般行貨好招邀",
+          "chosenReading": "一般行貨好招邀",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 87,
+      "pdfPage": 89,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496599,
+      "changes": [
+        {
+          "field": "poemLines[1]",
+          "transcriptionReading": "舟中敵圖笑中刀",
+          "scanReading": "舟中敵國笑中刀",
+          "chosenReading": "舟中敵國笑中刀",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 88,
+      "pdfPage": 90,
+      "status": "scan_collated",
+      "revisionId": 1496600,
+      "changes": []
+    },
+    {
+      "number": 89,
+      "pdfPage": 91,
+      "status": "scan_collated",
+      "revisionId": 1496601,
+      "changes": []
+    },
+    {
+      "number": 90,
+      "pdfPage": 92,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496602,
+      "changes": [
+        {
+          "field": "poemLines[3]",
+          "transcriptionReading": "徒勞生事苦咨嘆",
+          "scanReading": "徒勞生事苦咨嗟",
+          "chosenReading": "徒勞生事苦咨嗟",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 91,
+      "pdfPage": 93,
+      "status": "scan_collated",
+      "revisionId": 1496603,
+      "changes": []
+    },
+    {
+      "number": 92,
+      "pdfPage": 94,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496604,
+      "changes": [
+        {
+          "field": "poemLines[1]",
+          "transcriptionReading": "物價喧騰倍百年",
+          "scanReading": "物價喧騰倍昔年",
+          "chosenReading": "物價喧騰倍昔年",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 93,
+      "pdfPage": 95,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496605,
+      "changes": [
+        {
+          "field": "poemLines[0]",
+          "transcriptionReading": "春來雨水太連綿",
+          "scanReading": "春來雨水大連綿",
+          "chosenReading": "春來雨水大連綿",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        },
+        {
+          "field": "poemLines[2]",
+          "transcriptionReading": "節氣直交三伏始",
+          "scanReading": "節氣直交三伏後",
+          "chosenReading": "節氣直交三伏後",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 94,
+      "pdfPage": 96,
+      "status": "scan_collated",
+      "revisionId": 1496606,
+      "changes": []
+    },
+    {
+      "number": 95,
+      "pdfPage": 97,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496607,
+      "changes": [
+        {
+          "field": "poemLines[0]",
+          "transcriptionReading": "知君袖內有驪珠",
+          "scanReading": "知君袖裏有驪珠",
+          "chosenReading": "知君袖裏有驪珠",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        }
+      ]
+    },
+    {
+      "number": 96,
+      "pdfPage": 98,
+      "status": "scan_collated",
+      "revisionId": 1496608,
+      "changes": []
+    },
+    {
+      "number": 97,
+      "pdfPage": 99,
+      "status": "scan_collated",
+      "revisionId": 1496609,
+      "changes": []
+    },
+    {
+      "number": 98,
+      "pdfPage": 100,
+      "status": "damaged_glyphs_restored",
+      "revisionId": 1496610,
+      "changes": [
+        {
+          "field": "poemLines[0:2]",
+          "scanReading": "經營百出費□□／□□□馳運未新（扫描磨损）",
+          "chosenReading": "經營百出費精神／南北奔馳運未新",
+          "reason": "第100页前两句局部磨损，以關聖帝君靈籤/98固定修订补足；道藏/98第二句相同，第一句有經商/經營异文，未混换本包首字。"
+        }
+      ]
+    },
+    {
+      "number": 99,
+      "pdfPage": 101,
+      "status": "scan_collated_with_documented_variants",
+      "revisionId": 1496611,
+      "changes": [
+        {
+          "field": "poemLines[0]",
+          "transcriptionReading": "貴人遭遇水雲鄉",
+          "scanReading": "貴人相遇水雲鄉",
+          "chosenReading": "貴人相遇水雲鄉",
+          "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+        },
+        {
+          "field": "poemLines[0]",
+          "scanReading": "貴人相遇木雲鄉",
+          "chosenReading": "貴人相遇水雲鄉",
+          "reason": "原刻木；固定转录读水，采用水雲鄉作明确校订；相遇依底本，非转录的遭遇。"
+        }
+      ]
+    },
+    {
+      "number": 100,
+      "pdfPage": 102,
+      "status": "scan_collated",
+      "revisionId": 1496612,
+      "changes": []
+    }
+  ]
+}

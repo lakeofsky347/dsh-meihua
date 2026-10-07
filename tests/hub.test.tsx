@@ -9,6 +9,7 @@ import { Starfield } from '../src/client/Portal.tsx';
 import { HubController, type HubState } from '../src/client/hub-controller.ts';
 import { MeihuaController, type PageState } from '../src/client/controller.ts';
 import { TarotController, type TarotPageState } from '../src/client/tarot-controller.ts';
+import type { MemoryController, MemoryPageState } from '../src/client/memory-controller.ts';
 import { RuleRegistry } from '../src/core/index.ts';
 import { TAROT_CARDS, TAROT_DECK } from '../src/tarot/cards.ts';
 import { TAROT_SPREADS } from '../src/tarot/spreads.ts';
@@ -88,7 +89,7 @@ test('门户的两种入口和导航按钮按模块生成与请求状态禁用�
   const render=async()=>act(async()=>root.render(<Hub {...base} useHub={selector=>selector(hubState)} useMeihua={selector=>selector(meihuaState)} useTarot={selector=>selector(tarotState)} onNavigate={to=>{navigation.push(to);}} onSkipJourney={()=>{skipped++;}}/>));
   await render();
   const entrances=container.querySelectorAll<HTMLButtonElement>('.wx-portal button');
-  assert.equal(entrances.length,2);
+  assert.equal(entrances.length,5);
   assert.ok(entrances[0]!.textContent?.includes('梅花易数'));
   assert.ok(entrances[1]!.textContent?.includes('塔罗牌'));
   await act(async()=>entrances[1]!.click());assert.deepEqual(navigation,['tarot']);
@@ -99,7 +100,7 @@ test('门户的两种入口和导航按钮按模块生成与请求状态禁用�
     tarotState={...tarotState,reading:lock==='tarot-streaming'?{...tarotReading,status:'streaming'}:lock==='tarot-followup'?{...tarotReading,status:'complete',text:'首份解读',conversation:[streamingTurn]}:null,acting:lock==='acting'};
     await render();
     const buttons=container.querySelectorAll<HTMLButtonElement>('.wx-topbar button');
-    assert.equal(buttons.length,3);
+    assert.equal(buttons.length,6);
     assert.ok(Array.from(buttons).every(button=>button.disabled),lock);
     await act(async()=>buttons[0]!.click());assert.deepEqual(navigation,['tarot'],lock);
   }
@@ -223,6 +224,9 @@ test('发行版重新注册客户端时自动显示正在生成的模块，取�
     let current:Reading|TarotReading=moduleId==='meihua'?{...reading,status:'streaming',text:'恢复中的梅花输出'}:{...tarotReading,status:'streaming',text:'恢复中的塔罗输出',selectionCount:1,selectedSlots:[0],cards:[{positionIndex:0,positionLabel:'当下需要关注的主题',revealed:true,card:TAROT_CARDS[0]!,orientation:'upright'}]};
     if(mode==='followup')current={...current,status:'complete',route:{provider:'local',model:'offline'},conversation:[{id:'restored-turn',question:'解释依据',text:'恢复中的追问前缀',status:'streaming',route:{provider:'local',model:'offline'},createdAt:new Date().toISOString()}]};
     const rpc:ClientRpc={call:async(_channel,endpoint)=>{
+      if(endpoint==='memory/status')return {ok:true,value:{initialized:true,unlocked:true,revision:0,epoch:1,updating:false,pending:false}};
+      if(endpoint==='memory/document')return {ok:true,value:{content:'',revision:0,epoch:1,updatedAt:'',source:'initial',fixedParagraphs:[]}};
+      if(endpoint==='memory/versions')return {ok:true,value:{versions:[],revision:0,epoch:1}};
       if(endpoint==='meihua/catalog')return {ok:true,value:catalog};
       if(endpoint==='tarot/catalog')return {ok:true,value:tarotCatalog};
       if(endpoint===`${moduleId}/current`)return {ok:true,value:current};
@@ -237,7 +241,7 @@ test('发行版重新注册客户端时自动显示正在生成的模块，取�
     let root:ReturnType<typeof createRoot>|undefined;
     try {
     const main=registered.find(options=>options.name==='main')!;
-    const injected=main.inject!() as Omit<HubProps,'t'|'useHub'|'useMeihua'|'useTarot'> & {hooks:{hub:HubController;meihua:MeihuaController;tarot:TarotController}};
+    const injected=main.inject!() as Omit<HubProps,'t'|'useHub'|'useMeihua'|'useTarot'> & {hooks:{hub:HubController;meihua:MeihuaController;tarot:TarotController;memory:MemoryController}};
     const { hooks,...callbacks }=injected;
     await new Promise<void>(resolve=>setImmediate(resolve));
     assert.equal(hooks.hub.getSnapshot().view,moduleId);
@@ -247,12 +251,14 @@ test('发行版重新注册客户端时自动显示正在生成的模块，取�
     const useHub=<T,>(selector:(state:HubState)=>T)=>selector(useSyncExternalStore(hooks.hub.subscribe,hooks.hub.getSnapshot));
     const useMeihua=<T,>(selector:(state:PageState)=>T)=>selector(useSyncExternalStore(hooks.meihua.subscribe,hooks.meihua.getSnapshot));
     const useTarot=<T,>(selector:(state:TarotPageState)=>T)=>selector(useSyncExternalStore(hooks.tarot.subscribe,hooks.tarot.getSnapshot));
-    await act(async()=>mountedRoot.render(<Hub {...callbacks} t={key=>zh[key]} useHub={useHub} useMeihua={useMeihua} useTarot={useTarot}/>));
+    const useMemory=<T,>(selector:(state:MemoryPageState)=>T)=>selector(useSyncExternalStore(hooks.memory.subscribe,hooks.memory.getSnapshot));
+    await act(async()=>mountedRoot.render(<Hub {...callbacks} t={key=>zh[key]} useHub={useHub} useMeihua={useMeihua} useTarot={useTarot} useMemory={useMemory}/>));
     const visible=container.querySelector('.wx-view:not([hidden])')!;
     assert.equal(container.querySelector('.wx-view-portal')!.hasAttribute('hidden'),true);
     const cancel=Array.from(visible.querySelectorAll<HTMLButtonElement>('button')).find(button=>button.textContent?.includes('取消'));
     assert.ok(cancel,`${moduleId} cancellation is visible`);
-    assert.ok(Array.from(container.querySelectorAll<HTMLButtonElement>('.wx-topbar button')).every(button=>button.disabled));
+    assert.ok(Array.from(container.querySelectorAll<HTMLButtonElement>('.wx-topbar button:not(.wm-entry)')).every(button=>button.disabled));
+    assert.equal(container.querySelector<HTMLButtonElement>('.wm-entry')!.disabled,false,'shared background remains available to lock while a reading is running');
     await act(async()=>cancel.click());
     assert.equal((moduleId==='meihua'?hooks.meihua:hooks.tarot).getSnapshot().reading?.status,mode==='followup'?'complete':'cancelled');
     if(mode==='followup'){

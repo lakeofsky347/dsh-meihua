@@ -1,10 +1,12 @@
-import { createAssistantMessage, createSystemMessage, createUserMessage } from '@deepseek-ai/dsh-llm/message';
-import { AssistantStreamAccumulator, assembleAssistantStream } from '@deepseek-ai/dsh-llm/assistant-stream';
+import type { ModuleId } from "../shared/modules.ts";
+import { createAssistantMessage, createUserMessage } from '@deepseek-ai/dsh-llm/message';
 import { readingIsBusy } from '../shared/protocol.ts';
 import type { ConversationTurn, ModelRoute, PluginConfig, Reading, TarotReading } from '../shared/protocol.ts';
-import type { DurableMessage, HostContext, LogSession, PersistenceHandle } from './platform.ts';
+import type { DurableMessage, HostContext } from './platform.ts';
+import { generatePrivate } from './private-generation.ts';
+import type { MemoryService } from './memory-service.ts';
 
-type ConversationReading=Reading|TarotReading;
+type ConversationReading={status:string;text:string;route?:ModelRoute;error?:{code:string;message:string};conversation?:ConversationTurn[]};
 const MAX_CONTEXT_CHARACTERS=60000;
 
 /** Follow-ups answer the new question while preserving the original, locally fixed result. */
@@ -58,54 +60,8 @@ export function conversationMessages(reading:ConversationReading,input:string,qu
   return messages;
 }
 
-/** Every follow-up gets its own standard DSH JSONL session with the complete input history. */
-export async function generateConversation(ctx:HostContext,config:PluginConfig,turn:ConversationTurn,messages:DurableMessage[],system:string,controller:AbortController):Promise<void> {
-  let handle:PersistenceHandle|undefined,session:LogSession|undefined;
-  const stream=new AssistantStreamAccumulator();
-  let outcome:ConversationTurn['status']='failed';
-  const timer=setTimeout(()=>controller.abort(new Error('追问超时')),config.interpretationTimeoutMs);
-  try{
-    session=ctx.sessions.prepare(turn.id);
-    const events=[session.append('turn/start',{turn:1}),session.append('step/start',{turn:1,step:1}),
-      session.append('request/header',{header:{config:{...turn.route,maxTokens:config.maxOutputTokens}},reason:'initial'}),
-      session.append('system/message',{turn:1,step:1,message:createSystemMessage(system)},{surfaceOp:'append'}),
-      ...messages.map(message=>message.role==='assistant'
-        ?session!.append('assistant/message',{turn:1,step:1,message,stream:[]},{surfaceOp:'append'})
-        :session!.append('user/message',message,{surfaceOp:'append'}))];
-    handle=await ctx.sessionPersistence.create(session.header);await handle.append(events);await handle.flush();
-    turn.logSessionId=session.header.id;controller.signal.throwIfAborted();
-    let stopped=false;
-    for await(const chunk of ctx.llm.stream({...turn.route,messages,system,maxTokens:config.maxOutputTokens,sessionId:session.header.id,signal:controller.signal})){
-      stream.push({time:Date.now(),chunk});
-      if(chunk.type==='text-delta')turn.text+=chunk.text;
-      if(chunk.type==='finish'){
-        if(chunk.reason.kind==='stop')stopped=true;
-        else if(chunk.reason.kind==='error'||chunk.reason.kind==='aborted')throw Object.assign(new Error(chunk.reason.failure.message),{code:chunk.reason.failure.code});
-        else throw Object.assign(new Error(chunk.reason.kind==='max-tokens'?'追问达到输出上限，已保留收到的内容':'模型未返回完整的文字回答'),{code:'INCOMPLETE'});
-      }
-    }
-    controller.signal.throwIfAborted();
-    if(!stopped||!turn.text.trim())throw Object.assign(new Error('模型没有返回完整回答'),{code:'EMPTY_RESPONSE'});
-    outcome='complete';
-  }catch(error){
-    outcome=controller.signal.aborted?'cancelled':'failed';
-    const reason:unknown=controller.signal.aborted?controller.signal.reason:error;
-    turn.error={code:controller.signal.aborted?(reason instanceof Error&&reason.message==='追问超时'?'TIMEOUT':'CANCELLED'):errorCode(error),message:reason instanceof Error?reason.message:'追问未能完成'};
-  }finally{
-    clearTimeout(timer);
-    if(handle&&session){
-      try{
-        const records=stream.snapshot(),assembled=outcome==='complete'?assembleAssistantStream(records):undefined;
-        await handle.append([
-          assembled?session.append('assistant/message',{turn:1,step:1,stream:records,message:assembled.message(turn.route),...(assembled.usage===undefined?{}:{usage:assembled.usage})},{surfaceOp:'append'})
-            :session.append('assistant/attempt',{turn:1,step:1,stream:records}),
-          session.append('step/end',{turn:1,step:1}),
-          session.append('turn/end',{turn:1,reason:outcome==='complete'?{kind:'completed'}:{kind:'error',error:{code:turn.error?.code??'UNKNOWN',message:turn.error?.message??'追问未完成'}}}),
-        ]);await handle.flush();
-      }catch{turn.error={code:'LOG_WRITE',message:'追问内容已保留，日志写入未完成'};}
-      finally{await handle.close().catch(()=>{turn.error={code:'LOG_WRITE',message:'追问内容已保留，日志关闭未完成'};});}
-    }
-    turn.status=outcome;
-  }
+/** Every follow-up retains the role-ordered request in the encrypted private audit. */
+export async function generateConversation(ctx:HostContext,config:PluginConfig,turn:ConversationTurn,messages:DurableMessage[],system:string,controller:AbortController,memory?:MemoryService,epoch?:number,backgroundRevision?:number,moduleId?:ModuleId):Promise<void> {
+  const result=await generatePrivate(ctx,config,{id:turn.id,moduleId:moduleId??(turn.id.startsWith('tarot-')?'tarot':'meihua'),kind:'followup',route:turn.route,messages,system,epoch,backgroundRevision,onText:text=>{turn.text=text;}},controller,memory);
+  Object.assign(turn,result);
 }
-function errorCode(error:unknown):string{return error!==null&&typeof error==='object'&&'code' in error&&typeof error.code==='string'?error.code:'FOLLOWUP_ERROR';}

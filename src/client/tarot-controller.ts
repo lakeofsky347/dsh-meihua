@@ -1,6 +1,7 @@
 import type { ClientRpc, ModelRoute, TarotCatalog, TarotReading } from '../shared/protocol.ts';
 import { readingIsBusy } from '../shared/protocol.ts';
 import type { TarotStartInput, TarotSpreadId } from '../tarot/types.ts';
+import type { BackgroundOptions } from './MemoryPanel.tsx';
 
 export interface TarotDraft {
   question:string;
@@ -8,6 +9,8 @@ export interface TarotDraft {
   includeReversed:boolean;
   route:ModelRoute;
   followupQuestion?:string;
+  useBackground?:boolean;
+  forOthers?:boolean;
 }
 export interface TarotPageState {
   catalog:TarotCatalog | null;
@@ -23,7 +26,7 @@ export interface TarotPageState {
 export class TarotController {
   private state:TarotPageState = {
     catalog:null,reading:null,loading:true,acting:false,shuffling:false,error:'',
-    draft:{question:'',spreadId:'single',includeReversed:true,route:{provider:'',model:''}},
+    draft:{question:'',spreadId:'single',includeReversed:true,route:{provider:'',model:''},useBackground:true,forOthers:false},
   };
   private listeners = new Set<()=>void>();
   private abort = new AbortController();
@@ -35,7 +38,8 @@ export class TarotController {
   private polling = false;
   private revision = 0;
   private snapshotRequest = 0;
-  constructor(private readonly rpc:ClientRpc) {}
+  private preferencesRequest = 0;
+  constructor(private readonly rpc:ClientRpc,private readonly getMemoryEpoch?:()=>number|undefined) {}
   getSnapshot = ():TarotPageState => this.state;
   subscribe = (listener:()=>void):(()=>void) => { this.listeners.add(listener);return ()=>{this.listeners.delete(listener);}; };
   private update(patch:Partial<TarotPageState>):void {
@@ -44,11 +48,26 @@ export class TarotController {
     for(const listener of this.listeners)listener();
   }
   private async call<T>(endpoint:string,payload:unknown={}):Promise<T> {
+    if(this.getMemoryEpoch&&endpoint!=='catalog'&&endpoint!=='current'){
+      const epoch=this.getMemoryEpoch();if(epoch===undefined)throw new Error('正在读取共享背景状态，请稍后重试。');
+      payload={...(payload as object),epoch};
+    }
     const response=await this.rpc.call('/api',`tarot/${endpoint}`,payload,this.abort.signal);
     if(!response.ok)throw new Error(response.error.message);
     return response.value as T;
   }
-  updateDraft = (patch:Partial<TarotDraft>):void => { this.update({draft:{...this.state.draft,...patch}}); };
+  updateDraft = (patch:Partial<TarotDraft>):void => {
+    const previous=this.state.draft,draft={...previous,...patch};
+    const changed=(patch.useBackground!==undefined&&patch.useBackground!==previous.useBackground)||(patch.forOthers!==undefined&&patch.forOthers!==previous.forOthers);
+    this.update({draft,...(changed?{error:''}:{})});
+    const reading=this.state.reading;
+    if(changed&&reading&&!reading.memory){
+      const request=++this.preferencesRequest;
+      void this.call('preferences',{id:reading.id,options:{useBackground:draft.useBackground!==false,forOthers:!!draft.forOthers}}).catch(error=>{
+        if(request===this.preferencesRequest&&this.state.reading?.id===reading.id&&!this.state.reading.memory)this.update({error:message(error)});
+      });
+    }
+  };
   async load():Promise<void> {
     const revision=this.revision;
     const snapshotRequest=++this.snapshotRequest;
@@ -60,8 +79,9 @@ export class TarotController {
       const first=catalog.providers.find(p=>p.models.length>0);
       const restored=this.state.catalog===null && reading?{question:reading.question,spreadId:reading.spread.id,includeReversed:reading.includeReversed}:{};
       const changed=reading?.id!==this.state.reading?.id;
+      const background=reading&&(this.state.catalog===null||changed)?{useBackground:reading.backgroundOptions?.useBackground!==false,forOthers:!!reading.backgroundOptions?.forOthers}:{};
       if(changed){clearTimeout(this.shuffleTimer);this.shuffleTimer=undefined;this.shuffleRemaining=0;}
-      this.update({catalog,reading,loading:false,error:'',...(changed?{shuffling:false}:{}),draft:{...this.state.draft,...restored,...(changed?{followupQuestion:''}:{}),route:valid?route:{provider:first?.id??'',model:first?.models[0]?.id??''}}});
+      this.update({catalog,reading,loading:false,error:'',...(changed?{shuffling:false}:{}),draft:{...this.state.draft,...restored,...background,...(changed?{followupQuestion:''}:{}),route:valid?route:{provider:first?.id??'',model:first?.models[0]?.id??''}}});
       if(readingIsBusy(reading))void this.poll();
     } catch(error) { if(revision===this.revision&&snapshotRequest===this.snapshotRequest)this.update({loading:false,error:message(error)}); }
   }
@@ -87,41 +107,43 @@ export class TarotController {
     const revision=++this.revision;
     this.update({acting:true,error:''});
     try {
-      const reading=await this.call<TarotReading>('start',input);
+      const reading=await this.call<TarotReading>('start',{...input,options:{useBackground:this.state.draft.useBackground!==false,forOthers:!!this.state.draft.forOthers},route:this.state.draft.route});
       if(revision!==this.revision)return;
       ++this.snapshotRequest;
       clearTimeout(this.shuffleTimer);this.shuffleTimer=undefined;
       const reduced=typeof matchMedia==='function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
       this.shuffleRemaining=reduced?0:2400;
       this.update({reading,acting:false,shuffling:!reduced,draft:{...this.state.draft,followupQuestion:''}});this.resumeShuffle();
-    } catch(error) { this.update({acting:false,error:message(error)}); }
+    } catch(error) { if(revision===this.revision)this.update({acting:false,error:message(error)}); }
   }
   async select(slot:number):Promise<void> {
     const reading=this.state.reading;
     if(!reading || reading.status!=='selecting' || this.state.acting || this.state.shuffling)return;
+    const revision=++this.revision;
     this.update({acting:true,error:''});
-    try { this.update({reading:await this.call<TarotReading>('select',{id:reading.id,slot}),acting:false}); }
-    catch(error) { this.update({acting:false,error:message(error)}); }
+    try { const next=await this.call<TarotReading>('select',{id:reading.id,slot});if(revision===this.revision)this.update({reading:next,acting:false}); }
+    catch(error) { if(revision===this.revision)this.update({acting:false,error:message(error)}); }
   }
   async reveal(position?:number,all=false):Promise<void> {
     const reading=this.state.reading;
     if(!reading || reading.status!=='revealing' || this.state.acting)return;
+    const revision=++this.revision;
     this.update({acting:true,error:''});
-    try { this.update({reading:await this.call<TarotReading>('reveal',{id:reading.id,...(position===undefined?{}:{position}),all}),acting:false}); }
-    catch(error) { this.update({acting:false,error:message(error)}); }
+    try { const next=await this.call<TarotReading>('reveal',{id:reading.id,...(position===undefined?{}:{position}),all});if(revision===this.revision)this.update({reading:next,acting:false}); }
+    catch(error) { if(revision===this.revision)this.update({acting:false,error:message(error)}); }
   }
-  async interpret(route:ModelRoute):Promise<void> {
+  async interpret(route:ModelRoute,options?:BackgroundOptions):Promise<void> {
     const reading=this.state.reading;
     if(!reading || reading.status!=='ready' || this.state.acting)return;
     const revision=++this.revision;
     this.update({acting:true,error:''});
     try {
-      const next=await this.call<TarotReading>('interpret',{id:reading.id,...route});
+      const next=await this.call<TarotReading>('interpret',{id:reading.id,...route,options:options??{useBackground:this.state.draft.useBackground!==false,forOthers:!!this.state.draft.forOthers}});
       if(revision!==this.revision||this.state.reading?.id!==reading.id)return;
       ++this.snapshotRequest;
       this.update({reading:next,acting:false});
       await this.poll();
-    } catch(error) { this.update({acting:false,error:message(error)}); }
+    } catch(error) { if(revision===this.revision)this.update({acting:false,error:message(error)}); }
   }
   async followup(question:string):Promise<boolean> {
     const reading=this.state.reading,trimmed=question.trim();
@@ -174,6 +196,16 @@ export class TarotController {
     }
     catch(error) { this.update({error:message(error)}); }
   }
+  async checkpoint(retry=false):Promise<void> {
+    const reading=this.state.reading;
+    if(!reading||readingIsBusy(reading))return;
+    try{await this.call('checkpoint',{id:reading.id,options:{useBackground:this.state.draft.useBackground!==false,forOthers:!!this.state.draft.forOthers},route:reading.route??this.state.draft.route,...(retry?{retry:true}:{})});}
+    catch(error){this.update({error:message(error)});}
+  }
+  resetPrivate=():void=>{
+    ++this.revision;++this.snapshotRequest;++this.preferencesRequest;this.abort.abort();this.abort=new AbortController();clearTimeout(this.shuffleTimer);this.shuffleTimer=undefined;this.shuffleRemaining=0;
+    this.update({reading:null,acting:false,shuffling:false,error:'',draft:{question:'',spreadId:'single',includeReversed:true,route:this.state.draft.route,useBackground:true,forOthers:false,followupQuestion:''}});
+  };
   dispose():void {
     this.disposed=true;this.abort.abort();clearTimeout(this.shuffleTimer);this.listeners.clear();
   }

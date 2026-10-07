@@ -1,0 +1,3633 @@
+{
+  "schemaVersion": 1,
+  "libraryId": "guandi-qing-collated-100",
+  "version": "1.0.0",
+  "displayName": "关帝灵签 · 清刊本校勘版100签",
+  "entryCount": 100,
+  "editorialPolicy": "以姑苏钮氏藏板清刊本签号与等级为准，固定维基文库转录辅助；底本与转录不同逐项登记，个别可疑刻字采用有记录的校订，第98签磨损字以固定古籍转录补足。异体字以可显示的Unicode汉字转写，保留繁体，不自动简繁或历法转换。",
+  "lots": [
+    {
+      "id": "guandi-qing-001",
+      "number": 1,
+      "title": "第1签",
+      "traditionalGrade": "大吉",
+      "poemLines": [
+        "巍巍獨步向雲間",
+        "玉殿仙官第一班",
+        "富貴榮華天付汝",
+        "福如東海壽如山"
+      ],
+      "keywords": [
+        "机会",
+        "认可",
+        "责任"
+      ],
+      "originalInterpretation": "高处行走、位居前列的景象表达被看见与获得机会。把注意力放在可交付的成果上，得到认可后也留出承担责任的余地。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 3,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F1&oldid=2610595",
+        "revisionId": 2610595,
+        "revisionTimestamp": "2025-10-30T15:21:15Z",
+        "wikitextSha256": "2c9d8b71e00c95c04f415ce9ac544cfdfc88188f292d2462d1ad0ea2062e2660",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-001-005.jpg",
+        "notes": [
+          {
+            "field": "poemLines[1]",
+            "transcriptionReading": "玉殿千官第一班",
+            "scanReading": "玉殿仙官第一班",
+            "chosenReading": "玉殿仙官第一班",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-002",
+      "number": 2,
+      "title": "第2签",
+      "traditionalGrade": "上吉",
+      "poemLines": [
+        "盈虛消息總天時",
+        "自此君當百事宜",
+        "若問前程歸縮地",
+        "更須方寸好修為"
+      ],
+      "keywords": [
+        "时机",
+        "修为",
+        "准备"
+      ],
+      "originalInterpretation": "盈亏变化提示进退要看时机，最后落在内心与行为的修整。先做好手边可控的工作，再判断是否适合扩大行动。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 4,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F2&oldid=2376270",
+        "revisionId": 2376270,
+        "revisionTimestamp": "2024-03-21T15:00:01Z",
+        "wikitextSha256": "351cc7006fa5ddd5b49b25712ea80a41ee9ee854374ec79708476bb538295445",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-001-005.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-003",
+      "number": 3,
+      "title": "第3签",
+      "traditionalGrade": "中吉",
+      "poemLines": [
+        "衣食自然生處有",
+        "勸君不用苦勞心",
+        "但能孝悌存忠信",
+        "福祿來成禍不侵"
+      ],
+      "keywords": [
+        "安稳",
+        "关系",
+        "诚信"
+      ],
+      "originalInterpretation": "诗把安稳生活与孝悌、忠信连在一起。经营可靠的关系和日常秩序，比不断担忧尚未发生的事更有帮助。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 5,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F3&oldid=2376475",
+        "revisionId": 2376475,
+        "revisionTimestamp": "2024-03-22T14:00:31Z",
+        "wikitextSha256": "64e0707010ba84aff218790eddeafc560a117537a5034c0fc63693de6bad9f66",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-001-005.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-004",
+      "number": 4,
+      "title": "第4签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "去年百事頗相宜",
+        "若較今年時運衰",
+        "好把瓣香告神佛",
+        "莫教福謝悔無追"
+      ],
+      "keywords": [
+        "变化",
+        "复盘",
+        "谨慎"
+      ],
+      "originalInterpretation": "去年与今年的对照提醒过去的顺利不能直接沿用。检查环境变化、预算和承诺，放慢需要重新评估的动作。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 6,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F4&oldid=2376477",
+        "revisionId": 2376477,
+        "revisionTimestamp": "2024-03-22T14:03:33Z",
+        "wikitextSha256": "864c1903d3422f4d7aff982b31c92a2b884cbfb6ae3cc3a54b5b3d7e1f5d1a93",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-001-005.jpg",
+        "notes": [
+          {
+            "field": "traditionalGrade",
+            "transcriptionReading": "下吉",
+            "scanReading": "下下",
+            "chosenReading": "下下",
+            "reason": "等级依PDF原刻标题。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-005",
+      "number": 5,
+      "title": "第5签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "子有三般不自由",
+        "門庭蕭索冷如秋",
+        "若逢牛鼠交承日",
+        "萬事回春不用憂"
+      ],
+      "keywords": [
+        "受限",
+        "转折",
+        "条件"
+      ],
+      "originalInterpretation": "冷落的门庭与回春形成转折，先承认当下受限。诗中的牛鼠是传统时间意象，不替用户换算日期；可先列出解困所需条件。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 7,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F5&oldid=2376479",
+        "revisionId": 2376479,
+        "revisionTimestamp": "2024-03-22T14:05:36Z",
+        "wikitextSha256": "4c99880d66689b61918b1f584c47add5662bceebe7dc8cd16ea358c9f54d12b5",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-001-005.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-006",
+      "number": 6,
+      "title": "第6签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "何勞鼓瑟更吹笙",
+        "寸步如登萬里程",
+        "彼此懷疑不相信",
+        "休將私意憶濃情"
+      ],
+      "keywords": [
+        "信任",
+        "沟通",
+        "核实"
+      ],
+      "originalInterpretation": "乐声与漫长一步形成反差，核心是彼此缺少信任。不要用热情代替核实，先把双方的期待和实际承诺讲清楚。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 8,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F6&oldid=2376481",
+        "revisionId": 2376481,
+        "revisionTimestamp": "2024-03-22T14:08:03Z",
+        "wikitextSha256": "1849767e9457fbcb4afc72ac0d21aef07d1f350889cc59fe23aa3aa578b71ed3",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-006-010.jpg",
+        "notes": [
+          {
+            "field": "traditionalGrade",
+            "transcriptionReading": "下平",
+            "scanReading": "下下",
+            "chosenReading": "下下",
+            "reason": "等级依PDF原刻标题。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-007",
+      "number": 7,
+      "title": "第7签",
+      "traditionalGrade": "大吉",
+      "poemLines": [
+        "仙風道骨本天成",
+        "又遇仙宗為主盟",
+        "指日丹成謝巖谷",
+        "一朝引領向天行"
+      ],
+      "keywords": [
+        "学习",
+        "引导",
+        "积累"
+      ],
+      "originalInterpretation": "炼丹与遇到引路者描写长期积累得到指点。寻找能提供具体反馈的人，把理想拆成持续练习与阶段成果。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 9,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F7&oldid=2376483",
+        "revisionId": 2376483,
+        "revisionTimestamp": "2024-03-22T14:10:28Z",
+        "wikitextSha256": "4cc74ecf6c78a61ca6d44f2f807b3155c1ced0e6f8b4ebe2547a157d9dc0a402",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-006-010.jpg",
+        "notes": [
+          {
+            "field": "poemLines[0]",
+            "transcriptionReading": "仙風道骨本天生",
+            "scanReading": "仙風道骨本天成",
+            "chosenReading": "仙風道骨本天成",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-008",
+      "number": 8,
+      "title": "第8签",
+      "traditionalGrade": "上上",
+      "poemLines": [
+        "年來耕稼苦無收",
+        "今歲田疇定有秋",
+        "況遇太平無事日",
+        "士農商賈百無憂"
+      ],
+      "keywords": [
+        "耕耘",
+        "收获",
+        "持续"
+      ],
+      "originalInterpretation": "辛苦耕作到收成的转换强调投入需要一个生长周期。保留有效的方法，检查哪些努力已接近可见结果。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 10,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F8&oldid=2376485",
+        "revisionId": 2376485,
+        "revisionTimestamp": "2024-03-22T14:13:44Z",
+        "wikitextSha256": "d4d0be910ab638402d7f3d999bf97454be9f58bfb086eac6a3764d2f8551a4da",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-006-010.jpg",
+        "notes": [
+          {
+            "field": "poemLines[3]",
+            "transcriptionReading": "士農工賈百無憂",
+            "scanReading": "士農商賈百無憂",
+            "chosenReading": "士農商賈百無憂",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-009",
+      "number": 9,
+      "title": "第9签",
+      "traditionalGrade": "大吉",
+      "poemLines": [
+        "望渠消息向長安",
+        "常把菱花仔細看",
+        "見說文書將入境",
+        "今朝喜色上眉端"
+      ],
+      "keywords": [
+        "消息",
+        "期待",
+        "核实"
+      ],
+      "originalInterpretation": "等候文书与眉间喜色表现对消息的期待。可以主动核实进度，但还没收到的通知与想象中的结果应分开记录。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 11,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F9&oldid=2376488",
+        "revisionId": 2376488,
+        "revisionTimestamp": "2024-03-22T14:15:59Z",
+        "wikitextSha256": "0731856c9a4ed7f2c04b257af02d0e773cd0de690678cc9368b621985b35fe75",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-006-010.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-010",
+      "number": 10,
+      "title": "第10签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "病患時時命蹇衰",
+        "何須打瓦共鑽龜",
+        "宜教重見一陽復",
+        "始可求神仗佛持"
+      ],
+      "keywords": [
+        "恢复",
+        "支持",
+        "耐心"
+      ],
+      "originalInterpretation": "诗用困顿与一阳复起写恢复的节奏。身体或生活出现问题时先寻求现实支持，不把抽签当作病情判断或推迟就医的理由。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 12,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F10&oldid=814488",
+        "revisionId": 814488,
+        "revisionTimestamp": "2017-01-07T13:40:54Z",
+        "wikitextSha256": "777b7662985bde92fc0790d422307beace29d14eefb8d4f6feeffd62c4278bc8",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-006-010.jpg",
+        "notes": [
+          {
+            "field": "traditionalGrade",
+            "transcriptionReading": "下吉",
+            "scanReading": "下下",
+            "chosenReading": "下下",
+            "reason": "等级依PDF原刻标题。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-011",
+      "number": 11,
+      "title": "第11签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "今年好事一番新",
+        "富貴榮華萃汝身",
+        "誰道機關難料處",
+        "到頭獨立轉傷神"
+      ],
+      "keywords": [
+        "代价",
+        "支持",
+        "审慎"
+      ],
+      "originalInterpretation": "新得荣华之后却独自伤神，提醒进展也可能伴随失去支撑。检查机会中的代价、合作关系和自己是否承担了过多责任。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 13,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F11&oldid=1496521",
+        "revisionId": 1496521,
+        "revisionTimestamp": "2018-08-25T10:42:30Z",
+        "wikitextSha256": "b5b9fdb2f7c27b34d89b2378fafd867b76e1e73b75e64ceda79b27c9d6f0a443",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-011-015.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-012",
+      "number": 12,
+      "title": "第12签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "營為期望在春前",
+        "誰料秋來又不然",
+        "直遇清江貴公子",
+        "一生活計始安全"
+      ],
+      "keywords": [
+        "延期",
+        "支持",
+        "调整"
+      ],
+      "originalInterpretation": "春前的期望到秋来落空，后来借助贵人稳定生活。允许调整原来的时间表，寻找能解决实际困难的支持，而非只等预期兑现。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 14,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F12&oldid=1496522",
+        "revisionId": 1496522,
+        "revisionTimestamp": "2018-08-25T10:42:40Z",
+        "wikitextSha256": "8be47a7c824ff372bb8e418caa952be8e0626b557be905f79f5c8f5e27da218a",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-011-015.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-013",
+      "number": 13,
+      "title": "第13签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "君今庚甲未亨通",
+        "且向江頭作釣翁",
+        "玉兔重生應發跡",
+        "萬人頭上逞英雄"
+      ],
+      "keywords": [
+        "等待",
+        "蓄力",
+        "条件"
+      ],
+      "originalInterpretation": "江边垂钓与后来出头描写等待中的自我保存。没有合适条件时先蓄积能力，诗中的玉兔意象不直接承诺具体成功日期。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 15,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F13&oldid=1496523",
+        "revisionId": 1496523,
+        "revisionTimestamp": "2018-08-25T10:42:49Z",
+        "wikitextSha256": "569a23fca55691b7d0a97889ee845c074fbf9a70cec82997670a5a5d75b57c8c",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-011-015.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-014",
+      "number": 14,
+      "title": "第14签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "一見佳人便喜歡",
+        "誰知去後有多般",
+        "人情冷暖君休訝",
+        "歷涉應知行路難"
+      ],
+      "keywords": [
+        "关系",
+        "观察",
+        "时间"
+      ],
+      "originalInterpretation": "初见欢喜与后续难行形成对照，提示认识一个人需要时间。观察稳定行为与相互回应，保留对热烈第一印象的验证空间。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 16,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F14&oldid=1496524",
+        "revisionId": 1496524,
+        "revisionTimestamp": "2018-08-25T10:42:58Z",
+        "wikitextSha256": "6c806375aaace8e1f5ce02f930fa4401d6d873c9adb378f582e4229c0b7d3974",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-011-015.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-015",
+      "number": 15,
+      "title": "第15签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "兩家門戶各相當",
+        "不是姻緣莫較量",
+        "直待春風好消息",
+        "卻調琴瑟向蘭房"
+      ],
+      "keywords": [
+        "意愿",
+        "匹配",
+        "沟通"
+      ],
+      "originalInterpretation": "门第相当并不足以保证姻缘，琴瑟相调需要适当消息。关系决定应建立在双方意愿与沟通上，不凭条件匹配替他人作决定。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 17,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F15&oldid=1496525",
+        "revisionId": 1496525,
+        "revisionTimestamp": "2018-08-25T10:43:08Z",
+        "wikitextSha256": "c8d26b0d9251cd2a4c670cbd44755f7d67a8a3064d0a8faa3605229fc263feec",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-011-015.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-016",
+      "number": 16,
+      "title": "第16签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "官事悠悠難辨明",
+        "不如息了且歸耕",
+        "傍人煽惑君休信",
+        "此事當謀親弟兄"
+      ],
+      "keywords": [
+        "纠纷",
+        "止损",
+        "事实"
+      ],
+      "originalInterpretation": "久拖的官事与归耕意象指向停止无效纠缠。先辨清事实，远离煽动性建议；涉及法律问题时取得专业意见后再行动。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 18,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F16&oldid=1496526",
+        "revisionId": 1496526,
+        "revisionTimestamp": "2018-08-25T10:43:17Z",
+        "wikitextSha256": "63e768a8acfb3b405a9534f9240ffba3af384d888da720f407ebecfbe440c2e5",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-016-020.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-017",
+      "number": 17,
+      "title": "第17签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "田園價貫好商量",
+        "事到公庭彼此傷",
+        "縱使機關圖得勝",
+        "定為後世子孫殃"
+      ],
+      "keywords": [
+        "协商",
+        "成本",
+        "后果"
+      ],
+      "originalInterpretation": "田园争执到公庭互伤，胜负并非唯一尺度。比较协商与对抗的总成本，为关系和后续生活留下可持续的处理方式。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 19,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F17&oldid=1496527",
+        "revisionId": 1496527,
+        "revisionTimestamp": "2018-08-25T10:43:26Z",
+        "wikitextSha256": "ccecf07297bbcde3d2dee13c42488fd30cc7430293989e3d83661403a73cdde8",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-016-020.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-018",
+      "number": 18,
+      "title": "第18签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "知君指擬似空華",
+        "底事茫茫未有涯",
+        "牢把腳根踏實地",
+        "善為善應永無差"
+      ],
+      "keywords": [
+        "现实",
+        "行动",
+        "验证"
+      ],
+      "originalInterpretation": "空中之花与脚踏实地相对，提醒愿望需要可验证的路径。选一项最小行动，检查它是否真正推动当前问题。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 20,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F18&oldid=1496528",
+        "revisionId": 1496528,
+        "revisionTimestamp": "2018-08-25T10:43:36Z",
+        "wikitextSha256": "88a9a327edcc8c945f28ce3f34bdc4eb34adfc85445267e89922cb2719242787",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-016-020.jpg",
+        "notes": [
+          {
+            "field": "poemLines[0]",
+            "transcriptionReading": "知君指擬是空華",
+            "scanReading": "知君指擬似空華",
+            "chosenReading": "知君指擬似空華",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-019",
+      "number": 19,
+      "title": "第19签",
+      "traditionalGrade": "上吉",
+      "poemLines": [
+        "嗟子從來未得時",
+        "今年星運頗相宜",
+        "營求動作都如意",
+        "和合婚姻誕貴兒"
+      ],
+      "keywords": [
+        "转机",
+        "资源",
+        "行动"
+      ],
+      "originalInterpretation": "从未得时到营求如意，表达处境打开后的主动性。识别已有资源与合作条件，别把好转当作无需准备的保证。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 21,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F19&oldid=1496529",
+        "revisionId": 1496529,
+        "revisionTimestamp": "2018-08-25T10:43:45Z",
+        "wikitextSha256": "14e20c5fbf25a99192fa2fbe8bbe33296e9a88dfeeda97c59e52cf6fd5b8a92f",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-016-020.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-020",
+      "number": 20,
+      "title": "第20签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "一生心事向誰論",
+        "十八灘頭說與君",
+        "世事盡從流水去",
+        "功名富貴等浮雲"
+      ],
+      "keywords": [
+        "取舍",
+        "价值",
+        "安定"
+      ],
+      "originalInterpretation": "流水与浮云表现对功名牵挂的松动。重新排列自己的价值和生活需要，看看哪些追求可以放下或换一种实现方式。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 22,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F20&oldid=1496530",
+        "revisionId": 1496530,
+        "revisionTimestamp": "2018-08-25T10:43:54Z",
+        "wikitextSha256": "35b6710b2c611e0ac3fe0cc5e7bb7628aad3265fc2774c3b820f1500531bd11b",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-016-020.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-021",
+      "number": 21,
+      "title": "第21签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "與君夙昔結成冤",
+        "今日相逢那得緣",
+        "好把經文多諷誦",
+        "祈求戶內保嬋娟"
+      ],
+      "keywords": [
+        "旧怨",
+        "边界",
+        "保护"
+      ],
+      "originalInterpretation": "旧怨与再相逢提醒重复冲突可能消耗身边的人。先确定边界与安全的沟通方式，再决定是否继续接触。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 23,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F21&oldid=1496531",
+        "revisionId": 1496531,
+        "revisionTimestamp": "2018-08-25T10:44:04Z",
+        "wikitextSha256": "bea243aadca6e58854c27553f940638fd7ab167fb237d6fee0ff25a671672c52",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-021-025.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-022",
+      "number": 22,
+      "title": "第22签",
+      "traditionalGrade": "上吉",
+      "poemLines": [
+        "碧玉池中開白蓮",
+        "莊嚴色相自天然",
+        "生來骨格超凡俗",
+        "正是人間第一仙"
+      ],
+      "keywords": [
+        "优势",
+        "独特",
+        "展示"
+      ],
+      "originalInterpretation": "白莲的自然生长与超凡骨格强调独特性。把自身优势放进具体工作中展示，减少与别人的表面标准反复比较。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 24,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F22&oldid=1496533",
+        "revisionId": 1496533,
+        "revisionTimestamp": "2018-08-25T10:44:13Z",
+        "wikitextSha256": "e9ebea083eaec15ec471a15cd4eb03a5a111ea243e868088f20fce90db0ca82e",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-021-025.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-023",
+      "number": 23,
+      "title": "第23签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "花開花謝在春風",
+        "貴賤窮通百歲中",
+        "羨子榮華今已矣",
+        "到頭萬事總成空"
+      ],
+      "keywords": [
+        "变化",
+        "珍惜",
+        "余地"
+      ],
+      "originalInterpretation": "花开花谢与荣华成空强调盛衰变化。珍惜已经拥有的关系与成果，也为变化准备可承受的余地。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 25,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F23&oldid=1496534",
+        "revisionId": 1496534,
+        "revisionTimestamp": "2018-08-25T10:44:22Z",
+        "wikitextSha256": "bce1e79d402cc18a17348ee2c5374460e1d5aa3d833ad75b4ec602ed5981dea2",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-021-025.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-024",
+      "number": 24,
+      "title": "第24签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "一春無事苦憂煎",
+        "夏裏營求始帖然",
+        "更遇秋成冬至後",
+        "恰如騎鶴與腰纏"
+      ],
+      "keywords": [
+        "阶段",
+        "压力",
+        "改善"
+      ],
+      "originalInterpretation": "春日忧煎到后期安稳，是分阶段改善的景象。把问题分成眼前应对与后续安排，不用一次解决所有压力。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 26,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F24&oldid=1496535",
+        "revisionId": 1496535,
+        "revisionTimestamp": "2018-08-25T10:44:32Z",
+        "wikitextSha256": "47c55a7e69ae8fd4df51e41d7268a93f2f1ae00659af674ab172bbb693c45b28",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-021-025.jpg",
+        "notes": [
+          {
+            "field": "poemLines[0]",
+            "transcriptionReading": "一春萬事苦憂煎",
+            "scanReading": "一春無事苦憂煎",
+            "chosenReading": "一春無事苦憂煎",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-025",
+      "number": 25,
+      "title": "第25签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "寅午戍年多阻滯",
+        "亥子丑月漸亨嘉",
+        "更逢玉兔金雞會",
+        "枯木逢春自放花"
+      ],
+      "keywords": [
+        "阻滞",
+        "条件",
+        "新生"
+      ],
+      "originalInterpretation": "阻滞之后枯木放花，表现需要等待条件转换。传统地支意象保留为诗意线索，现实安排仍依据已知日程与事实。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 27,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F25&oldid=1496536",
+        "revisionId": 1496536,
+        "revisionTimestamp": "2018-08-25T10:44:41Z",
+        "wikitextSha256": "ef84441bfa6a1ebad9e39d1d309d456ee11471a1b45881c521224851d61ae3fd",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-021-025.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-026",
+      "number": 26,
+      "title": "第26签",
+      "traditionalGrade": "中吉",
+      "poemLines": [
+        "年來豐歉皆天數",
+        "自是今年旱較多",
+        "與子定期三日內",
+        "田疇沾足雨滂沱"
+      ],
+      "keywords": [
+        "短缺",
+        "补充",
+        "资源"
+      ],
+      "originalInterpretation": "旱田得雨写短缺获得补充的愿望。先确定最缺的资源以及可获得的渠道，不把三日之语当作现实期限保证。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 28,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F26&oldid=1496537",
+        "revisionId": 1496537,
+        "revisionTimestamp": "2018-08-25T10:44:50Z",
+        "wikitextSha256": "42d632716c00044dce4f92907aed8e8eb36c854736d0025619f83c418e57f3ed",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-026-030.jpg",
+        "notes": [
+          {
+            "field": "poemLines[3]",
+            "transcriptionReading": "田疇霑足雨滂沱",
+            "scanReading": "田疇沾足雨滂沱",
+            "chosenReading": "田疇沾足雨滂沱",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-027",
+      "number": 27,
+      "title": "第27签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "世間萬物各有主",
+        "一粒一毫君莫取",
+        "英雄豪傑自天生",
+        "也須步步循規矩"
+      ],
+      "keywords": [
+        "边界",
+        "规则",
+        "权益"
+      ],
+      "originalInterpretation": "一粒一毫不可取与步步循规矩强调界限。核对权限、约定和他人的权益，避免用能力或地位合理化越界。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 29,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F27&oldid=1496538",
+        "revisionId": 1496538,
+        "revisionTimestamp": "2018-08-25T10:45:00Z",
+        "wikitextSha256": "47303a40c9344c113d1d014f71ad0d7bd4828e8c06b7dd4b5626d5510f2db1f2",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-026-030.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-028",
+      "number": 28,
+      "title": "第28签",
+      "traditionalGrade": "上吉",
+      "poemLines": [
+        "公侯將相本無種",
+        "好把勤勞契上天",
+        "人事即從天理見",
+        "才高豈得困林泉"
+      ],
+      "keywords": [
+        "努力",
+        "机会",
+        "能力"
+      ],
+      "originalInterpretation": "将相无种与勤劳相接，表达发展不只由出身决定。聚焦能增长能力和信誉的投入，争取公平展示成果的机会。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 30,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F28&oldid=1496539",
+        "revisionId": 1496539,
+        "revisionTimestamp": "2018-08-25T10:45:09Z",
+        "wikitextSha256": "8c9e26bb48e1a14b580b4f8cea129cd7488f30c9da4e7e814684aa498f0b709c",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-026-030.jpg",
+        "notes": [
+          {
+            "field": "poemLines[2]",
+            "transcriptionReading": "人事盡從天理見",
+            "scanReading": "人事即從天理見",
+            "chosenReading": "人事即從天理見",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-029",
+      "number": 29,
+      "title": "第29签",
+      "traditionalGrade": "上上",
+      "poemLines": [
+        "祖宗積德幾多年",
+        "源遠流長慶自然",
+        "更若操修無倦已",
+        "天須還汝舊青氈"
+      ],
+      "keywords": [
+        "传承",
+        "积累",
+        "更新"
+      ],
+      "originalInterpretation": "源远流长与旧青毡描写积累和传承。利用已有的知识、关系与制度基础，同时持续更新自己的做法。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 31,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F29&oldid=1625654",
+        "revisionId": 1625654,
+        "revisionTimestamp": "2019-07-30T06:45:06Z",
+        "wikitextSha256": "7675ba540b8fde191daadd95cbf825e042e9607126bdc38d8037d9f716d625f5",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-026-030.jpg",
+        "notes": [
+          {
+            "field": "poemLines[2]",
+            "transcriptionReading": "若更操修無倦已",
+            "scanReading": "更若操修無倦已",
+            "chosenReading": "更若操修無倦已",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-030",
+      "number": 30,
+      "title": "第30签",
+      "traditionalGrade": "中吉",
+      "poemLines": [
+        "奉公謹守莫欺心",
+        "自有亨通吉利臨",
+        "目下營求且休矣",
+        "秋期與子定佳音"
+      ],
+      "keywords": [
+        "原则",
+        "等待",
+        "检查"
+      ],
+      "originalInterpretation": "奉公守心与暂缓营求强调先守住原则。把眼前工作做好，并为下一轮决策设置具体检查时间。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 32,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F30&oldid=1496541",
+        "revisionId": 1496541,
+        "revisionTimestamp": "2018-08-25T10:45:28Z",
+        "wikitextSha256": "0239cdf44de9e279cf309f0005f1156e9afb36ebe7877b052666dd009ec6350e",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-026-030.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-031",
+      "number": 31,
+      "title": "第31签",
+      "traditionalGrade": "中吉",
+      "poemLines": [
+        "秋冬作事只尋常",
+        "春到門庭大吉昌",
+        "千里信音符遠望",
+        "萱堂快樂未渠央"
+      ],
+      "keywords": [
+        "远信",
+        "联系",
+        "准备"
+      ],
+      "originalInterpretation": "秋冬平常到春来吉昌，远信与家中欢喜相连。安排稳定的联系与耐心的准备，不把季节意象直接换成承诺。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 33,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F31&oldid=1496542",
+        "revisionId": 1496542,
+        "revisionTimestamp": "2018-08-25T10:45:37Z",
+        "wikitextSha256": "a63adce5cacb98621a4a26aa7d7c94b2dc80feba86eb74708b44a2d6ccf4d591",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-031-035.jpg",
+        "notes": [
+          {
+            "field": "poemLines[1]",
+            "transcriptionReading": "春到門庭漸吉昌",
+            "scanReading": "春到門庭大吉昌",
+            "chosenReading": "春到門庭大吉昌",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          },
+          {
+            "field": "poemLines[3]",
+            "scanReading": "菅堂快樂未渠央",
+            "chosenReading": "萱堂快樂未渠央",
+            "reason": "原刻菅字；采用固定转录版本的萱堂校订，意指母亲。保留原刻异文，不声称字形完全相同。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-032",
+      "number": 32,
+      "title": "第32签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "勞心汨汨竟何歸",
+        "疾病兼多是與非",
+        "事到頭來渾似夢",
+        "何如休要用心機"
+      ],
+      "keywords": [
+        "焦虑",
+        "简化",
+        "事实"
+      ],
+      "originalInterpretation": "奔忙像一场梦，提示过多盘算可能掩盖真正需要。减少反复推演，区分事实、担忧和能够实际处理的事项。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 34,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F32&oldid=1496543",
+        "revisionId": 1496543,
+        "revisionTimestamp": "2018-08-25T10:45:46Z",
+        "wikitextSha256": "dd89105bc50171b9fcf976a53692969483185b298814046209f2e73825c23f00",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-031-035.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-033",
+      "number": 33,
+      "title": "第33签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "不分南北與西東",
+        "眼底昏昏耳似聾",
+        "熟讀黃庭經一卷",
+        "不論貴賤與窮通"
+      ],
+      "keywords": [
+        "模糊",
+        "学习",
+        "澄清"
+      ],
+      "originalInterpretation": "方向与感官都模糊时，诗转向读书和内在整理。信息不足就暂缓重大判断，先补足知识和看问题的清晰度。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 35,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F33&oldid=1496544",
+        "revisionId": 1496544,
+        "revisionTimestamp": "2018-08-25T10:45:56Z",
+        "wikitextSha256": "9ba13ef230dab39b485309564b4e46926ce7f5133b2f66883c0b4be6aab16282",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-031-035.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-034",
+      "number": 34,
+      "title": "第34签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "春夏纔過秋又冬",
+        "紛紛謀慮攪心胸",
+        "貴人垂手來相援",
+        "休把私心情意濃"
+      ],
+      "keywords": [
+        "求助",
+        "分寸",
+        "合作"
+      ],
+      "originalInterpretation": "四季更替中的烦虑遇到援手，提醒接受帮助时也保持分寸。把求助内容说明白，避免让私人情绪左右合作。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 36,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F34&oldid=1496545",
+        "revisionId": 1496545,
+        "revisionTimestamp": "2018-08-25T10:46:05Z",
+        "wikitextSha256": "6e761ac98ebbbbe15691358fa163925b0ee1bff94074634d338c1c8300703ec9",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-031-035.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-035",
+      "number": 35,
+      "title": "第35签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "一山如畫對清江",
+        "門裏團圓事事雙",
+        "誰料半途分折去",
+        "空幃無語對銀缸"
+      ],
+      "keywords": [
+        "中断",
+        "预案",
+        "修复"
+      ],
+      "originalInterpretation": "团圆景象在半途生变，表达对失去与中断的警觉。为重要安排准备替代方案，同时给情绪和关系留出修复空间。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 37,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F35&oldid=1496546",
+        "revisionId": 1496546,
+        "revisionTimestamp": "2018-08-25T10:46:15Z",
+        "wikitextSha256": "c7a824e27dbd50d40404e872a0f4f4e9e817b4f7ce38e2eb4926523b94b2c773",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-031-035.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-036",
+      "number": 36,
+      "title": "第36签",
+      "traditionalGrade": "上吉",
+      "poemLines": [
+        "功名富貴自能為",
+        "偶著仙鞭莫問伊",
+        "萬里鵬程君有分",
+        "吳山頂上好鑽龜"
+      ],
+      "keywords": [
+        "能力",
+        "发展",
+        "实践"
+      ],
+      "originalInterpretation": "功名可为与万里鹏程描写能力获得使用空间。抓住具体可行的任务，评估承诺与投入，而不只追求宏大的名号。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 38,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F36&oldid=1496548",
+        "revisionId": 1496548,
+        "revisionTimestamp": "2018-08-25T10:46:24Z",
+        "wikitextSha256": "388775787a06b690be2cc98b8a574c7d71b0c3a94c1d87fb8643ea7b030a432c",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-036-040.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-037",
+      "number": 37,
+      "title": "第37签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "焚香來告復何辭",
+        "善惡平分汝自知",
+        "屏卻昧公心裏事",
+        "出門無礙是通時"
+      ],
+      "keywords": [
+        "诚实",
+        "动机",
+        "原则"
+      ],
+      "originalInterpretation": "善恶自知与屏却私心强调诚实面对自身动机。重新审视不愿公开的部分，把决定建立在可说明的理由上。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 39,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F37&oldid=1496549",
+        "revisionId": 1496549,
+        "revisionTimestamp": "2018-08-25T10:46:33Z",
+        "wikitextSha256": "53534f845e22a3e08dbe8b8be058669aa0825be29eaf90b25dce5529ae5c88aa",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-036-040.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-038",
+      "number": 38,
+      "title": "第38签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "蛩吟唧唧守孤幃",
+        "千里懸懸望信歸",
+        "等待榮華貴公子",
+        "秋冬括括雨靡靡"
+      ],
+      "keywords": [
+        "距离",
+        "等待",
+        "沟通"
+      ],
+      "originalInterpretation": "孤幃等信与秋冬雨声突出等待和距离。说明联络方式与双方安排，避免将漫长等待当作关系必然兑现的证据。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 40,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F38&oldid=1496550",
+        "revisionId": 1496550,
+        "revisionTimestamp": "2018-08-25T10:46:43Z",
+        "wikitextSha256": "e5d9edef16bf0bf3c824ededc630f728f0c1e309e87e1cc697289ecc7fab7a8a",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-036-040.jpg",
+        "notes": [
+          {
+            "field": "poemLines[2]",
+            "transcriptionReading": "等得榮華公子到",
+            "scanReading": "等待榮華貴公子",
+            "chosenReading": "等待榮華貴公子",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-039",
+      "number": 39,
+      "title": "第39签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "北山門外好安居",
+        "若問終時慎厥初",
+        "堪笑包藏許多事",
+        "鱗鴻雖便莫修書"
+      ],
+      "keywords": [
+        "开端",
+        "稳定",
+        "信息"
+      ],
+      "originalInterpretation": "安居与慎始强调先稳固开端，而非急着远传消息。核对计划基础与信息边界，需要时先保存草案再正式发送。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 41,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F39&oldid=1496551",
+        "revisionId": 1496551,
+        "revisionTimestamp": "2018-08-25T10:46:52Z",
+        "wikitextSha256": "be3973a7410a12795c7d01120ac77e26e178fccaf5ccd3622f383e4da0e630a3",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-036-040.jpg",
+        "notes": [
+          {
+            "field": "poemLines[0]",
+            "transcriptionReading": "北山門下好安居",
+            "scanReading": "北山門外好安居",
+            "chosenReading": "北山門外好安居",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-040",
+      "number": 40,
+      "title": "第40签",
+      "traditionalGrade": "上吉",
+      "poemLines": [
+        "新來換得好規模",
+        "何用隨他步與趨",
+        "只聽耳邊消息到",
+        "崎嶇歷遍見亨衢"
+      ],
+      "keywords": [
+        "新路",
+        "试验",
+        "复盘"
+      ],
+      "originalInterpretation": "换得新规模后走出崎岖，强调尝试自己的方法。复盘旧路径的限制，按小步试验验证新安排是否更适合。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 42,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F40&oldid=1496552",
+        "revisionId": 1496552,
+        "revisionTimestamp": "2018-08-25T10:47:02Z",
+        "wikitextSha256": "45df5334e17fdcbd5a388143ab3a6029895a9cf60dbeb9bcfe246cee4c126a35",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-036-040.jpg",
+        "notes": [
+          {
+            "field": "poemLines[3]",
+            "transcriptionReading": "崎嶇歷盡見亨衢",
+            "scanReading": "崎嶇歷遍見亨衢",
+            "chosenReading": "崎嶇歷遍見亨衢",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-041",
+      "number": 41,
+      "title": "第41签",
+      "traditionalGrade": "中吉",
+      "poemLines": [
+        "自南自北自東西",
+        "欲到天涯誰作梯",
+        "遇鼠逢牛三弄笛",
+        "好將名姓榜頭題"
+      ],
+      "keywords": [
+        "路径",
+        "支点",
+        "远行"
+      ],
+      "originalInterpretation": "走到天涯仍需阶梯，提醒远行或发展不能缺少支点。寻找明确的路径、推荐或学习机会，再扩大行动范围。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 43,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F41&oldid=1496553",
+        "revisionId": 1496553,
+        "revisionTimestamp": "2018-08-25T10:47:11Z",
+        "wikitextSha256": "e196a9c6400949d227f22dea90549a13dbe5d6acd12192bb3c6ec5b9e06f35e4",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-041-045.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-042",
+      "number": 42,
+      "title": "第42签",
+      "traditionalGrade": "中吉",
+      "poemLines": [
+        "我曾許汝事和諧",
+        "誰料修為汝自乖",
+        "但改新圖莫依舊",
+        "營謀應得稱心懷"
+      ],
+      "keywords": [
+        "改变",
+        "责任",
+        "修复"
+      ],
+      "originalInterpretation": "原先应许未兑现与改图相接，强调行为需要改变。把不再有效的做法替换掉，用新的具体行动修复信任。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 44,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F42&oldid=1496554",
+        "revisionId": 1496554,
+        "revisionTimestamp": "2018-08-25T10:47:20Z",
+        "wikitextSha256": "f4b0a910b7e6a444ab0b072ca01a29c65c887b1d8b8ee016572e99b51df4d9fc",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-041-045.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-043",
+      "number": 43,
+      "title": "第43签",
+      "traditionalGrade": "中吉",
+      "poemLines": [
+        "一紙官書火急催",
+        "扁舟速下浪如雷",
+        "雖然目下多驚險",
+        "保汝平安去復回"
+      ],
+      "keywords": [
+        "急务",
+        "检查",
+        "应急"
+      ],
+      "originalInterpretation": "急书与雷浪描写突发安排中的紧张。先检查关键通知、行程与应急联系，分清速度要求和真正的安全条件。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 45,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F43&oldid=1496555",
+        "revisionId": 1496555,
+        "revisionTimestamp": "2018-08-25T10:47:30Z",
+        "wikitextSha256": "e488def2eab485cfc80b18ddf75a66645db0522d5e2d1bcd4abec720543ff932",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-041-045.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-044",
+      "number": 44,
+      "title": "第44签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "汝是人中最吉人",
+        "誤為誤作損精神",
+        "堅牢一念酬香願",
+        "富貴榮華萃汝身"
+      ],
+      "keywords": [
+        "校正",
+        "目标",
+        "节制"
+      ],
+      "originalInterpretation": "本有良好条件却误作伤神，提醒减少无谓损耗。回到最初目标，校正已经偏离的决定与资源投入。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 46,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F44&oldid=1496556",
+        "revisionId": 1496556,
+        "revisionTimestamp": "2018-08-25T10:47:39Z",
+        "wikitextSha256": "82379abd6f0b267c507c71e2f38996b0f211f9324db72d5086954088d6316b1a",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-041-045.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-045",
+      "number": 45,
+      "title": "第45签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "好將心地力耕耘",
+        "彼此山頭總是墳",
+        "陰地不如心地好",
+        "修為到底卻輸君"
+      ],
+      "keywords": [
+        "诚意",
+        "长期",
+        "行事"
+      ],
+      "originalInterpretation": "心地耕耘胜于阴地安排，把重点放在做人和行事。现实关系的诚意与长期投入，比寻找外部捷径更值得经营。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 47,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F45&oldid=1496557",
+        "revisionId": 1496557,
+        "revisionTimestamp": "2018-08-25T10:47:48Z",
+        "wikitextSha256": "2c1a5f226ef7b31f668d4a6fc7560e803e5cbcd78bfc41645989349ff8f01b4e",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-041-045.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-046",
+      "number": 46,
+      "title": "第46签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "君是山中萬戶侯",
+        "信知騎馬勝騎牛",
+        "今朝馬上看山色",
+        "爭似騎牛得自由"
+      ],
+      "keywords": [
+        "取舍",
+        "自由",
+        "节奏"
+      ],
+      "originalInterpretation": "骑马与骑牛比较名位和自由，提醒所得各有代价。列出地位、节奏与自主性对自己的重要程度再做取舍。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 48,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F46&oldid=1496558",
+        "revisionId": 1496558,
+        "revisionTimestamp": "2018-08-25T10:47:58Z",
+        "wikitextSha256": "794a00c2349af2f5255f358f551526eedcce9517cc9145648c630041682727b8",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-046-050.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-047",
+      "number": 47,
+      "title": "第47签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "與君萬語復千言",
+        "祗欲平和雪爾冤",
+        "訟則終凶君記取",
+        "試於清夜把心捫"
+      ],
+      "keywords": [
+        "平和",
+        "权益",
+        "解决"
+      ],
+      "originalInterpretation": "千言万语仍归于平和与自省，强调争讼中的停止条件。核对权益和证据，寻求可执行的解决方案，而非只求胜过对方。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 49,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F47&oldid=1496559",
+        "revisionId": 1496559,
+        "revisionTimestamp": "2018-08-25T10:48:07Z",
+        "wikitextSha256": "b9114e1d7372d650cad20789fc8036f5ac13f405e5f58b6b0ca205d59beac000",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-046-050.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-048",
+      "number": 48,
+      "title": "第48签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "登山涉水正天寒",
+        "兄弟姻親那得安",
+        "不遇虎頭人一喚",
+        "全家誰保汝重歡"
+      ],
+      "keywords": [
+        "寒途",
+        "支持",
+        "安排"
+      ],
+      "originalInterpretation": "寒途与亲友难安描写支持不足，底本用不遇与谁保发出追问。提前安排可靠的帮助与联系，别把他人出现当作必然。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 50,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F48&oldid=1496560",
+        "revisionId": 1496560,
+        "revisionTimestamp": "2018-08-25T10:48:16Z",
+        "wikitextSha256": "61b7a66e948e9e82147735b4ee96d5590a7f213a55cba0c68a8839a0f544d279",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-046-050.jpg",
+        "notes": [
+          {
+            "field": "poemLines[2]",
+            "transcriptionReading": "幸遇虎頭人一喚",
+            "scanReading": "不遇虎頭人一喚",
+            "chosenReading": "不遇虎頭人一喚",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          },
+          {
+            "field": "poemLines[3]",
+            "transcriptionReading": "全家遂保汝重歡",
+            "scanReading": "全家誰保汝重歡",
+            "chosenReading": "全家誰保汝重歡",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-049",
+      "number": 49,
+      "title": "第49签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "彼此家居只一山",
+        "如何似隔鬼門關",
+        "日月如梭人易老",
+        "許多勞碌不如閒"
+      ],
+      "keywords": [
+        "距离",
+        "疲惫",
+        "休息"
+      ],
+      "originalInterpretation": "近在一山却如隔关，突出心理距离与奔忙的疲惫。尝试降低联络成本，恢复休息和能面对面说明的问题。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 51,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F49&oldid=1496561",
+        "revisionId": 1496561,
+        "revisionTimestamp": "2018-08-25T10:48:26Z",
+        "wikitextSha256": "7a752b208408fb39292d4c7eb3e6b1a082f2f36d18d5840009ad268b5db2315f",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-046-050.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-050",
+      "number": 50,
+      "title": "第50签",
+      "traditionalGrade": "上吉",
+      "poemLines": [
+        "人說今年勝舊年",
+        "也須步步要周旋",
+        "一家和氣多生福",
+        "萋菲讒言莫聽偏"
+      ],
+      "keywords": [
+        "维护",
+        "和气",
+        "传言"
+      ],
+      "originalInterpretation": "新年更好仍须步步周旋，说明改善需要持续维护。珍惜家庭或团队的和气，核实传言后再判断他人。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 52,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F50&oldid=1496562",
+        "revisionId": 1496562,
+        "revisionTimestamp": "2018-08-25T10:48:35Z",
+        "wikitextSha256": "2f5979a1c3e8a5ad0b40ffe35f6f5967082bfbcee8bfe0d59ce660b472647a16",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-046-050.jpg",
+        "notes": [
+          {
+            "field": "poemLines[1]",
+            "transcriptionReading": "也須步多要周旋",
+            "scanReading": "也須步步要周旋",
+            "chosenReading": "也須步步要周旋",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          },
+          {
+            "field": "traditionalGrade",
+            "transcriptionReading": "上平",
+            "scanReading": "上吉",
+            "chosenReading": "上吉",
+            "reason": "等级依PDF原刻标题。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-051",
+      "number": 51,
+      "title": "第51签",
+      "traditionalGrade": "上吉",
+      "poemLines": [
+        "君今百事且隨緣",
+        "水到渠成聽自然",
+        "莫嘆年來不如意",
+        "喜逢新運稱心田"
+      ],
+      "keywords": [
+        "顺势",
+        "成熟",
+        "耐心"
+      ],
+      "originalInterpretation": "水到渠成把结果与条件成熟联系起来。保持必要投入，减少对过程的强行催促，观察真正的进展信号。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 53,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F51&oldid=1496563",
+        "revisionId": 1496563,
+        "revisionTimestamp": "2018-08-25T10:48:45Z",
+        "wikitextSha256": "4d5c8595ccab44548bab2e283d821e60d5bc1c8612cde49fa9b2a1000db652bd",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-051-055.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-052",
+      "number": 52,
+      "title": "第52签",
+      "traditionalGrade": "上吉",
+      "poemLines": [
+        "兀坐幽居歎寂寥",
+        "孤燈掩映度清宵",
+        "萬金忽報秋光好",
+        "決計扁舟渡北朝"
+      ],
+      "keywords": [
+        "准备",
+        "学习",
+        "行动"
+      ],
+      "originalInterpretation": "孤灯学习与后来的渡舟形成从准备到行动的转换。把独处时间用来打磨能力，机会出现时核对它的真实条件。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 54,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F52&oldid=1496564",
+        "revisionId": 1496564,
+        "revisionTimestamp": "2018-08-25T10:48:54Z",
+        "wikitextSha256": "ded40196e6b9b688895c6a35deb4a5e7ae36931ea5e62da5fc1f9644f4d3b053",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-051-055.jpg",
+        "notes": [
+          {
+            "field": "poemLines[3]",
+            "transcriptionReading": "活計扁舟渡北朝",
+            "scanReading": "決計扁舟渡北朝",
+            "chosenReading": "決計扁舟渡北朝",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-053",
+      "number": 53,
+      "title": "第53签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "艱難險阻路蹊蹺",
+        "南鳥孤飛依北巢",
+        "今日貴人曾識面",
+        "相逢卻在夏秋交"
+      ],
+      "keywords": [
+        "适应",
+        "支点",
+        "旧识"
+      ],
+      "originalInterpretation": "孤鸟异巢写陌生环境中的不安，旧识相逢成为支点。确认适应新环境的实际帮助，不把困境中的依赖扩大为全部保障。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 55,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F53&oldid=1496565",
+        "revisionId": 1496565,
+        "revisionTimestamp": "2018-08-25T10:49:04Z",
+        "wikitextSha256": "d7d1d13118bb77d6018432428376c989be0848f74194e3d1465f4470086024b1",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-051-055.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-054",
+      "number": 54,
+      "title": "第54签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "萬人叢裏逞英豪",
+        "便欲飛騰霄漢高",
+        "爭奈乘風流未便",
+        "青燈黃卷且勤勞"
+      ],
+      "keywords": [
+        "条件",
+        "学习",
+        "蓄力"
+      ],
+      "originalInterpretation": "想飞高却风未便，转向青灯黄卷的勤劳。环境不足时先补能力，等条件变化再承担更大的动作。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 56,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F54&oldid=1496566",
+        "revisionId": 1496566,
+        "revisionTimestamp": "2018-08-25T10:49:13Z",
+        "wikitextSha256": "f7a5816ad73f338115cb9c8f12b007b8804609daaefa7bfdfe5c74af36832bf4",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-051-055.jpg",
+        "notes": [
+          {
+            "field": "poemLines[2]",
+            "transcriptionReading": "爭奈承流風未便",
+            "scanReading": "爭奈乘風流未便",
+            "chosenReading": "爭奈乘風流未便",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-055",
+      "number": 55,
+      "title": "第55签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "勤耕力作莫蹉跎",
+        "衣食隨時安分過",
+        "縱使經商收倍利",
+        "不如逐歲廩禾多"
+      ],
+      "keywords": [
+        "稳定",
+        "积累",
+        "比较"
+      ],
+      "originalInterpretation": "勤耕与逐岁廪禾突出稳定积累。比较长期收益、风险和生活需要，不单凭眼前倍利改变全部安排。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 57,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F55&oldid=1496567",
+        "revisionId": 1496567,
+        "revisionTimestamp": "2018-08-25T10:49:22Z",
+        "wikitextSha256": "bca1870f8bf589ef80f850508c10f2e4871ce162366fd1ae8aeebce91e8afd52",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-051-055.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-056",
+      "number": 56,
+      "title": "第56签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "心頭理曲強詞遮",
+        "直欲欺官行路斜",
+        "一旦醜形臨月鏡",
+        "身投憲網莫咨嗟"
+      ],
+      "keywords": [
+        "事实",
+        "责任",
+        "修正"
+      ],
+      "originalInterpretation": "强词掩饰最终遇到明镜，强调问题无法靠辩解消除。把事实和责任说清楚，及时修正错误与不当路径。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 58,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F56&oldid=1496568",
+        "revisionId": 1496568,
+        "revisionTimestamp": "2018-08-25T10:49:32Z",
+        "wikitextSha256": "f636ff6ed9ae63cd93b35ce14e07588bb136f1bba0dc6ad00fb7b1dc96d799ad",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-056-060.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-057",
+      "number": 57,
+      "title": "第57签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "事端百出慮雖長",
+        "莫聽人言自主張",
+        "一著仙機君記取",
+        "紛紛鬧裏更思量"
+      ],
+      "keywords": [
+        "判断",
+        "复核",
+        "冷静"
+      ],
+      "originalInterpretation": "纷乱中要自主张，也要记得重新思量。保留独立判断，给复杂决策设置冷静检查和信息验证的步骤。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 59,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F57&oldid=1496569",
+        "revisionId": 1496569,
+        "revisionTimestamp": "2018-08-25T10:49:41Z",
+        "wikitextSha256": "bc72f8b922858320ac8283f69aa911bcda4d593f76ab23ddbc641c2ffe603d0f",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-056-060.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-058",
+      "number": 58,
+      "title": "第58签",
+      "traditionalGrade": "上吉",
+      "poemLines": [
+        "蘇秦三寸足平生",
+        "富貴功名在此行",
+        "更好修為陰騭事",
+        "前程萬里自通亨"
+      ],
+      "keywords": [
+        "表达",
+        "交涉",
+        "合作"
+      ],
+      "originalInterpretation": "三寸之才与此行发展描写表达和交涉的价值。准备清晰、诚实的沟通，把个人成功与公平合作放在一起。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 60,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F58&oldid=1496570",
+        "revisionId": 1496570,
+        "revisionTimestamp": "2018-08-25T10:49:51Z",
+        "wikitextSha256": "da4ad843d7af74718aa372333837327922c6aaced258190090b96a53e15e1009",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-056-060.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-059",
+      "number": 59,
+      "title": "第59签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "門衰戶冷苦伶仃",
+        "自嘆祈求不一靈",
+        "幸有祖宗陰騭在",
+        "香煙未斷續螟蛉"
+      ],
+      "keywords": [
+        "延续",
+        "支持",
+        "选择"
+      ],
+      "originalInterpretation": "冷落门庭与继续香火反映古人的延续焦虑。现代阅读可转向支持网络与传承选择，不以血缘、生育或继嗣定义人生价值。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 61,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F59&oldid=1496571",
+        "revisionId": 1496571,
+        "revisionTimestamp": "2018-08-25T10:50:00Z",
+        "wikitextSha256": "ad32f9d19bba116d154d1a286eb35b0f940e61763438d5e2bd2639f7e9e605dd",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-056-060.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-060",
+      "number": 60,
+      "title": "第60签",
+      "traditionalGrade": "上上",
+      "poemLines": [
+        "羨君兄弟好名聲",
+        "只管謙撝莫自矜",
+        "丹詔槐黃相逼近",
+        "巍巍科甲兩同登"
+      ],
+      "keywords": [
+        "共同",
+        "谦逊",
+        "支持"
+      ],
+      "originalInterpretation": "兄弟名声与同登科甲相连，同时要求谦逊。让共同成绩成为互相支持的基础，避免把赞誉变成比较和傲慢。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 62,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F60&oldid=1496572",
+        "revisionId": 1496572,
+        "revisionTimestamp": "2018-08-25T10:50:10Z",
+        "wikitextSha256": "930dc7f6f9a0c4b0d525b5430d5649f3ef6586d17ed6a0158d189a5fe27b06f6",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-056-060.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-061",
+      "number": 61,
+      "title": "第61签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "嘯聚山林兇惡儔",
+        "善良無事苦煎憂",
+        "主人大笑出門去",
+        "不用干戈盜賊休"
+      ],
+      "keywords": [
+        "紧张",
+        "缓和",
+        "安全"
+      ],
+      "originalInterpretation": "外部威胁与不用干戈的收束，表现以非对抗方式缓解紧张。先评估事实和安全，再寻找降低冲突的沟通办法。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 63,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F61&oldid=1496573",
+        "revisionId": 1496573,
+        "revisionTimestamp": "2018-08-25T10:50:19Z",
+        "wikitextSha256": "935357f38be211db377db9f5fdde2127f3bab22ce2c80c0b908736fcb0faf328",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-061-065.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-062",
+      "number": 62,
+      "title": "第62签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "百千人面虎狼心",
+        "賴汝干戈用力深",
+        "得勝回時秋漸老",
+        "虎頭城裏喜相尋"
+      ],
+      "keywords": [
+        "投入",
+        "关系",
+        "后续"
+      ],
+      "originalInterpretation": "艰难交锋后的相寻强调投入与合作的后续。确认值得承担的责任及退出条件，胜负之后仍需处理实际关系。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 64,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F62&oldid=1496574",
+        "revisionId": 1496574,
+        "revisionTimestamp": "2018-08-25T10:50:29Z",
+        "wikitextSha256": "cbc7409ba9d3c4b16bc53688650c91bebab36e045cd27c1f8be0ca6d59c23665",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-061-065.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-063",
+      "number": 63,
+      "title": "第63签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "曩時敗北且圖南",
+        "筋力雖衰尚一堪",
+        "欲識生前君大數",
+        "前三三與後三三"
+      ],
+      "keywords": [
+        "受挫",
+        "余地",
+        "调整"
+      ],
+      "originalInterpretation": "先前败退仍可图南，提醒受挫不等于没有余地。根据现有体力与资源调整目标，诗中的三三不直接推算寿命或日期。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 65,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F63&oldid=1496575",
+        "revisionId": 1496575,
+        "revisionTimestamp": "2018-08-25T10:50:38Z",
+        "wikitextSha256": "6184259956e092579cdd154cf5731c25e2b4460f04b14125a7dc222535e54a68",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-061-065.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-064",
+      "number": 64,
+      "title": "第64签",
+      "traditionalGrade": "上上",
+      "poemLines": [
+        "吉人相遇本和同",
+        "況有持謀天水翁",
+        "人力不勞公論協",
+        "事成功倍笑談中"
+      ],
+      "keywords": [
+        "合作",
+        "分工",
+        "信任"
+      ],
+      "originalInterpretation": "相遇和同与持谋之人描述合作产生的助力。明确分工和共同目标，让信任通过持续可检验的行动建立。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 66,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F64&oldid=1496576",
+        "revisionId": 1496576,
+        "revisionTimestamp": "2018-08-25T10:50:47Z",
+        "wikitextSha256": "7b62472a5d5c33e7a9aea38d1b6d9a61dd004e5baaffadaed41bd6ddd752fd22",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-061-065.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-065",
+      "number": 65,
+      "title": "第65签",
+      "traditionalGrade": "上上",
+      "poemLines": [
+        "朔風凜凜正窮冬",
+        "多羨門庭喜氣濃",
+        "更入新春人事後",
+        "衷言方得信先容"
+      ],
+      "keywords": [
+        "沟通",
+        "耐心",
+        "准备"
+      ],
+      "originalInterpretation": "严冬门庭有喜与新春得信，强调缓慢打开的沟通。保持耐心和可靠准备，把积极消息落实到下一步安排。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 67,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F65&oldid=1496577",
+        "revisionId": 1496577,
+        "revisionTimestamp": "2018-08-25T10:50:57Z",
+        "wikitextSha256": "53ece8bd1256afb11610788d8150727dd61e67ff76243f804c55fead8f4c335a",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-061-065.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-066",
+      "number": 66,
+      "title": "第66签",
+      "traditionalGrade": "上上",
+      "poemLines": [
+        "耕耘只可在鄉邦",
+        "何用求謀向外方",
+        "見說今年新運好",
+        "門闌喜氣事雙雙"
+      ],
+      "keywords": [
+        "本地",
+        "资源",
+        "发展"
+      ],
+      "originalInterpretation": "乡邦耕耘与门闌喜气提醒身边资源也有发展空间。先盘点熟悉环境中的机会，再决定是否需要远行另求。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 68,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F66&oldid=1496578",
+        "revisionId": 1496578,
+        "revisionTimestamp": "2018-08-25T10:51:06Z",
+        "wikitextSha256": "ef663763c24221ef4da17f1a6e4942e42feb61fa6d2f2af9ab6992d9f6125389",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-066-070.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-067",
+      "number": 67,
+      "title": "第67签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "纔發君心天已知",
+        "何須問我決狐疑",
+        "願子改圖從孝悌",
+        "不愁家室不相宜"
+      ],
+      "keywords": [
+        "动机",
+        "修整",
+        "关系"
+      ],
+      "originalInterpretation": "刚起心意便被知晓，把犹疑转为改图与关系修整。说明真正的目的，处理身边已经可见的摩擦。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 69,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F67&oldid=1496579",
+        "revisionId": 1496579,
+        "revisionTimestamp": "2018-08-25T10:51:15Z",
+        "wikitextSha256": "42aa5474719d2145c67b651534726a0ecb9230bf97eee1a3d8caf857dd33cfe7",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-066-070.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-068",
+      "number": 68,
+      "title": "第68签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "南販珍珠北販鹽",
+        "年來幾倍貨財添",
+        "勸君止此求田舍",
+        "心欲多時何日厭"
+      ],
+      "keywords": [
+        "节制",
+        "风险",
+        "成果"
+      ],
+      "originalInterpretation": "远近贸易增长之后劝止贪求，强调足够与退出。设定合理目标和风险上限，达到条件后留住已得成果。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 70,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F68&oldid=1496580",
+        "revisionId": 1496580,
+        "revisionTimestamp": "2018-08-25T10:51:25Z",
+        "wikitextSha256": "d8239756247a37a8570f515dfd30162bddea5bc44380abac0a1826ead5050ca1",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-066-070.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-069",
+      "number": 69,
+      "title": "第69签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "捨舟遵路總相宜",
+        "慎勿嬉遊逐貴兒",
+        "一夜樽前兄與弟",
+        "明朝仇敵又相隨"
+      ],
+      "keywords": [
+        "边界",
+        "合作",
+        "核实"
+      ],
+      "originalInterpretation": "同饮兄弟到次日仇敌，提醒表面的亲近不等于稳定合作。核实利益安排与边界，重要决定不在气氛热烈时仓促作出。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 71,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F69&oldid=1496581",
+        "revisionId": 1496581,
+        "revisionTimestamp": "2018-08-25T10:51:34Z",
+        "wikitextSha256": "936d26c4b1e322f218c0fc92df551feb89720b72ef37dbd0340f0927c52f147f",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-066-070.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-070",
+      "number": 70,
+      "title": "第70签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "雷雨風雲各有司",
+        "至誠禱告莫生疑",
+        "與君定約為霖日",
+        "正是蘊隆中伏時"
+      ],
+      "keywords": [
+        "分工",
+        "支持",
+        "行动"
+      ],
+      "originalInterpretation": "雷雨各有其司与等候为霖，描写希望支持适时来到。明确需要的帮助与可采取的行动，不只依靠反复求证安慰。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 72,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F70&oldid=1496582",
+        "revisionId": 1496582,
+        "revisionTimestamp": "2018-08-25T10:51:43Z",
+        "wikitextSha256": "800a778fcabf14726a9a7a8ca9aea856c27f893cb46b2f8bc89004f872667507",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-066-070.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-071",
+      "number": 71,
+      "title": "第71签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "喜鵲簷前報好音",
+        "知君千里欲歸心",
+        "繡幃重結鴛鴦帶",
+        "葉落霜飛寒色侵"
+      ],
+      "keywords": [
+        "团聚",
+        "安排",
+        "环境"
+      ],
+      "originalInterpretation": "好音与归心之后仍有寒色，说明团聚中也需要面对环境。提前沟通归程、家中安排与现实困难。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 73,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F71&oldid=1496583",
+        "revisionId": 1496583,
+        "revisionTimestamp": "2018-08-25T10:51:52Z",
+        "wikitextSha256": "3504ea5c30a37498ec2e323e9d07302d3b944f285c471bda5d143593bccbbea1",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-071-075.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-072",
+      "number": 72,
+      "title": "第72签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "河渠傍路有高低",
+        "可歎長途日已西",
+        "縱有榮華好時節",
+        "直須猴犬換金雞"
+      ],
+      "keywords": [
+        "起伏",
+        "时间",
+        "取舍"
+      ],
+      "originalInterpretation": "河渠高低与日已西写长期行程的起伏。重新检查时间和体力预算，避免把已投入的成本当作必须继续的理由。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 74,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F72&oldid=1496584",
+        "revisionId": 1496584,
+        "revisionTimestamp": "2018-08-25T10:52:02Z",
+        "wikitextSha256": "02ab1aae125bf320db5a7e69d0df69bbbeef65f5e415920d975b38c4c157003a",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-071-075.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-073",
+      "number": 73,
+      "title": "第73签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "憶昔蘭房分半釵",
+        "而今忽把信音乖",
+        "痴心指望成連理",
+        "到底誰知事不諧"
+      ],
+      "keywords": [
+        "旧约",
+        "回应",
+        "意愿"
+      ],
+      "originalInterpretation": "半钗旧约与信音改变，提醒愿望和双方回应可能不同步。尊重对方现时意愿，把关系状态说清楚后再决定是否继续等待。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 75,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F73&oldid=1496585",
+        "revisionId": 1496585,
+        "revisionTimestamp": "2018-08-25T10:52:11Z",
+        "wikitextSha256": "8a2e9f9d439bc70aa406bb188ef2bfcedf8af63f5c1bf0fbd938d9c22821709d",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-071-075.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-074",
+      "number": 74,
+      "title": "第74签",
+      "traditionalGrade": "上吉",
+      "poemLines": [
+        "崔巍崔魏復崔巍",
+        "履險如夷去復來",
+        "身似菩提心似鏡",
+        "長江一道放春回"
+      ],
+      "keywords": [
+        "难处",
+        "准备",
+        "清明"
+      ],
+      "originalInterpretation": "高峻反复而行险如夷，把稳定内心与通过难处相连。检查路线与准备，保持清楚、可解释的判断，不把平安当作免检保证。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 76,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F74&oldid=1496586",
+        "revisionId": 1496586,
+        "revisionTimestamp": "2018-08-25T10:52:20Z",
+        "wikitextSha256": "bd07c58a54ba1319e8cf9d811e8092e1c6286a85e14d29b75b1782fb64a4d4d1",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-071-075.jpg",
+        "notes": [
+          {
+            "field": "poemLines[3]",
+            "transcriptionReading": "長安一道放春回",
+            "scanReading": "長江一道放春回",
+            "chosenReading": "長江一道放春回",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          },
+          {
+            "field": "poemLines[0]",
+            "scanReading": "崔巍崔魏復崔巍（巍/魏字形相近）",
+            "chosenReading": "崔巍崔魏復崔巍",
+            "reason": "固定转录所读；保留巍/魏的字形说明，不统一为现代通行写法。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-075",
+      "number": 75,
+      "title": "第75签",
+      "traditionalGrade": "中吉",
+      "poemLines": [
+        "生前結得好姻緣",
+        "一笑相逢情自親",
+        "相當人物無高下",
+        "得意休論富與貧"
+      ],
+      "keywords": [
+        "平等",
+        "尊重",
+        "配合"
+      ],
+      "originalInterpretation": "相逢自亲与不论贫富强调关系中的平等。关注互相尊重和生活上的配合，少用身份条件替代真实相处。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 77,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F75&oldid=1496587",
+        "revisionId": 1496587,
+        "revisionTimestamp": "2018-08-25T10:52:29Z",
+        "wikitextSha256": "164cc8bd8c13da177c9e57496371bbb363d532fb29c3e1125d666f25cdb31c54",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-071-075.jpg",
+        "notes": [
+          {
+            "field": "poemLines[0]",
+            "transcriptionReading": "生前結得好緣姻",
+            "scanReading": "生前結得好姻緣",
+            "chosenReading": "生前結得好姻緣",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-076",
+      "number": 76,
+      "title": "第76签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "三千法律八千文",
+        "此事何如說與君",
+        "善惡兩途君自作",
+        "一生禍福此中分"
+      ],
+      "keywords": [
+        "规则",
+        "选择",
+        "责任"
+      ],
+      "originalInterpretation": "繁多法律最终落在人的选择，强调行为与后果相连。了解适用规则、核对专业意见，再承担自己选择的责任。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 78,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F76&oldid=1496588",
+        "revisionId": 1496588,
+        "revisionTimestamp": "2018-08-25T10:52:39Z",
+        "wikitextSha256": "9d4f92fdf10e21c43cf80900613bb2c6e7104a5c80abc7a072d0a6baa5debd87",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-076-080.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-077",
+      "number": 77,
+      "title": "第77签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "木有根荄水有源",
+        "君當自此究其原",
+        "莫隨道路人閒話",
+        "訟到終凶是至言"
+      ],
+      "keywords": [
+        "根源",
+        "事实",
+        "约定"
+      ],
+      "originalInterpretation": "木有根、水有源提醒问题要追到起点。核实原始事实与约定，减少被路上传言推动的反复争执。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 79,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F77&oldid=1496589",
+        "revisionId": 1496589,
+        "revisionTimestamp": "2018-08-25T10:52:48Z",
+        "wikitextSha256": "1534027e9e59866702f09411c33e55cfc4c8dae8c03f6707f23a05284b599a07",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-076-080.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-078",
+      "number": 78,
+      "title": "第78签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "家道豐腴自飽溫",
+        "也須肚裏立乾坤",
+        "財多害己君當省",
+        "福有胚胎禍有門"
+      ],
+      "keywords": [
+        "管理",
+        "资源",
+        "边界"
+      ],
+      "originalInterpretation": "家道丰腴仍需肚里立乾坤，强调富足后的自我管理。给资源使用、关系边界和风险设置稳定规则。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 80,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F78&oldid=1496590",
+        "revisionId": 1496590,
+        "revisionTimestamp": "2018-08-25T10:52:57Z",
+        "wikitextSha256": "ae31676bd4092f51b1a0b9810707b2df15abe52abbfd153febf169628209237a",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-076-080.jpg",
+        "notes": [
+          {
+            "field": "poemLines[0]",
+            "transcriptionReading": "家道豊腴自飽溫",
+            "scanReading": "家道豐腴自飽溫",
+            "chosenReading": "家道豐腴自飽溫",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-079",
+      "number": 79,
+      "title": "第79签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "乾亥來龍仔細看",
+        "坎居午向自當安",
+        "若移丑艮陰陽逆",
+        "門戶凋零家道難"
+      ],
+      "keywords": [
+        "方向",
+        "环境",
+        "条件"
+      ],
+      "originalInterpretation": "龙向与阴阳逆写位置和方向需要对应条件。保留其传统风水语境，现代阅读先检查实际环境与居住需要，不据此承诺家运。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 81,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F79&oldid=1496591",
+        "revisionId": 1496591,
+        "revisionTimestamp": "2018-08-25T10:53:07Z",
+        "wikitextSha256": "2e3e24491ceba15c64f048ec1106ed1ae949585b0acc7fd2fb17ca85215ffbfc",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-076-080.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-080",
+      "number": 80,
+      "title": "第80签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "一朝無事忽遭官",
+        "也是門衰墳未安",
+        "改換陰陽移禍福",
+        "勸君莫作等閒看"
+      ],
+      "keywords": [
+        "隐患",
+        "证据",
+        "支持"
+      ],
+      "originalInterpretation": "突遭官事与改换安排表现对隐患的警觉。用现实证据排查问题，涉及纠纷取得专业支持，不把坟地解释当作事实原因。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 82,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F80&oldid=1496592",
+        "revisionId": 1496592,
+        "revisionTimestamp": "2018-08-25T10:53:16Z",
+        "wikitextSha256": "1ee4dcae21ae875c578c6c4909314533565f91f4cec14152b9a72bdf8784420c",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-076-080.jpg",
+        "notes": [
+          {
+            "field": "traditionalGrade",
+            "transcriptionReading": "中平",
+            "scanReading": "下下",
+            "chosenReading": "下下",
+            "reason": "等级依PDF原刻标题。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-081",
+      "number": 81,
+      "title": "第81签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "假君財物自當還",
+        "謀賴心欺他自奸",
+        "幸有當堂明月鏡",
+        "請來對照破機關"
+      ],
+      "keywords": [
+        "偿还",
+        "账目",
+        "公正"
+      ],
+      "originalInterpretation": "借来的财物与明镜相对，强调偿还与可核实的公正。把账目、约定和责任整理清楚，避免用巧辩拖延履行。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 83,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F81&oldid=1496593",
+        "revisionId": 1496593,
+        "revisionTimestamp": "2018-08-25T10:53:25Z",
+        "wikitextSha256": "b3f6544c1669b571eb4279948a8e1fbf41ba181aebea0f89efab83b39aac6a94",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-081-085.jpg",
+        "notes": [
+          {
+            "field": "poemLines[2]",
+            "transcriptionReading": "幸有高臺明月鏡",
+            "scanReading": "幸有當堂明月鏡",
+            "chosenReading": "幸有當堂明月鏡",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-082",
+      "number": 82,
+      "title": "第82签",
+      "traditionalGrade": "上吉",
+      "poemLines": [
+        "彼亦儔中一輩賢",
+        "勸君特達與周旋",
+        "此時賓主歡相會",
+        "他日王侯卻並肩"
+      ],
+      "keywords": [
+        "平等",
+        "合作",
+        "尊重"
+      ],
+      "originalInterpretation": "宾主相会与日后并肩描写平等相待带来的合作可能。尊重对方已有能力，认真经营当前沟通与共同事情。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 84,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F82&oldid=1496594",
+        "revisionId": 1496594,
+        "revisionTimestamp": "2018-08-25T10:53:35Z",
+        "wikitextSha256": "2c6a912c7585e503c1775b3a0a8a48dd6d75891c5cfbf9070096c3a98c52f60a",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-081-085.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-083",
+      "number": 83,
+      "title": "第83签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "隨分堂前赴粥饘",
+        "何須妄想苦憂煎",
+        "主張門戶成難事",
+        "百歲安閒得幾年"
+      ],
+      "keywords": [
+        "日常",
+        "责任",
+        "分步"
+      ],
+      "originalInterpretation": "堂前粥饘与门户难担提醒基本生活和责任的分量。先稳住日常需要，把超出当前能力的愿望拆成较小步骤。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 85,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F83&oldid=1496595",
+        "revisionId": 1496595,
+        "revisionTimestamp": "2018-08-25T10:53:44Z",
+        "wikitextSha256": "04e8370405e0593a45169cf426a9a5a453adf3ccbfd0a51b0401120755818830",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-081-085.jpg",
+        "notes": [
+          {
+            "field": "poemLines[2]",
+            "transcriptionReading": "主張門戶誠難事",
+            "scanReading": "主張門戶成難事",
+            "chosenReading": "主張門戶成難事",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          },
+          {
+            "field": "traditionalGrade",
+            "transcriptionReading": "下下",
+            "scanReading": "中平",
+            "chosenReading": "中平",
+            "reason": "等级依PDF原刻标题。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-084",
+      "number": 84,
+      "title": "第84签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "箇中事緒更紛然",
+        "當局須知一著先",
+        "長舌婦人休酷聽",
+        "力行禮義要心堅"
+      ],
+      "keywords": [
+        "判断",
+        "原则",
+        "核实"
+      ],
+      "originalInterpretation": "事务纷乱而须知先手，强调主动判断与坚定原则。诗中的性别称谓属于历史语境，现实中对任何人的传言都应同样核实。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 86,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F84&oldid=1496596",
+        "revisionId": 1496596,
+        "revisionTimestamp": "2018-08-25T10:53:53Z",
+        "wikitextSha256": "10c8e509b2fdbc8b898cae7db4223a46fd98fa1d6d0f362d90870c0cf841734c",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-081-085.jpg",
+        "notes": [
+          {
+            "field": "traditionalGrade",
+            "transcriptionReading": "中平",
+            "scanReading": "下下",
+            "chosenReading": "下下",
+            "reason": "等级依PDF原刻标题。"
+          },
+          {
+            "field": "poemLines[0]",
+            "scanReading": "箇中事緒更紛狀",
+            "chosenReading": "箇中事緒更紛然",
+            "reason": "原刻末字为狀；采用固定转录的然作明确校订，原刻读法留在记录。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-085",
+      "number": 85,
+      "title": "第85签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "一春風雨正瀟瀟",
+        "千里行人去路遙",
+        "移寡就多君得計",
+        "如何歸路轉無聊"
+      ],
+      "keywords": [
+        "得失",
+        "远行",
+        "退路"
+      ],
+      "originalInterpretation": "风雨远行与移寡就多形成得失并存的图景。比较增长收益与离开熟悉支持的代价，给自己留一条可返回的路径。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 87,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F85&oldid=1496597",
+        "revisionId": 1496597,
+        "revisionTimestamp": "2018-08-25T10:54:02Z",
+        "wikitextSha256": "6f0b6348370e426c92e7ae7653a0b87790ed51eba77f95b7f90aeec254a24726",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-081-085.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-086",
+      "number": 86,
+      "title": "第86签",
+      "traditionalGrade": "上上",
+      "poemLines": [
+        "一般行貨好招邀",
+        "積少成多自富饒",
+        "常把他人比自己",
+        "管須日後勝今朝"
+      ],
+      "keywords": [
+        "公平",
+        "经营",
+        "积累"
+      ],
+      "originalInterpretation": "积少成多与常把他人比自己强调公平经营。把客户或伙伴的需要纳入安排，让长期信任支持稳步积累。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 88,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F86&oldid=1496598",
+        "revisionId": 1496598,
+        "revisionTimestamp": "2018-08-25T10:54:12Z",
+        "wikitextSha256": "f3decf979d2cca1aaee3970b6c617c9dbcd9dead3c7dd322937dfc5a4805c78c",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-086-090.jpg",
+        "notes": [
+          {
+            "field": "poemLines[0]",
+            "transcriptionReading": "一舟行貨好招邀",
+            "scanReading": "一般行貨好招邀",
+            "chosenReading": "一般行貨好招邀",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-087",
+      "number": 87,
+      "title": "第87签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "陰裏詳看怪爾曹",
+        "舟中敵國笑中刀",
+        "藩籬剖破渾無事",
+        "一種天生惜羽毛"
+      ],
+      "keywords": [
+        "透明",
+        "利益",
+        "核实"
+      ],
+      "originalInterpretation": "舟中对手与笑中刀提醒信息和利益可能不透明。检查权限、承诺和潜在冲突，减少仅凭亲近表象的信任。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 89,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F87&oldid=1496599",
+        "revisionId": 1496599,
+        "revisionTimestamp": "2018-08-25T10:54:21Z",
+        "wikitextSha256": "c61e10c97351dd5d9dedfc14a8185549177325a36775440940f37b291bde3cf6",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-086-090.jpg",
+        "notes": [
+          {
+            "field": "poemLines[1]",
+            "transcriptionReading": "舟中敵圖笑中刀",
+            "scanReading": "舟中敵國笑中刀",
+            "chosenReading": "舟中敵國笑中刀",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-088",
+      "number": 88,
+      "title": "第88签",
+      "traditionalGrade": "上吉",
+      "poemLines": [
+        "從前作事總徒勞",
+        "纔見新春時漸遭",
+        "百計營求都得意",
+        "更須守己莫心高"
+      ],
+      "keywords": [
+        "好转",
+        "分寸",
+        "持续"
+      ],
+      "originalInterpretation": "徒劳之后时运渐遭仍须守己，强调好转时保持分寸。继续有效工作，留意实际进展，不因一次顺利就扩大所有承诺。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 90,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F88&oldid=1496600",
+        "revisionId": 1496600,
+        "revisionTimestamp": "2018-08-25T10:54:31Z",
+        "wikitextSha256": "d7ceee04f992fc7b690f2e0d78040599e00972b95c4e51999f071e9c55cfa317",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-086-090.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-089",
+      "number": 89,
+      "title": "第89签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "樽前無事且高歌",
+        "時未來時奈若何",
+        "白馬渡江嘶日暮",
+        "虎頭城裏看巍峨"
+      ],
+      "keywords": [
+        "等待",
+        "休整",
+        "时机"
+      ],
+      "originalInterpretation": "樽前高歌与暮江景象把等待和休整并置。接受短期不能推动的部分，保持生活节奏，再核实行动时机。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 91,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F89&oldid=1496601",
+        "revisionId": 1496601,
+        "revisionTimestamp": "2018-08-25T10:54:40Z",
+        "wikitextSha256": "cc6342c8b92526c6e71451ab76799fd4870d50428e5764cbc0ddc801896adbf6",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-086-090.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-090",
+      "number": 90,
+      "title": "第90签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "崆峒城裏事如麻",
+        "無事如君有幾家",
+        "勸汝不須勤致禱",
+        "徒勞生事苦咨嗟"
+      ],
+      "keywords": [
+        "安稳",
+        "简化",
+        "恢复"
+      ],
+      "originalInterpretation": "别处事如麻而自己暂安，提醒不要无端扩大问题。确认真正需要处理的事，让安稳成为整理和恢复的时间。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 92,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F90&oldid=1496602",
+        "revisionId": 1496602,
+        "revisionTimestamp": "2018-08-25T10:54:49Z",
+        "wikitextSha256": "d4ea8597e42e172e15fad311e357d58ee8e480b487fb518b549ad111d8545647",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-086-090.jpg",
+        "notes": [
+          {
+            "field": "poemLines[3]",
+            "transcriptionReading": "徒勞生事苦咨嘆",
+            "scanReading": "徒勞生事苦咨嗟",
+            "chosenReading": "徒勞生事苦咨嗟",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-091",
+      "number": 91,
+      "title": "第91签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "佛說淘沙始見金",
+        "只緣君子不勞心",
+        "榮華總得詩書效",
+        "妙裏工夫仔細尋"
+      ],
+      "keywords": [
+        "工夫",
+        "筛选",
+        "质量"
+      ],
+      "originalInterpretation": "淘沙见金把成果与细致工夫联系起来。通过学习、筛选和复核提高质量，别让反复焦虑替代实际打磨。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 93,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F91&oldid=1496603",
+        "revisionId": 1496603,
+        "revisionTimestamp": "2018-08-25T10:54:58Z",
+        "wikitextSha256": "2f3b04f91874dbc7a720efcabc2db0d30a2c54f0dceb8e95756b04d179c50f61",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-091-095.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-092",
+      "number": 92,
+      "title": "第92签",
+      "traditionalGrade": "下下",
+      "poemLines": [
+        "今年禾穀不如前",
+        "物價喧騰倍昔年",
+        "災數流行多疫癘",
+        "一陽復後始安全"
+      ],
+      "keywords": [
+        "波动",
+        "预算",
+        "信息"
+      ],
+      "originalInterpretation": "粮价与灾数描写外部波动，表达守候恢复的愿望。现代安排以真实信息、预算和公共服务提示为准，不用签诗预测灾病。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 94,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F92&oldid=1496604",
+        "revisionId": 1496604,
+        "revisionTimestamp": "2018-08-25T10:55:08Z",
+        "wikitextSha256": "15dfc4963295a5ecfbc3847e7485ff1120578cf69b2e14bff6f85a34a7a688c9",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-091-095.jpg",
+        "notes": [
+          {
+            "field": "poemLines[1]",
+            "transcriptionReading": "物價喧騰倍百年",
+            "scanReading": "物價喧騰倍昔年",
+            "chosenReading": "物價喧騰倍昔年",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-093",
+      "number": 93,
+      "title": "第93签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "春來雨水大連綿",
+        "入夏晴乾雨又愆",
+        "節氣直交三伏後",
+        "喜逢滂沛足田園"
+      ],
+      "keywords": [
+        "调节",
+        "环境",
+        "观察"
+      ],
+      "originalInterpretation": "雨多与晴旱交替之后田园得润，强调环境变化中的调节。根据实际条件调整安排，避免把固定季节意象当作现实天气预报。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 95,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F93&oldid=1496605",
+        "revisionId": 1496605,
+        "revisionTimestamp": "2018-08-25T10:55:17Z",
+        "wikitextSha256": "fa2b4fefd54a11c57430f67a55d866b92facb945f4d900ee13321ea52617a18d",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-091-095.jpg",
+        "notes": [
+          {
+            "field": "poemLines[0]",
+            "transcriptionReading": "春來雨水太連綿",
+            "scanReading": "春來雨水大連綿",
+            "chosenReading": "春來雨水大連綿",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          },
+          {
+            "field": "poemLines[2]",
+            "transcriptionReading": "節氣直交三伏始",
+            "scanReading": "節氣直交三伏後",
+            "chosenReading": "節氣直交三伏後",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-094",
+      "number": 94,
+      "title": "第94签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "一般器用與人同",
+        "巧斲輪輿梓匠工",
+        "凡事有緣且隨分",
+        "秋冬方遇主人翁"
+      ],
+      "keywords": [
+        "技艺",
+        "匹配",
+        "作品"
+      ],
+      "originalInterpretation": "器用相同而巧匠不同，强调技艺需要匹配的使用场合。继续打磨作品，寻找懂得其价值的人和明确需求。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 96,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F94&oldid=1496606",
+        "revisionId": 1496606,
+        "revisionTimestamp": "2018-08-25T10:55:26Z",
+        "wikitextSha256": "a104a7c03e19ea1563d2fc14577a47b9ea5b600ccecb81306193df31d649058a",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-091-095.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-095",
+      "number": 95,
+      "title": "第95签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "知君袖裏有驪珠",
+        "生不逢辰亦強圖",
+        "可歎頭顱已如許",
+        "而今方得貴人扶"
+      ],
+      "keywords": [
+        "能力",
+        "展示",
+        "联系"
+      ],
+      "originalInterpretation": "袖里骊珠与迟得贵人写能力暂未被看到。整理可展示的成果，拓展合适联系，不用年龄给自己设绝对期限。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 97,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F95&oldid=1496607",
+        "revisionId": 1496607,
+        "revisionTimestamp": "2018-08-25T10:55:36Z",
+        "wikitextSha256": "3d982f647b156637cd8241bd1465930b5852d8acadc5be98a2cbe9275fe88d81",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-091-095.jpg",
+        "notes": [
+          {
+            "field": "poemLines[0]",
+            "transcriptionReading": "知君袖內有驪珠",
+            "scanReading": "知君袖裏有驪珠",
+            "chosenReading": "知君袖裏有驪珠",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-096",
+      "number": 96,
+      "title": "第96签",
+      "traditionalGrade": "上吉",
+      "poemLines": [
+        "婚姻子息莫嫌遲",
+        "但把精神仗佛持",
+        "四十年前須報應",
+        "功圓行滿育馨兒"
+      ],
+      "keywords": [
+        "耐心",
+        "关系",
+        "长期"
+      ],
+      "originalInterpretation": "子息迟来与功圆行满属于传统家庭愿望的表达。现代阅读可转向耐心与长期关系经营，不据诗句判断怀孕、胎儿或生育时间。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 98,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F96&oldid=1496608",
+        "revisionId": 1496608,
+        "revisionTimestamp": "2018-08-25T10:55:45Z",
+        "wikitextSha256": "3a52b776b48026322dd1cc5d7e8b525bc6de64f0a7008a09471024b1b258e6e1",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-096-100.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-097",
+      "number": 97,
+      "title": "第97签",
+      "traditionalGrade": "上上",
+      "poemLines": [
+        "五十功名心已灰",
+        "那知富貴逼人來",
+        "更行好事存方寸",
+        "壽比岡陵位鼎台"
+      ],
+      "keywords": [
+        "积累",
+        "回应",
+        "价值"
+      ],
+      "originalInterpretation": "心灰之后富贵逼来，提醒长久积累也可能较晚获得回应。保留可用的经验与支持，同时持续做合乎自己价值的事。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 99,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F97&oldid=1496609",
+        "revisionId": 1496609,
+        "revisionTimestamp": "2018-08-25T10:55:54Z",
+        "wikitextSha256": "546ed689a8e4d46ad360d7aea5bdbf76c242367a38024e99bd321fc5c7e88cdd",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-096-100.jpg",
+        "notes": []
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-098",
+      "number": 98,
+      "title": "第98签",
+      "traditionalGrade": "中平",
+      "poemLines": [
+        "經營百出費精神",
+        "南北奔馳運未新",
+        "玉兔交時當得意",
+        "恰如枯木再逢春"
+      ],
+      "keywords": [
+        "疲惫",
+        "聚焦",
+        "复苏"
+      ],
+      "originalInterpretation": "南北经营却运未新，枯木逢春描写疲惫后的复苏愿望。减少分散投入，先检查最有效的一条路径，再等待可验证的变化。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 100,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F98&oldid=1496610",
+        "revisionId": 1496610,
+        "revisionTimestamp": "2018-08-25T10:56:04Z",
+        "wikitextSha256": "efaaadf8872506196e8b23286b87f0ebfac6e241e42d84b73db20a6feb7f1e25",
+        "checkedOn": "2026-10-07",
+        "status": "damaged_glyphs_restored",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-096-100.jpg",
+        "notes": [
+          {
+            "field": "poemLines[0:2]",
+            "scanReading": "經營百出費□□／□□□馳運未新（扫描磨损）",
+            "chosenReading": "經營百出費精神／南北奔馳運未新",
+            "reason": "第100页前两句局部磨损，以關聖帝君靈籤/98固定修订补足；道藏/98第二句相同，第一句有經商/經營异文，未混换本包首字。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-099",
+      "number": 99,
+      "title": "第99签",
+      "traditionalGrade": "上上",
+      "poemLines": [
+        "貴人相遇水雲鄉",
+        "冷淡交情滋味長",
+        "黃閣開時延故客",
+        "驊騮應得驟康莊"
+      ],
+      "keywords": [
+        "长期",
+        "联系",
+        "能力"
+      ],
+      "originalInterpretation": "冷淡交情滋味长与故客再受邀请，强调关系不靠一时热络。经营可靠的长期联系，机会到来时以实际能力回应。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 101,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F99&oldid=1496611",
+        "revisionId": 1496611,
+        "revisionTimestamp": "2018-08-25T10:56:13Z",
+        "wikitextSha256": "ab7605b74d01084ebd0c20f03439f52a8d99aded029733f6f4a80bc00f6f1d70",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated_with_documented_variants",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-096-100.jpg",
+        "notes": [
+          {
+            "field": "poemLines[0]",
+            "transcriptionReading": "貴人遭遇水雲鄉",
+            "scanReading": "貴人相遇水雲鄉",
+            "chosenReading": "貴人相遇水雲鄉",
+            "reason": "逐页图像核对后依所选清刊本，不无声混用通行版本。"
+          },
+          {
+            "field": "poemLines[0]",
+            "scanReading": "貴人相遇木雲鄉",
+            "chosenReading": "貴人相遇水雲鄉",
+            "reason": "原刻木；固定转录读水，采用水雲鄉作明确校订；相遇依底本，非转录的遭遇。"
+          }
+        ]
+      },
+      "assets": []
+    },
+    {
+      "id": "guandi-qing-100",
+      "number": 100,
+      "title": "第100签",
+      "traditionalGrade": "上上",
+      "poemLines": [
+        "我本天仙雷雨師",
+        "吉凶禍福我先知",
+        "至誠禱祝皆靈應",
+        "抽得終籤百事宜"
+      ],
+      "keywords": [
+        "收束",
+        "复盘",
+        "行动"
+      ],
+      "originalInterpretation": "终签写百事宜与周而复始的收束，适合回看本轮问题。把得到的启发转成具体行动和复盘节点，不因圆满措辞免去现实检查。",
+      "interpretationLicense": "MIT",
+      "provenance": {
+        "scanSourceId": "harvard-53239458-qing",
+        "pdfPage": 102,
+        "transcriptionUrl": "https://zh.wikisource.org/w/index.php?title=%E9%97%9C%E8%81%96%E5%B8%9D%E5%90%9B%E9%9D%88%E7%B1%A4%2F100&oldid=1496612",
+        "revisionId": 1496612,
+        "revisionTimestamp": "2018-08-25T10:56:22Z",
+        "wikitextSha256": "d06637deeb0bd590e526dde2533e245f9a0f74e5353bb40e96f5d6bbb1c8ef51",
+        "checkedOn": "2026-10-07",
+        "status": "scan_collated",
+        "reviewKind": "agent_visual_collation",
+        "reviewSheet": "sources/review/check-096-100.jpg",
+        "notes": []
+      },
+      "assets": []
+    }
+  ]
+}

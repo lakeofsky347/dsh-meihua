@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="480" viewBox="0 0 300 480" role="img" aria-labelledby="title desc">
+<title id="title">14 狐狸 · Fox</title><desc id="desc">问象原创雷诺曼几何线描牌图，MIT许可。传统符号编号参考发行者牌组指南，图形不复制其插图。</desc>
+<rect x="3" y="3" width="294" height="474" rx="24" fill="#f9f4e8" stroke="#517d79" stroke-width="3"/>
+<rect x="14" y="14" width="272" height="452" rx="18" fill="none" stroke="#c5ad79" stroke-width="1"/>
+<text x="34" y="56" fill="#315f5b" font-family="sans-serif" font-size="24" font-weight="600">14</text>
+<path d="M246 32l9 9-9 9-9-9z" fill="none" stroke="#a58852" stroke-width="1.6"/>
+<circle cx="150" cy="210" r="111" fill="#e5eee4"/>
+<g transform="translate(50 108)" fill="none" stroke="#315f5b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M47 68 53 30l33 29 27-1 34-28 7 40-27 56-28 19-30-19zM61 70l16 3m50 0 15-6M100 116v18M90 114l10 5 10-6"/><path d="M71 113 58 92m70 19 14-21M75 143q-29 35 2 29 26-6 59-11 44-7 25-38-4 20-24 21"/><circle cx="77" cy="85" r="3"/><circle cx="127" cy="85" r="3"/></g>
+<path d="M90 347h120" stroke="#c5ad79" stroke-width="1.2"/>
+<text x="150" y="390" text-anchor="middle" fill="#284f4c" font-family="sans-serif" font-size="30" font-weight="600">狐狸</text>
+<text x="150" y="422" text-anchor="middle" fill="#6c8076" font-family="sans-serif" font-size="17" letter-spacing="1">FOX</text>
+<text x="150" y="454" text-anchor="middle" fill="#a58b5b" font-family="sans-serif" font-size="10" letter-spacing="3">问象 · LENORMAND</text>
+</svg>

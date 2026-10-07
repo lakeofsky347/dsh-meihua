@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:wenxiang:lot-library:1",
+  "title": "问象固定签库内容包",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "libraryId", "version", "displayName", "entryCount", "editorialPolicy", "lots"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "libraryId": {"const": "guandi-qing-collated-100"},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "displayName": {"type": "string", "minLength": 1},
+    "entryCount": {"const": 100},
+    "editorialPolicy": {"type": "string", "minLength": 20},
+    "lots": {
+      "type": "array", "minItems": 100, "maxItems": 100,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "number", "title", "traditionalGrade", "poemLines", "keywords", "originalInterpretation", "interpretationLicense", "provenance", "assets"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^guandi-qing-[0-9]{3}$"},
+          "number": {"type": "integer", "minimum": 1, "maximum": 100},
+          "title": {"type": "string", "minLength": 1},
+          "traditionalGrade": {"enum": ["大吉", "上上", "上吉", "上平", "中吉", "中平", "下吉", "下平", "下下"]},
+          "poemLines": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"type": "string", "minLength": 7, "maxLength": 7}},
+          "keywords": {"type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "originalInterpretation": {"type": "string", "minLength": 20, "maxLength": 250},
+          "interpretationLicense": {"const": "MIT"},
+          "assets": {"type": "array", "maxItems": 0},
+          "provenance": {
+            "type": "object", "additionalProperties": false,
+            "required": ["scanSourceId", "pdfPage", "transcriptionUrl", "revisionId", "revisionTimestamp", "wikitextSha256", "checkedOn", "status", "reviewKind", "reviewSheet", "notes"],
+            "properties": {
+              "scanSourceId": {"const": "harvard-53239458-qing"},
+              "pdfPage": {"type": "integer", "minimum": 3, "maximum": 102},
+              "transcriptionUrl": {"type": "string", "format": "uri"},
+              "revisionId": {"type": "integer", "minimum": 1},
+              "revisionTimestamp": {"type": "string", "format": "date-time"},
+              "wikitextSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "checkedOn": {"const": "2026-10-07"},
+              "status": {"enum": ["scan_collated", "scan_collated_with_documented_variants", "damaged_glyphs_restored"]},
+              "reviewKind": {"const": "agent_visual_collation"},
+              "reviewSheet": {"type": "string", "pattern": "^sources/review/check-[0-9]{3}-[0-9]{3}\\.jpg$"},
+              "notes": {"type": "array", "items": {"type": "object", "required": ["field", "scanReading", "chosenReading", "reason"], "properties": {"field": {"type": "string"}, "scanReading": {"type": "string"}, "transcriptionReading": {"type": "string"}, "chosenReading": {"type": "string"}, "reason": {"type": "string"}}, "additionalProperties": false}}
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "checkedOn": "2026-10-07",
+  "result": "PASS",
+  "schemaValidator": "validate.mjs: explicit declared-keyword subset; unsupported keywords rejected",
+  "schemaValidation": "PASS_DECLARED_KEYWORDS",
+  "fullDraft202012Conformance": "NOT_CLAIMED",
+  "entryCount": 100,
+  "lineCount": 400,
+  "automatedContentTests": 7,
+  "automatedContentTestsStatus": "PASS",
+  "agentScanCollation": "100 lots / PDF pages3-102 / 20 proof sheets",
+  "documentedVariantEntries": 34,
+  "damagedGlyphRestorations": [
+    98
+  ],
+  "humanSecondReview": "NOT_CHECKED",
+  "runtimeModule": "NOT_IMPLEMENTED_G8_CONTENT_SCOPE",
+  "lotsSha256": "1f8ef3a997330f94f923e53835d22e8d7ece874aac6ca3b9fcb55d7636fd41db",
+  "manifestSha256": "a071d1ff2a42908aad22aafae255d9db1b55f6a0f5414066c2ab2e3b7a68d1f7"
+}

@@ -1,4 +1,5 @@
-export type ModuleId = 'meihua' | 'tarot';
+import type {ModuleId} from '../shared/modules.ts';
+export type {ModuleId} from '../shared/modules.ts';
 export type ViewId = 'portal' | ModuleId;
 export interface Journey { from:ViewId; to:ViewId; startedAt:number; duration:number; origin:{x:number;y:number} }
 export interface HubState { view:ViewId; journey:Journey|null; scheme:'light'|'dark'; error:string }

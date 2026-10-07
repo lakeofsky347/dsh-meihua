@@ -18,7 +18,7 @@ interface ConversationProps {
   busy:boolean;
   pending:boolean;
   draft?:string;
-  theme:'mh'|'tr';
+  theme:string;
   t:Translate;
   onDraftChange?:(question:string)=>void;
   onSend:(question:string)=>Promise<boolean|void>;

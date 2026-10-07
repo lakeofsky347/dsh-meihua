@@ -6,17 +6,22 @@ import { readingIsBusy } from '../shared/protocol.ts';
 import { initialMeihuaDraft, type MeihuaDraft, type PageState } from './controller.ts';
 import type { LocaleKey, Translate } from './locales.ts';
 import { Conversation, formatConversationCopy } from './Conversation.tsx';
+import { BackgroundControls, type BackgroundOptions } from './MemoryPanel.tsx';
+import type { MemoryPageState } from './memory-controller.ts';
 
 export interface PageProps {
   t:Translate;
   useMeihua:<T>(selector:(state:PageState)=>T)=>T;
   onCast:(input:CastInput)=>Promise<void>;
-  onInterpret:(route:ModelRoute)=>Promise<void>;
+  onInterpret:(route:ModelRoute,options?:BackgroundOptions)=>Promise<void>;
   onFollowup?:(question:string)=>Promise<boolean|void>;
   onCancel:()=>Promise<void>;
   onRefresh:()=>Promise<void>;
   onSkip:()=>void;
   onDraftChange?:(patch:Partial<MeihuaDraft>)=>void;
+  memoryState?:MemoryPageState;
+  onOpenMemory?:()=>void;
+  onCheckpoint?:()=>Promise<void>;
 }
 
 /** Six lines are always drawn bottom-to-top; the displayed stack reverses their positions. */
@@ -77,7 +82,7 @@ function formatCopy(reading:Reading,t:Translate):string {
   return `${t('panel')}\n${t('question')}：${r.input.question}\n${t('localTime')}：${r.lunar.localTime.replace('T',' ')} (${r.input.environment.timeZone})\n${t('primary')}：${r.primary.title}\n${t('mutual')}：${r.mutual.title}\n${t('changed')}：${r.changed.title}\n${t('moving')}：${r.movingLine}\n${t('body')}：${r.body.name}（${r.body.element}） · ${t('application')}：${r.application.name}（${r.application.element}） · ${r.relationship}\n\n${r.steps.join('\n')}\n\n${reading.route?`${t('source')}：${reading.route.provider} / ${reading.route.model}\n\n`:''}${reading.status!=='ready'?`${t('readingStatus')}：${t(status)}\n`:''}${reading.text}${reading.error?`\n${reading.error.message}`:''}${formatConversationCopy(reading.conversation,t)}`;
 }
 
-export function Page({t,useMeihua,onCast,onInterpret,onFollowup,onCancel,onRefresh,onSkip,onDraftChange}:PageProps) {
+export function Page({t,useMeihua,onCast,onInterpret,onFollowup,onCancel,onRefresh,onSkip,onDraftChange,memoryState,onOpenMemory,onCheckpoint}:PageProps) {
   const state=useMeihua(state=>state),{catalog,reading}=state;
   const draft=state.draft??initialMeihuaDraft;
   const [question,setQuestion]=useState(draft.question),[ruleId,setRule]=useState(draft.ruleId);
@@ -108,7 +113,7 @@ export function Page({t,useMeihua,onCast,onInterpret,onFollowup,onCancel,onRefre
       await onCast({ruleId,question,values,environment:{capturedAt,timeZone,details:context.trim()?{observation:context.trim()}:{}}});
     } catch(error) {setError(error instanceof Error?error.message:t('genericFailure'));}
   };
-  const interpret=async()=>{setSubmitting(true);try{await onInterpret(route);}finally{setSubmitting(false);}};
+  const interpret=async()=>{setSubmitting(true);try{if(memoryState)await onInterpret(route,{useBackground:draft.useBackground!==false,forOthers:!!draft.forOthers});else await onInterpret(route);}finally{setSubmitting(false);}};
   const copy=async()=>{if(!reading)return;try{await navigator.clipboard.writeText(formatCopy(reading,t));setCopyStatus('copied');}catch{setCopyStatus('copyFailed');}};
   const error=localError || state.error;
   const statusKey:LocaleKey=reading?.status==='complete'?'complete':reading?.status==='cancelled'?'cancelled':reading?.status==='failed'?'failed':'interpreting';
@@ -123,7 +128,8 @@ export function Page({t,useMeihua,onCast,onInterpret,onFollowup,onCancel,onRefre
           {rule?.fields.length ? <><div className="mh-number-row">{rule.fields.map((field,i)=><label key={field.key}><span>{ruleId==='three-numbers'?t((['firstNumber','secondNumber','thirdNumber'] as const)[i]!):field.label}</span><input type="number" inputMode="numeric" required min={field.min} max={field.max} step={1} value={numbers[field.key]??''} placeholder={t('numberPlaceholder')} onChange={e=>setNumbers({...numbers,[field.key]:e.target.value})}/></label>)}</div><p className="mh-hint">{ruleId==='three-numbers'?t('numbersHint'):rule.name}</p></> : <><label className="mh-check"><input type="checkbox" checked={customTime} onChange={chooseTime}/>{t('timeCustom')}</label>{customTime && <input className="mh-date" type="datetime-local" aria-label={t('timeCustom')} required value={date} onChange={e=>setDate(e.target.value)}/>}<p className="mh-hint">{t('timeHint')} · {catalog.config.timeZone}</p></>}
         </fieldset>
         <details className="mh-context"><summary>{t('context')} <span>＋</span></summary><p className="mh-hint">{t('contextHint')}</p><textarea value={context} maxLength={800} onChange={e=>setContext(e.target.value)} rows={2} aria-label={t('context')} placeholder={t('contextPlaceholder')} disabled={busy}/></details>
-        <button className="mh-button mh-cast" type="submit" disabled={busy || state.casting || animating}><Bagua size={20}/>{state.casting?t('casting'):reading?t('newCast'):t('cast')}<span aria-hidden="true">→</span></button>
+        {memoryState&&onOpenMemory&&<BackgroundControls state={memoryState} options={{useBackground:draft.useBackground!==false,forOthers:!!draft.forOthers}} onChange={patch=>onDraftChange?.(patch)} onOpen={onOpenMemory} disabled={busy||state.casting||!memoryState.status} usage={reading?.memory}/>}
+        <button className="mh-button mh-cast" type="submit" disabled={busy || state.casting || animating||!!memoryState&&!memoryState.status}><Bagua size={20}/>{state.casting?t('casting'):reading?t('newCast'):t('cast')}<span aria-hidden="true">→</span></button>
         {busy && <p className="mh-hint">{t('inputLocked')}</p>}
         {error && <div className="mh-notice" role="alert"><p>{error}</p>{state.error&&<button className="mh-link" type="button" disabled={!!state.interpreting||state.casting} onClick={()=>void onRefresh()}>{t('refreshReading')}</button>}</div>}
       </form><footer className="mh-input-footer"><span className="mh-footer-line"/>{t('entertainment')}</footer></section>
@@ -135,13 +141,15 @@ export function Page({t,useMeihua,onCast,onInterpret,onFollowup,onCancel,onRefre
           <div className="mh-facts"><span>{t('body')} <b>{reading.result.body.name} · {reading.result.body.element}</b></span><span>{t('application')} <b>{reading.result.application.name} · {reading.result.application.element}</b></span><span className="mh-relation">{reading.result.relationship}</span><span>{t('moving')} <b>{reading.result.movingLine}{t('lineSuffix')}</b></span></div>
           <details className="mh-calculation"><summary>{t('calculation')} <span>＋</span></summary><ol>{reading.result.steps.map((step,i)=><li key={i}>{step}</li>)}</ol>{reading.result.input.environment.details.observation && <p>{String(reading.result.input.environment.details.observation)}</p>}</details>
           <section className="mh-interpretation"><div className="mh-section-heading"><h2>{t('interpretation')}</h2>{reading.status!=='ready' && <span className={`mh-status mh-status-${reading.status}`}>{t(statusKey)}</span>}</div>
+            {memoryState&&onOpenMemory&&reading.memory&&<BackgroundControls state={memoryState} options={{useBackground:draft.useBackground!==false,forOthers:!!draft.forOthers}} onChange={patch=>onDraftChange?.(patch)} onOpen={onOpenMemory} disabled usage={reading.memory}/>}
             {reading.status==='ready' ? <><p className="mh-hint">{t('interpretationHint')}</p>{providers.length===0 ? <p className="mh-notice">{t('noProviders')}</p> : <div className="mh-model-row"><label>{t('provider')}<select value={route.provider} onChange={e=>{const p=providers.find(p=>p.id===e.target.value);setRoute({provider:e.target.value,model:p?.models[0]?.id??''});}}>{providers.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}</select></label><label>{t('model')}<select value={route.model} onChange={e=>setRoute({...route,model:e.target.value})}>{group?.models.length?group.models.map(m=><option key={m.id} value={m.id}>{m.name}</option>):<option value="">{t('noModels')}</option>}</select></label></div>}
-              {group?.error && <p className="mh-notice">{group.error}</p>}<div className="mh-actions"><button className="mh-button mh-interpret-button" onClick={()=>void interpret()} disabled={!route.provider || !route.model || submitting}>{submitting?t('interpreting'):t('interpret')} <span aria-hidden="true">↗</span></button><button className="mh-link" onClick={()=>void onRefresh()}>{t('refresh')}</button></div>
+              {group?.error && <p className="mh-notice">{group.error}</p>}<div className="mh-actions"><button className="mh-button mh-interpret-button" onClick={()=>void interpret()} disabled={!route.provider || !route.model || submitting||!!memoryState&&!memoryState.status?.unlocked}>{submitting?t('interpreting'):t('interpret')} <span aria-hidden="true">↗</span></button><button className="mh-link" onClick={()=>void onRefresh()}>{t('refresh')}</button></div>
             </> : <><p className="mh-route">{reading.route?.provider} / {reading.route?.model}</p>{reading.text?<InterpretationText text={reading.text}/>:<p className="mh-pending" role="status">{t('outputPending')}</p>}
               {reading.error && <p className="mh-notice" role="alert">{reading.error.code==='LOG_WRITE'?reading.error.message:t(failureKey(reading.error.code))}</p>}
               <div className="mh-actions">{reading.status==='streaming'?<button className="mh-link" onClick={()=>void onCancel()}>{t('cancel')}</button>:<span className="mh-hint">{t('firstOnly')}</span>}</div>
             </>}
           </section>{onFollowup&&['complete','failed','cancelled'].includes(reading.status)&&!!reading.text.trim()&&<Conversation key={reading.id} readingId={reading.id} turns={reading.conversation??[]} busy={readingIsBusy(reading)} pending={!!state.interpreting} draft={draft.followupQuestion} theme="mh" t={t} onDraftChange={value=>onDraftChange?.({followupQuestion:value})} onSend={onFollowup} onCancel={onCancel}/>}<div className="mh-copy-row"><button className="mh-link" onClick={()=>void copy()}>{t(copyStatus)}</button><span className="mh-hint">{reading.result.algorithmVersion}</span></div>
+          {onCheckpoint&&!busy&&<div className="wm-end-row"><button onClick={()=>void onCheckpoint()} disabled={state.casting||!!memoryState&&!memoryState.status?.unlocked||!!memoryState?.status?.updating}>结束本轮并更新背景</button>{reading.memory?.forOthers&&<p className="wm-caption">替他人占卜，不写入本人记忆。</p>}</div>}
         </>}
       </section>
     </div>}

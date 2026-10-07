@@ -1,0 +1,95 @@
+{
+  "batchcomplete": true,
+  "query": {
+    "pages": [
+      {
+        "pageid": 60654100,
+        "ns": 6,
+        "title": "File:關帝靈籤.姑蘇鈕氏藏板.清刊本.pdf",
+        "imagerepository": "local",
+        "imageinfo": [
+          {
+            "size": 24622058,
+            "width": 1497,
+            "height": 2558,
+            "pagecount": 104,
+            "url": "https://upload.wikimedia.org/wikipedia/commons/d/d4/%E9%97%9C%E5%B8%9D%E9%9D%88%E7%B1%A4.%E5%A7%91%E8%98%87%E9%88%95%E6%B0%8F%E8%97%8F%E6%9D%BF.%E6%B8%85%E5%88%8A%E6%9C%AC.pdf?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:%E9%97%9C%E5%B8%9D%E9%9D%88%E7%B1%A4.%E5%A7%91%E8%98%87%E9%88%95%E6%B0%8F%E8%97%8F%E6%9D%BF.%E6%B8%85%E5%88%8A%E6%9C%AC.pdf",
+            "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=60654100",
+            "extmetadata": {
+              "DateTime": {
+                "value": "2017-07-04 15:24:44",
+                "source": "mediawiki-metadata",
+                "hidden": ""
+              },
+              "ObjectName": {
+                "value": "關帝靈籤.姑蘇鈕氏藏板.清刊本",
+                "source": "mediawiki-metadata"
+              },
+              "CommonsMetadataExtension": {
+                "value": 1.2,
+                "source": "extension",
+                "hidden": ""
+              },
+              "Categories": {
+                "value": "PD-old-70-expired|PD Old|CC-PD-Mark|Books without Wikidata item|Scans from Harvard-Yenching's Chinese rare book collection|PD-old missing SDC copyright status|Books from Harvard-Yenching Library|關帝靈籤",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Assessments": {
+                "value": "",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "ImageDescription": {
+                "value": "關帝靈籤. [China], 清 [between 1736 and 1861].",
+                "source": "commons-desc-page"
+              },
+              "DateTimeOriginal": {
+                "value": "2017-07-04",
+                "source": "commons-desc-page"
+              },
+              "Credit": {
+                "value": "<a rel=\"nofollow\" class=\"external free\" href=\"https://iiif.lib.harvard.edu/manifests/view/drs:53239458\">https://iiif.lib.harvard.edu/manifests/view/drs:53239458</a>",
+                "source": "commons-desc-page"
+              },
+              "Artist": {
+                "value": "see below",
+                "source": "commons-desc-page"
+              },
+              "LicenseShortName": {
+                "value": "Public domain",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "UsageTerms": {
+                "value": "Public domain",
+                "source": "commons-desc-page"
+              },
+              "AttributionRequired": {
+                "value": "false",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Copyrighted": {
+                "value": "False",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Restrictions": {
+                "value": "",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "License": {
+                "value": "pd",
+                "source": "commons-templates",
+                "hidden": ""
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

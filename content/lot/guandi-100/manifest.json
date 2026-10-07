@@ -1,0 +1,239 @@
+{
+  "schemaVersion": 1,
+  "libraryId": "guandi-qing-collated-100",
+  "version": "1.0.0",
+  "checkedOn": "2026-10-07",
+  "runtimeFiles": [
+    "lots.json"
+  ],
+  "sourceFiles": [
+    "sources/qing-edition.pdf",
+    "sources/wikisource-1-50.json",
+    "sources/wikisource-51-100.json",
+    "sources/scan-metadata.json",
+    "sources/edition-and-98-corroboration.json",
+    "sources/review/check-001-005.jpg",
+    "sources/review/check-006-010.jpg",
+    "sources/review/check-011-015.jpg",
+    "sources/review/check-016-020.jpg",
+    "sources/review/check-021-025.jpg",
+    "sources/review/check-026-030.jpg",
+    "sources/review/check-031-035.jpg",
+    "sources/review/check-036-040.jpg",
+    "sources/review/check-041-045.jpg",
+    "sources/review/check-046-050.jpg",
+    "sources/review/check-051-055.jpg",
+    "sources/review/check-056-060.jpg",
+    "sources/review/check-061-065.jpg",
+    "sources/review/check-066-070.jpg",
+    "sources/review/check-071-075.jpg",
+    "sources/review/check-076-080.jpg",
+    "sources/review/check-081-085.jpg",
+    "sources/review/check-086-090.jpg",
+    "sources/review/check-091-095.jpg",
+    "sources/review/check-096-100.jpg"
+  ],
+  "entries": 100,
+  "poemLines": 400,
+  "totalVerseCharacters": 2800,
+  "assets": [],
+  "assetPolicy": "文字版；不复用寺庙照片、标识或现代签解。未来视觉素材须原创或独立明确授权。",
+  "licenses": {
+    "poems": "Public domain; original ancient work",
+    "scan": "Public domain as declared by Wikimedia Commons metadata; Harvard-Yenching source",
+    "interpretations": "MIT",
+    "wikisourceSnapshot": "CC-BY-SA-4.0 for editorial/transcription metadata; ancient text remains public domain"
+  },
+  "scanSource": {
+    "id": "harvard-53239458-qing",
+    "title": "關帝靈籤.姑蘇鈕氏藏板.清刊本",
+    "editionPeriod": "between 1736 and 1861 per source metadata",
+    "holdingLibrary": "Harvard-Yenching Library",
+    "harvardManifest": "https://iiif.lib.harvard.edu/manifests/view/drs:53239458",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/d/d4/%E9%97%9C%E5%B8%9D%E9%9D%88%E7%B1%A4.%E5%A7%91%E8%98%87%E9%88%95%E6%B0%8F%E8%97%8F%E6%9D%BF.%E6%B8%85%E5%88%8A%E6%9C%AC.pdf",
+    "metadataUrl": "https://commons.wikimedia.org/wiki/File:%E9%97%9C%E5%B8%9D%E9%9D%88%E7%B1%A4.%E5%A7%91%E8%98%87%E9%88%95%E6%B0%8F%E8%97%8F%E6%9D%BF.%E6%B8%85%E5%88%8A%E6%9C%AC.pdf",
+    "pdfPages": 104,
+    "lotPageOffset": 2,
+    "licenseDeclared": "Public domain"
+  },
+  "files": [
+    {
+      "path": "lots.json",
+      "bytes": 138083,
+      "sha256": "1f8ef3a997330f94f923e53835d22e8d7ece874aac6ca3b9fcb55d7636fd41db"
+    },
+    {
+      "path": "editorial.json",
+      "bytes": 16903,
+      "sha256": "6f7622f0aec2e94ef18c88b5a9fe5c2008f4742d7cd3c3413dca79991baa8a8f"
+    },
+    {
+      "path": "collation.json",
+      "bytes": 28088,
+      "sha256": "c1783b0e09bd39e97a9486de6b56bf38f6979f6596a9be25e6d5000fbd3757e6"
+    },
+    {
+      "path": "schema.json",
+      "bytes": 3278,
+      "sha256": "72d35567ce04269cde50c9e1681042ffe258d1ea27e58a1440742e09c6d50db7"
+    },
+    {
+      "path": "LICENSES.md",
+      "bytes": 3027,
+      "sha256": "51bc04f22c998348c6b6c848a8e75ca797090db4b5450f384dbaeb1e05ab64c1"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1750,
+      "sha256": "32a43d2ce0ecbda52a14a6b27d2b6d1cc97086d353ba97ceca754544b9f694bd"
+    },
+    {
+      "path": "build-content.py",
+      "bytes": 7661,
+      "sha256": "8e2b90fe86285b4666e3c2aa5541dd7caaabd23f82e014160306462a40a56753"
+    },
+    {
+      "path": "validate.mjs",
+      "bytes": 4401,
+      "sha256": "4c004fb36fdfe86d119a707183da13b9fa8b9b2fc303997f299cb613ac526e2e"
+    },
+    {
+      "path": "validate.d.mts",
+      "bytes": 204,
+      "sha256": "f10b2a5b527fc982e15a9a5a3cb370e12685bdf13b874e560fdf957a86eef447"
+    },
+    {
+      "path": "sources/qing-edition.pdf",
+      "bytes": 24622058,
+      "sha256": "bbbe9b31e753e766b4e5792a5b97c247c7d0f9f29a2f3e6608ca745290701042"
+    },
+    {
+      "path": "sources/wikisource-1-50.json",
+      "bytes": 129611,
+      "sha256": "abd623a2998ba382845fccfde11322a5ba2b1af75e5dad2837374a0ab0d0befd"
+    },
+    {
+      "path": "sources/wikisource-51-100.json",
+      "bytes": 140886,
+      "sha256": "83419cc0f2cc5dc913308b231c119f0527f7eafe95ab46b1d57ddb690575be59"
+    },
+    {
+      "path": "sources/scan-metadata.json",
+      "bytes": 3690,
+      "sha256": "fe160f38aff3de792efb6a9b08d951a4feb63db781701fe4fba9ca3e4f86d38e"
+    },
+    {
+      "path": "sources/edition-and-98-corroboration.json",
+      "bytes": 4217,
+      "sha256": "577ea042159d9cea5d3726c7c918d796f18f922247cf53215e1d01c762ee4a8b"
+    },
+    {
+      "path": "sources/review/check-001-005.jpg",
+      "bytes": 520310,
+      "sha256": "9c4e621141a70839ce3b8034f65e7b1bcc60f502481d52f5ff51f6e415cfdbe7"
+    },
+    {
+      "path": "sources/review/check-006-010.jpg",
+      "bytes": 507529,
+      "sha256": "8a2e058ad8a80eacc146e9052448f7a570ff05f087a566107697a68431d630b5"
+    },
+    {
+      "path": "sources/review/check-011-015.jpg",
+      "bytes": 499997,
+      "sha256": "7de565fd8dd8e0d5d86cb88dc90be44a218a65a43000cf54073912d457394c47"
+    },
+    {
+      "path": "sources/review/check-016-020.jpg",
+      "bytes": 502452,
+      "sha256": "f57811d4cab891bd34c97f7f92e239dab1b62fae46cdda3cfafff85f02f774a0"
+    },
+    {
+      "path": "sources/review/check-021-025.jpg",
+      "bytes": 490448,
+      "sha256": "259c2db418dfee871c4d7ff7dbbb677b6bae7798cbc721fe47cb825913cfe2dd"
+    },
+    {
+      "path": "sources/review/check-026-030.jpg",
+      "bytes": 486827,
+      "sha256": "6098588e83e880c275cd2363b680c9e2cbf22248cd9fe3d5ecef046bb85f4a1c"
+    },
+    {
+      "path": "sources/review/check-031-035.jpg",
+      "bytes": 499742,
+      "sha256": "dfb3af0ebdf61693aa14e8426c3c35e1f7bf3dc993fb1efca591e056c19c5bda"
+    },
+    {
+      "path": "sources/review/check-036-040.jpg",
+      "bytes": 501889,
+      "sha256": "da2cf338a4042f0d3347dd82308031961b0422cb417418fd1a9d0d4cd9894002"
+    },
+    {
+      "path": "sources/review/check-041-045.jpg",
+      "bytes": 502285,
+      "sha256": "f2d4b82b31871e8e03ddc7df0a457657ebb205449924cc7d5e6a617a24d47acb"
+    },
+    {
+      "path": "sources/review/check-046-050.jpg",
+      "bytes": 496123,
+      "sha256": "86ac40a4383e938185d45a318277fd9740bc992465b81c475b0272f93102bada"
+    },
+    {
+      "path": "sources/review/check-051-055.jpg",
+      "bytes": 517142,
+      "sha256": "fa534efd85f153802a5a207b3f21f3d010c4a028995a4717bf6a409ed401156c"
+    },
+    {
+      "path": "sources/review/check-056-060.jpg",
+      "bytes": 499408,
+      "sha256": "19001dfa8d5296b2832515e41d33be0807b616e37272e4d971d92cca38f86792"
+    },
+    {
+      "path": "sources/review/check-061-065.jpg",
+      "bytes": 502228,
+      "sha256": "73f9a7578d54b2f6833b79e25e3b000c17172dc4fe12da022c4aea97d30d30cb"
+    },
+    {
+      "path": "sources/review/check-066-070.jpg",
+      "bytes": 508503,
+      "sha256": "c8781e71125c1a6adc61d817f860773b53fcc16008ed453a26160ce344a57dd2"
+    },
+    {
+      "path": "sources/review/check-071-075.jpg",
+      "bytes": 501186,
+      "sha256": "13810c1715d29a59cc0d409ff1cf46ccd92edb0661102e380c37d6ab5cf106a4"
+    },
+    {
+      "path": "sources/review/check-076-080.jpg",
+      "bytes": 498988,
+      "sha256": "39dc34b3f744e039e5bb8f8747b6ff03f979157cf6a4cbbea6bb77539c5db0d4"
+    },
+    {
+      "path": "sources/review/check-081-085.jpg",
+      "bytes": 502684,
+      "sha256": "8670839dfa8b55c8b83666e6f0561deb4f5aaef29d8e24853c02504dd61d562a"
+    },
+    {
+      "path": "sources/review/check-086-090.jpg",
+      "bytes": 501098,
+      "sha256": "e453117c792905a5a160095ce21309565c358e1312f525494f4987e53804b8ee"
+    },
+    {
+      "path": "sources/review/check-091-095.jpg",
+      "bytes": 510530,
+      "sha256": "9d48b14a61637a92677ecac52784a344b419db3ee66142d2f18dc3ad9cb8c3fd"
+    },
+    {
+      "path": "sources/review/check-096-100.jpg",
+      "bytes": 518343,
+      "sha256": "b25881f7eae97f5d70e7bf5b45fb074839f5703777fb02d56a101fd65c5c71b6"
+    }
+  ],
+  "acceptance": {
+    "completeLibrary": "PASS",
+    "numberPoemSourceCollation": "PASS_WITH_DOCUMENTED_VARIANTS",
+    "interpretationCoverage": "PASS",
+    "originalAssetLicense": "PASS_NO_EXTERNAL_ASSETS",
+    "humanSecondReview": "NOT_CHECKED",
+    "runtimeModuleImplemented": false
+  }
+}

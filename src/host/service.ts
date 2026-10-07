@@ -1,11 +1,14 @@
+import {modelCatalog,parseBackgroundOptions as parseMemoryOptions,parseModelRoute as parseRoute} from "./module-framework.ts";
+import { generatePrivate, withBackground } from './private-generation.ts';
+import type { MemoryService } from './memory-service.ts';
+import type { MemorySnapshot } from '../shared/memory.ts';
 import { randomUUID } from 'node:crypto';
-import { createUserMessage, createSystemMessage } from '@deepseek-ai/dsh-llm/message';
-import { AssistantStreamAccumulator, assembleAssistantStream } from '@deepseek-ai/dsh-llm/assistant-stream';
+import { createUserMessage } from '@deepseek-ai/dsh-llm/message';
 import { RuleRegistry, freezeJson, isJsonValue } from '../core/rules.ts';
 import type { DivinationRule, EnvironmentContributor } from '../core/types.ts';
 import { readingIsBusy } from '../shared/protocol.ts';
 import type { Catalog, ConversationTurn, ModelRoute, PluginConfig, Reading, RpcResult } from '../shared/protocol.ts';
-import type { HostContext, LogSession, PersistenceHandle } from './platform.ts';
+import type { HostContext } from './platform.ts';
 import { INTERPRETATION_SYSTEM, interpretationInput } from './prompt.ts';
 import { object, parseInput, text } from './validation.ts';
 import type { GenerationGate } from './generation-gate.ts';
@@ -19,7 +22,12 @@ export class MeihuaService {
   private controller:AbortController | undefined;
   private job:Promise<void> | undefined;
   private disposed = false;
-  constructor(private readonly ctx:HostContext, readonly config:PluginConfig, private readonly gate?:GenerationGate) {}
+  private background:MemorySnapshot|undefined;
+  private readonly readingPreferences=new WeakMap<Reading,{forOthers?:boolean;route?:ModelRoute;epoch?:number}>();
+  private invalidate:(()=>void)|undefined;
+  constructor(private readonly ctx:HostContext, readonly config:PluginConfig, private readonly gate?:GenerationGate,private readonly memory?:MemoryService) {
+    this.invalidate=memory?.onInvalidate(()=>{this.controller?.abort(new Error('私人资料已锁定或清空'));this.current=null;this.background=undefined;});
+  }
 
   registerRule(rule:DivinationRule):()=>void { return this.rules.register(rule); }
   registerEnvironment(id:string, contributor:EnvironmentContributor):()=>void {
@@ -29,42 +37,50 @@ export class MeihuaService {
   }
   snapshot():Reading | null { return this.current === null ? null : freezeJson(this.current); }
   async catalog():Promise<Catalog> {
-    const groups = await Promise.all(this.ctx.llm.listProviders().map(async provider => {
-      try { return { ...provider, models:(await this.ctx.llm.listModels(provider.id)).map(({id,name})=>({id,name})) }; }
-      catch { return { ...provider, models:[], error:'模型目录读取失败' }; }
-    }));
+    const groups = await modelCatalog(this.ctx);
     return { rules:this.rules.list(), providers:groups, config:this.config };
   }
   async cast(payload:unknown):Promise<Reading> {
     if (this.disposed) throw new Error('插件已停止');
-    this.gate?.assertIdle();
+    this.gate?.assertLocalIdle();
     if (readingIsBusy(this.current)) throw new Error('请等待本次解读结束，或先取消');
     const input = parseInput(payload,this.config);
+    const extra=object(payload),options=parseMemoryOptions(extra.options),selectedRoute=parseRoute(extra.route);
     for (const [id,contribute] of this.contributors) {
       const details = await contribute(freezeJson(input.environment));
       if (!isJsonValue(details) || Array.isArray(details) || details === null || typeof details !== 'object' || JSON.stringify(details).length > 4000) throw new Error(`环境来源 ${id} 返回了无效信息`);
       input.environment.details[id] = details;
     }
     if (this.disposed || readingIsBusy(this.current)) throw new Error('插件状态已变化，请重新起卦');
-    this.gate?.assertIdle();
-    this.current = { id:`meihua-${randomUUID()}`, result:this.rules.calculate(input), status:'ready', text:'' };
+    if(this.memory&&extra.epoch!==undefined)this.memory.assertCurrentEpoch(extra.epoch);
+    this.gate?.assertLocalIdle();
+    const previous=this.current;this.background=undefined;
+    this.current = { id:`meihua-${randomUUID()}`, result:this.rules.calculate(input), status:'ready', text:'',backgroundOptions:options??{useBackground:true,forOthers:false} };
+    this.readingPreferences.set(this.current,{forOthers:options?.forOthers,route:selectedRoute,epoch:this.memory?.currentEpoch});
+    void this.checkpointReading(previous).catch(()=>{});
     return this.snapshot()!;
   }
-  async interpret(id:string, route:ModelRoute):Promise<Reading> {
+  async interpret(id:string, route:ModelRoute,options?:{useBackground?:boolean;forOthers?:boolean}):Promise<Reading> {
     const reading = this.requireReading(id);
     if (readingIsBusy(reading)) throw new Error('请等待本次解读或追问结束，或先取消');
     if (reading.status !== 'ready') throw new Error('每卦只保留第一次解读，请重新起卦开始新的一次');
     if (!this.ctx.llm.listProviders().some(p=>p.id === route.provider)) throw new Error('所选供应商已不可用');
     const models = await this.ctx.llm.listModels(route.provider);
     if (!models.some(m=>m.id === route.model)) throw new Error('所选模型已不可用，请刷新模型目录');
+    const preferences=options??reading.backgroundOptions??{useBackground:true,forOthers:false};
+    const background=await this.memory?.freeze(preferences);
     if (this.current !== reading || reading.status !== 'ready' || readingIsBusy(reading) || this.disposed) throw new Error('本次卜算状态已变化');
     const release = this.gate?.acquire(reading.id);
+    this.background=background;if(background){const {markdown,...usage}=background;reading.memory=usage;}
+    reading.backgroundOptions=preferences;
+    this.readingPreferences.set(reading,{forOthers:preferences.forOthers??false,route:{...route},epoch:background?.epoch??this.memory?.currentEpoch});
     reading.status = 'streaming'; reading.route = { ...route };
     this.controller = new AbortController();
     this.job = this.generate(reading,this.controller).finally(()=>release?.());
     return this.snapshot()!;
   }
   async followup(id:string,question:unknown,expectedTurnCount:unknown):Promise<Reading> {
+    this.memory?.assertUnlocked();
     const reading=this.requireReading(id),parsed=validateFollowup(reading,question,expectedTurnCount);
     this.gate?.assertIdle();
     const route=reading.route!;
@@ -73,12 +89,12 @@ export class MeihuaService {
     if(!models.some(model=>model.id===route.model))throw new Error('首次解读的模型已不可用，请刷新模型目录');
     if(this.current!==reading||this.disposed)throw new Error('本次卜算状态已变化');
     validateFollowup(reading,question,expectedTurnCount);
-    const system=followupSystem('meihua'),messages=conversationMessages(reading,interpretationInput(reading.result),parsed,system);
+    const system=followupSystem('meihua'),messages=conversationMessages(reading,withBackground(interpretationInput(reading.result),this.background),parsed,system);
     const turn:ConversationTurn={id:`${reading.id}-followup-${randomUUID()}`,question:parsed,text:'',status:'streaming',route:{...route},createdAt:new Date().toISOString()};
     const release=this.gate?.acquire(turn.id);
     (reading.conversation??=[]).push(turn);
     this.controller=new AbortController();
-    this.job=generateConversation(this.ctx,this.config,turn,messages,system,this.controller).finally(()=>release?.());
+    this.job=generateConversation(this.ctx,this.config,turn,messages,system,this.controller,this.memory,this.background?.epoch,this.background?.revision).finally(()=>release?.());
     return this.snapshot()!;
   }
   cancel(id:string,turnId?:string):Reading {
@@ -91,72 +107,43 @@ export class MeihuaService {
     if (!this.current || this.current.id !== id) throw new Error('本次卜算已不存在，请重新起卦');
     return this.current;
   }
-  private async generate(reading:Reading, controller:AbortController):Promise<void> {
-    let handle:PersistenceHandle | undefined;
-    const stream = new AssistantStreamAccumulator();
-    let session:LogSession | undefined;
-    let outcome:Reading['status']='failed';
-    const timer = setTimeout(()=>controller.abort(new Error('解读超时')),this.config.interpretationTimeoutMs);
-    const route = reading.route!;
+  private async generate(reading:Reading,controller:AbortController):Promise<void> {
     try {
-      session = this.ctx.sessions.prepare(reading.id);
-      const messages = [createUserMessage({ content:[{ type:'text',text:interpretationInput(reading.result) }], source:{ kind:'user' } })];
-      const events = [
-        session.append('turn/start',{turn:1}), session.append('step/start',{turn:1,step:1}),
-        session.append('request/header',{ header:{config:{...route,maxTokens:this.config.maxOutputTokens}},reason:'initial' }),
-        session.append('system/message',{turn:1,step:1,message:createSystemMessage(INTERPRETATION_SYSTEM)},{surfaceOp:'append'}),
-        session.append('user/message',messages[0],{surfaceOp:'append'})
-      ];
-      handle = await this.ctx.sessionPersistence.create(session.header);
-      await handle.append(events); await handle.flush();
-      reading.logSessionId = session.header.id;
-      controller.signal.throwIfAborted();
-      let stopped = false;
-      for await (const chunk of this.ctx.llm.stream({ ...route, messages, system:INTERPRETATION_SYSTEM, maxTokens:this.config.maxOutputTokens, sessionId:session.header.id, signal:controller.signal })) {
-        stream.push({ time:Date.now(),chunk });
-        if (chunk.type === 'text-delta') reading.text += chunk.text;
-        if (chunk.type === 'finish') {
-          if (chunk.reason.kind === 'stop') stopped = true;
-          else if (chunk.reason.kind === 'error' || chunk.reason.kind === 'aborted') throw Object.assign(new Error(chunk.reason.failure.message),{code:chunk.reason.failure.code});
-          else throw Object.assign(new Error(chunk.reason.kind === 'max-tokens' ? '解读达到输出上限，已保留收到的内容' : '模型未返回完整的文字解读'),{code:'INCOMPLETE'});
-        }
-      }
-      controller.signal.throwIfAborted();
-      if (!stopped || !reading.text.trim()) throw Object.assign(new Error('模型没有返回完整解读'),{code:'EMPTY_RESPONSE'});
-      outcome = 'complete';
-    } catch (error) {
-      outcome = controller.signal.aborted ? 'cancelled' : 'failed';
-      const reason:unknown = controller.signal.aborted ? controller.signal.reason : error;
-      reading.error = { code:controller.signal.aborted ? (reason instanceof Error && reason.message === '解读超时' ? 'TIMEOUT' : 'CANCELLED') : errorCode(error), message:reason instanceof Error ? reason.message : '解读未能完成' };
-    } finally {
-      clearTimeout(timer);
-      if (handle && session) {
-        try {
-          const records=stream.snapshot();
-          const assembled=outcome==='complete'?assembleAssistantStream(records):undefined;
-          await handle.append([
-            assembled ? session.append('assistant/message',{turn:1,step:1,stream:records,message:assembled.message(route),...(assembled.usage===undefined?{}:{usage:assembled.usage})},{surfaceOp:'append'})
-              : session.append('assistant/attempt',{turn:1,step:1,stream:records}),
-            session.append('step/end',{turn:1,step:1}),
-            session.append('turn/end',{turn:1,reason:outcome === 'complete' ? {kind:'completed'} : {kind:'error',error:{code:reading.error?.code ?? 'UNKNOWN',message:reading.error?.message ?? '解读未完成'}}})
-          ]);
-          await handle.flush();
-        } catch { reading.error = {code:'LOG_WRITE',message:'解读内容已保留，日志写入未完成'}; }
-        finally { await handle.close().catch(()=>{ reading.error={code:'LOG_WRITE',message:'解读内容已保留，日志关闭未完成'}; }); }
-      }
-      reading.status=outcome;
+      const messages=[createUserMessage({content:[{type:'text',text:withBackground(interpretationInput(reading.result),this.background)}],source:{kind:'user'}})];
+      const result=await generatePrivate(this.ctx,this.config,{id:reading.id,moduleId:'meihua',kind:'initial',route:reading.route!,messages,system:INTERPRETATION_SYSTEM,epoch:this.background?.epoch,backgroundRevision:this.background?.revision,onText:text=>{reading.text=text;}},controller,this.memory);
+      Object.assign(reading,result);
+    } finally {}
+  }
+  private async checkpointReading(reading:Reading|null,options?:{useBackground?:boolean;forOthers?:boolean},route?:ModelRoute,retry=false):Promise<void> {
+    if(!reading||!this.memory||readingIsBusy(reading))return;
+    if(!reading.memory&&options){
+      reading.backgroundOptions={...options};
+      this.readingPreferences.set(reading,{forOthers:options.forOthers,route:route??this.readingPreferences.get(reading)?.route,epoch:this.readingPreferences.get(reading)?.epoch});
     }
+    if(reading.memory?.forOthers??this.readingPreferences.get(reading)?.forOthers)return;
+    await this.memory.checkpoint({moduleId:'meihua',readingId:reading.id,route:reading.route??route??this.readingPreferences.get(reading)?.route,epoch:reading.memory?.epoch??this.readingPreferences.get(reading)?.epoch,retry,
+      messages:[{id:reading.id+'-question',text:reading.result.input.question},...(typeof reading.result.input.environment.details.observation==='string'?[{id:reading.id+'-observation',text:reading.result.input.environment.details.observation}]:[]),...(reading.conversation??[]).map(turn=>({id:turn.id,text:turn.question}))]});
   }
   async rpc(endpoint:string,payload:unknown):Promise<RpcResult> {
     try {
       if (this.disposed) throw new Error('插件已停止');
+      if(this.memory&&['cast','interpret','followup','cancel','checkpoint','preferences'].includes(endpoint)){
+        const data=object(payload);await this.memory.ready;this.memory.assertCurrentEpoch(data.epoch);
+      }
       switch (endpoint) {
         case 'catalog': return {ok:true,value:await this.catalog()};
         case 'current': return {ok:true,value:this.snapshot()};
         case 'cast': return {ok:true,value:await this.cast(payload)};
+        case 'preferences': {
+          const data=object(payload),reading=this.requireReading(text(data.id,100)),options=parseMemoryOptions(data.options);
+          if(!options||reading.memory||readingIsBusy(reading))throw new Error('本次背景选择已冻结');
+          reading.backgroundOptions=options;this.readingPreferences.set(reading,{...this.readingPreferences.get(reading),forOthers:options.forOthers});
+          return {ok:true,value:this.snapshot()};
+        }
+        case 'checkpoint': {const data=object(payload);if(data.retry!==undefined&&typeof data.retry!=='boolean')throw new Error('重试选项无效');await this.checkpointReading(this.requireReading(text(data.id,100)),parseMemoryOptions(data.options),parseRoute(data.route),data.retry===true);return {ok:true,value:await this.memory?.status()};}
         case 'interpret': {
           const data = object(payload);
-          return {ok:true,value:await this.interpret(text(data.id,100),{provider:text(data.provider,100),model:text(data.model,200)})};
+          return {ok:true,value:await this.interpret(text(data.id,100),{provider:text(data.provider,100),model:text(data.model,200)},parseMemoryOptions(data.options))};
         }
         case 'followup': { const data=object(payload); return {ok:true,value:await this.followup(text(data.id,100),data.question,data.expectedTurnCount)}; }
         case 'cancel': { const data=object(payload); return {ok:true,value:this.cancel(text(data.id,100),data.turnId===undefined?undefined:text(data.turnId,160))}; }
@@ -165,6 +152,6 @@ export class MeihuaService {
     } catch (error) { return {ok:false,error:{code:errorCode(error),message:error instanceof Error ? error.message : '操作未完成',details:{}}}; }
   }
   /** Await the owned generation before unregistering the Host contribution. */
-  async dispose():Promise<void> { this.disposed = true; this.controller?.abort(new Error('插件已停止')); await this.job; this.contributors.clear(); }
+  async dispose():Promise<void> { this.disposed = true;this.invalidate?.(); this.controller?.abort(new Error('插件已停止')); await this.job; this.contributors.clear(); }
 }
 function errorCode(error:unknown):string { return error !== null && typeof error === 'object' && 'code' in error && typeof error.code === 'string' ? error.code : 'MEIHUA_ERROR'; }

@@ -26,7 +26,7 @@ function setup(generate:(options:GenerateOptions)=>AsyncIterable<LlmChunk>=compl
   const calls:GenerateOptions[]=[],events:LogEvent[]=[];
   let flushed=false,closed=0;
   const ctx:HostContext={
-    llm:{listProviders:()=>[{id:route.provider,name:'Configured'}],listModels:async()=>[{id:route.model,name:'Chosen'}],stream:options=>{assert.ok(flushed,'provider must run after a durable request');calls.push(options);return generate(options);}},
+    llm:{listProviders:()=>[{id:route.provider,name:'Configured'}],listModels:async()=>[{id:route.model,name:'Chosen'}],stream:options=>{assert.ok(flushed,'provider must run after durable request metadata');assert.equal(options.sessionId,undefined,'private provider requests omit the ordinary Session ID');calls.push(options);return generate(options);}},
     sessions:{prepare:id=>new Session(id!,undefined,{id,version:4,createdAt:Date.now(),isSeeded:false})},
     sessionPersistence:persistence??{create:async()=>({append:async rows=>{events.push(...rows);},flush:async()=>{flushed=true;},close:async()=>{closed++;}})},
     connection:{fetch:{register:()=>async()=>{}}},reflect:{provide:()=>async()=>{}},effect:factory=>factory(),
@@ -89,7 +89,7 @@ test('过期ID、伪造槽位和输入被拒绝，新牌阵不受旧操作影响
   await s.service.dispose();assert.throws(()=>s.service.start(startInput),/停止/);
   assert.equal((await s.service.rpc('current',{})).ok,false);
 });
-test('并发interpret只提交一次，固定牌阵进入日志，完整输出禁止重解',async()=>{
+test('并发interpret只提交一次，固定牌阵进入模型，普通日志只记元信息',async()=>{
   const s=setup(),reading=ready(s.service);
   const results=await Promise.allSettled([s.service.interpret(reading.id,route),s.service.interpret(reading.id,route)]);
   assert.equal(results.filter(result=>result.status==='fulfilled').length,1);
@@ -98,7 +98,9 @@ test('并发interpret只提交一次，固定牌阵进入日志，完整输出�
   const prompt=s.calls[0]!.messages[0]!.content[0]!.text;
   for(const card of reading.cards){assert.ok(prompt.includes(card.card!.id));assert.ok(prompt.includes(card.orientation!));assert.ok(prompt.includes(card.positionLabel));}
   assert.ok(prompt.includes(startInput.question));assert.ok(!prompt.includes('hiddenDeck'));assert.ok(!prompt.includes('selectedSlots'));
-  assert.deepEqual(s.events.map(event=>event.type),['turn/start','step/start','request/header','system/message','user/message','assistant/message','step/end','turn/end']);
+  assert.deepEqual(s.events.map(event=>event.type),['turn/start','step/start','request/header','private/request','private/result','step/end','turn/end']);
+  const log=JSON.stringify(s.events);for(const fragment of [startInput.question,'完整塔罗解读',...reading.cards.map(card=>card.card!.id)])assert.ok(!log.includes(fragment));
+  assert.equal((s.events.find(event=>event.type==='private/result')!.data as {status:string}).status,'complete');
   await assert.rejects(s.service.interpret(reading.id,route),/第一次/);assert.equal(s.calls.length,1);s.gate.assertIdle();await s.service.dispose();
 });
 test('十牌阵有独立5000token预算，模型目录校验失败不消耗首次机会',async()=>{
@@ -130,7 +132,7 @@ test('取消与超时保留文字和冻结牌，卸载也结束任务；无后�
     if(mode==='cancel')s.service.cancel(reading.id);if(mode==='dispose')await s.service.dispose();
     const final=await settled(s.service);assert.equal(final.status,'cancelled');assert.equal(final.text,'已经收到的塔罗文字');
     assert.deepEqual(final.cards,reading.cards);assert.equal(final.error!.code,mode==='timeout'?'TIMEOUT':'CANCELLED');
-    assert.equal(s.calls.length,1);assert.ok(s.events.some(event=>event.type==='assistant/attempt'));s.gate.assertIdle();
+    assert.equal(s.calls.length,1);assert.ok(s.events.some(event=>event.type==='private/result'&&(event.data as {status:string}).status==='cancelled'));s.gate.assertIdle();
     if(mode!=='dispose')await assert.rejects(s.service.interpret(reading.id,route),/第一次/);
     await s.service.dispose();
   }
@@ -175,7 +177,7 @@ test('塔罗RPC不泄漏暗牌，对错误payload和未知操作有明确结果'
   const catalog=await s.service.catalog();assert.equal(catalog.spreads.length,4);assert.equal(catalog.deck.cardCount,78);assert.equal(s.calls.length,0);
   await s.service.dispose();
 });
-test('正式DSH JSONL后端可读回固定牌阵和首次完整塔罗日志',async()=>{
+test('正式DSH JSONL后端可读回塔罗终态元信息，排除固定牌阵与私人问答',async()=>{
   const cordisPackage:string='@deepseek-ai/cordis';
   type Fiber={await():Promise<void>;dispose():Promise<void>};
   const {Context}=await import(cordisPackage) as {Context:new()=>{plugin(plugin:unknown,config:object):Fiber;get(name:string):unknown}};
@@ -186,8 +188,11 @@ test('正式DSH JSONL后端可读回固定牌阵和首次完整塔罗日志',asy
   try{
     const reading=ready(s.service);await s.service.interpret(reading.id,route);const final=await settled(s.service);assert.equal(final.status,'complete');
     const handle=await persistence.open(final.logSessionId!,'read'),{events}=await handle.read();await handle.close();
-    assert.ok(events.some(event=>event.type==='assistant/message'));assert.equal(events.at(-1)!.type,'turn/end');
+    assert.ok(events.some(event=>event.type==='private/result'));assert.equal(events.at(-1)!.type,'turn/end');
     const body=await readFile(persistence.locate({id:final.logSessionId!,version:4,createdAt:0}).path,'utf8');
-    assert.ok(body.includes(reading.cards[0]!.card!.id));assert.ok(body.includes('完整塔罗解读'));
+    assert.ok(!body.includes(reading.cards[0]!.card!.id));assert.ok(!body.includes('完整塔罗解读'));assert.ok(!body.includes(startInput.question));
+    assert.deepEqual(events.map(event=>event.type),['turn/start','step/start','request/header','private/request','private/result','step/end','turn/end']);
+    assert.equal((events.find(event=>event.type==='private/result')!.data as {status:string}).status,'complete');
+    assert.ok(events.filter(event=>event.type.startsWith('private/')).every(event=>(event as LogEvent&{ignorable?:boolean}).ignorable===true));
   }finally{await s.service.dispose();await fiber.dispose();await rm(root,{recursive:true,force:true});}
 });

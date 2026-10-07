@@ -17,20 +17,22 @@ export type LlmChunk =
   | { type:'finish'; reason:FinishReason };
 export interface GenerateOptions {
   provider:string; model:string; messages:DurableMessage[]; system:string;
-  maxTokens:number; sessionId:string; signal:AbortSignal;
+  maxTokens:number; sessionId?:string; signal:AbortSignal;
 }
 export interface HostLlm {
   listProviders(): { id:string; name:string }[];
   listModels(provider:string): Promise<{ id:string; name:string }[]>;
   stream(options:GenerateOptions): AsyncIterable<LlmChunk>;
 }
-export interface LogEvent { type:string; seq:number; time:number; data:unknown; surfaceOp?:'append' }
+export interface LogEvent { type:string; seq:number; time:number; data:unknown; surfaceOp?:'append'; ignorable?:true }
 export interface LogSession {
   header: { id:string; version:number; createdAt:number };
   append(type:string, data:unknown, options?:{ surfaceOp:'append' }): LogEvent;
 }
 export interface PersistenceHandle { append(events:readonly LogEvent[]):Promise<void>; flush():Promise<void>; close():Promise<void> }
 export interface HostContext {
+  /** Only ciphertext is handed to the mounted storage backend. */
+  storage?:unknown;
   llm:HostLlm;
   sessions:{ prepare(id?:string):LogSession };
   sessionPersistence:{ create(header:LogSession['header']):Promise<PersistenceHandle> };

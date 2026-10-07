@@ -1,10 +1,8 @@
 import { useEffect, useRef } from 'react';
 import type { Journey, ModuleId } from './hub-controller.ts';
+import {MODULES} from '../shared/modules.ts';
 
-export const modules=[
-  {id:'meihua' as const,title:'梅花易数',subtitle:'以时与数，观象问事',index:'01',tradition:'东方 · 易象'},
-  {id:'tarot' as const,title:'塔罗牌',subtitle:'循牌之象，照见当下',index:'02',tradition:'西方 · 秘仪'},
-];
+export const modules=MODULES;
 
 /** Vector constellations keep their interactive hit area in the DOM. */
 export function Constellation({module,size=300}:{module:ModuleId;size?:number}) {
@@ -12,7 +10,7 @@ export function Constellation({module,size=300}:{module:ModuleId;size?:number}) 
   const addLine=(x1:number,y1:number,x2:number,y2:number,n=8)=>{for(let i=0;i<=n;i++)points.push({x:x1+(x2-x1)*i/n,y:y1+(y2-y1)*i/n,r:i===0||i===n?1.5:.65});};
   const circle=(cx:number,cy:number,r:number,n=64)=>{for(let i=0;i<n;i++)points.push({x:cx+Math.cos(i/n*Math.PI*2)*r,y:cy+Math.sin(i/n*Math.PI*2)*r,r:i%8===0?1.65:.65});};
   circle(160,160,118);
-  if(module==='meihua') {
+  if(module==='meihua'||module==='liuyao'||module==='xiaoliu') {
     circle(160,160,46,40);
     const codes=[[1,1,1],[1,1,0],[1,0,1],[1,0,0],[0,1,1],[0,1,0],[0,0,1],[0,0,0]];
     codes.forEach((lines,k)=>lines.forEach((line,j)=>{

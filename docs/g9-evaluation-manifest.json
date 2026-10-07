@@ -1,0 +1,104 @@
+{
+  "goal": "G9",
+  "checkedOn": "2026-10-07",
+  "completedAt": "2026-10-06T17:17:21.815836+00:00",
+  "status": "ASSESSMENT_AND_REQUIREMENTS_COMPLETE",
+  "runtimeModulesImplemented": false,
+  "librariesInstalled": false,
+  "realModelCalls": 0,
+  "licensePurchases": 0,
+  "files": [
+    {
+      "path": "docs/g9-bazi-requirements.md",
+      "bytes": 6833,
+      "sha256": "770663bcff8b9787277c6a34b9d6fc101bce931b07a9b623486933cfb1dea16c"
+    },
+    {
+      "path": "docs/g9-astrology-requirements.md",
+      "bytes": 6755,
+      "sha256": "261b4128d15e9ca8037c03fbd2f3b07c915f8871ed3dede19a61077a06359603"
+    },
+    {
+      "path": "docs/g9-qimen-requirements.md",
+      "bytes": 6383,
+      "sha256": "f34f39fe65b9b938138fa64307fd105e2aa02cda0ca6b9c11f5368c2aa02c9ed"
+    },
+    {
+      "path": "docs/g9-runes-requirements.md",
+      "bytes": 6399,
+      "sha256": "47ddfdd81dc0156027863288d211b6f018da5bd1e204e3cb9933f7d0eda6ae0f"
+    },
+    {
+      "path": "docs/g9-candidate-evaluation.md",
+      "bytes": 4432,
+      "sha256": "22dea6aa342bfe21463a91cc7380a3774e8ae917e123de194ee672dfea5d0561"
+    },
+    {
+      "path": "docs/g9-source-snapshots.json",
+      "bytes": 26318,
+      "sha256": "4825658c57249cf2dd4acd98da0ac9a6473ffc6756e3a97fec0b64ee473351fe"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "bazi",
+      "document": "docs/g9-bazi-requirements.md",
+      "requirements": "DOCUMENTED",
+      "rulesAndExamples": "DOCUMENTED_NOT_RUNTIME_VERIFIED",
+      "exampleCount": 5,
+      "primarySources": "LINKED_AND_DATED",
+      "dependencyAndLicense": "lunar-javascript 1.7.7 MIT; no runtime dependencies",
+      "cost": "DOCUMENTED_ENGINEERING_ESTIMATE_NOT_QUOTE",
+      "implementationPlan": "STAGED_WITH_ACCEPTANCE_GATES",
+      "sharedMemory": "EXPLICIT_INPUT_AND_FROZEN_CONTEXT_CONTRACT",
+      "moduleImplemented": false
+    },
+    {
+      "id": "astrology",
+      "document": "docs/g9-astrology-requirements.md",
+      "requirements": "DOCUMENTED",
+      "rulesAndExamples": "DOCUMENTED_NOT_RUNTIME_VERIFIED",
+      "exampleCount": 5,
+      "primarySources": "LINKED_AND_DATED",
+      "dependencyAndLicense": "Astronomy Engine 2.1.19 MIT/no runtime dependencies; Swiss AGPL or Professional 700 CHF",
+      "cost": "DOCUMENTED_ENGINEERING_ESTIMATE_NOT_QUOTE",
+      "implementationPlan": "STAGED_WITH_ACCEPTANCE_GATES",
+      "sharedMemory": "EXPLICIT_INPUT_AND_FROZEN_CONTEXT_CONTRACT",
+      "moduleImplemented": false
+    },
+    {
+      "id": "qimen",
+      "document": "docs/g9-qimen-requirements.md",
+      "requirements": "DOCUMENTED",
+      "rulesAndExamples": "DOCUMENTED_NOT_RUNTIME_VERIFIED",
+      "exampleCount": 4,
+      "primarySources": "LINKED_AND_DATED",
+      "dependencyAndLicense": "Proposed own rule kernel; lunar-javascript calendar candidate only",
+      "cost": "DOCUMENTED_ENGINEERING_ESTIMATE_NOT_QUOTE",
+      "implementationPlan": "STAGED_WITH_ACCEPTANCE_GATES",
+      "sharedMemory": "EXPLICIT_INPUT_AND_FROZEN_CONTEXT_CONTRACT",
+      "moduleImplemented": false
+    },
+    {
+      "id": "runes",
+      "document": "docs/g9-runes-requirements.md",
+      "requirements": "DOCUMENTED",
+      "rulesAndExamples": "DOCUMENTED_NOT_RUNTIME_VERIFIED",
+      "exampleCount": 5,
+      "primarySources": "LINKED_AND_DATED",
+      "dependencyAndLicense": "No algorithm package required; original SVG and source mapping prerequisite",
+      "cost": "DOCUMENTED_ENGINEERING_ESTIMATE_NOT_QUOTE",
+      "implementationPlan": "STAGED_WITH_ACCEPTANCE_GATES",
+      "sharedMemory": "EXPLICIT_INPUT_AND_FROZEN_CONTEXT_CONTRACT",
+      "moduleImplemented": false
+    }
+  ],
+  "evidenceBoundary": {
+    "upstreamBaziFixtures": "READ_NOT_EXECUTED",
+    "qimenExamples": "MANUAL_GIVEN_CONDITIONS_EARTH_PLATE_ONLY",
+    "astrologyExamples": "MANUAL_ANGLE_MATH_ONLY",
+    "runeExamples": "PROPOSED_PRODUCT_CONTRACT_ONLY",
+    "hostTimezoneVersion": "NOT_CHECKED",
+    "runtimeAndDesktopAcceptance": "NOT_IMPLEMENTED_G9_SCOPE"
+  }
+}

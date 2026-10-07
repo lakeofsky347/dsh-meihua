@@ -1,5 +1,6 @@
 import type { CastResult, RuleInfo } from '../core/types.ts';
 import type { TarotDeckInfo, TarotDrawnCard, TarotSpread } from '../tarot/types.ts';
+import type { MemoryUsage } from './memory.ts';
 
 export interface PluginConfig {
   timeZone: string;
@@ -39,6 +40,8 @@ export interface Reading {
   error?: { code: string; message: string };
   logSessionId?: string;
   conversation?:ConversationTurn[];
+  memory?:MemoryUsage;
+  backgroundOptions?:{useBackground?:boolean;forOthers?:boolean};
 }
 export interface TarotCatalog { spreads:readonly TarotSpread[]; providers:ProviderGroup[]; config:PluginConfig; deck:TarotDeckInfo }
 export interface TarotReading {
@@ -58,6 +61,8 @@ export interface TarotReading {
   error?:{code:string;message:string};
   logSessionId?:string;
   conversation?:ConversationTurn[];
+  memory?:MemoryUsage;
+  backgroundOptions?:{useBackground?:boolean;forOthers?:boolean};
 }
 export type RpcResult = { ok: true; value: unknown } | { ok: false; error: { code: string; message: string; details: object } };
 export interface ClientRpc {

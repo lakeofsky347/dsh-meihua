@@ -7,14 +7,33 @@ class OfflineAdapter extends LlmAdapter {
   async *stream(options){
     let record={};
     const input=options.messages?.[0]?.content?.[0]?.text??'';
-    try{record=JSON.parse(input.slice(input.indexOf('{')));}catch{}
+    const fixedInput=input.split('\n\n【用户共享背景')[0];
+    try{record=JSON.parse(fixedInput.slice(fixedInput.indexOf('{')));}catch{}
+    if(options.system?.includes('背景信息提炼器')){
+      const mode=process.env.DSH_DEMO_SUMMARY_MODE??'valid';
+      if(mode==='failure')throw Object.assign(new Error('合成摘要供应商失败'),{code:'FIXTURE_FAILURE'});
+      if(mode==='slow')await new Promise(resolve=>setTimeout(resolve,1800));
+      const items=(record.messages??[]).flatMap(message=>message.text.split(/\n+/).filter(part=>part.trim()&&part.length<=400).map(quote=>({
+        kind:quote.includes('？')||quote.includes('?')?'concern':'fact',
+        category:/生日|出生|所在地|现居/.test(quote)?'个人信息':/喜欢|不喜欢|偏好|不接受/.test(quote)?'偏好与约束':'近期处境与目标',
+        sourceMessageId:message.id,quote,
+      })));
+      const output=mode==='invalid'?'合成的不合格输出':JSON.stringify({items});
+      yield {type:'text-delta',index:0,text:output};
+      yield {type:'finish',reason:{kind:'stop'}};return;
+    }
     let text=record.moduleId==='tarot'?`## 牌阵总览\n\n这是本地模拟解读，不调用真实 API。牌阵为${record.spread?.name??'塔罗'}，问题为「${record.question??'当下指引'}」。\n\n## 逐牌解读\n\n${(record.cards??[]).map(d=>`${d.positionIndex+1}. ${d.positionLabel}：${d.card.name}，${d.orientation==='reversed'?'逆位':'正位'}。${d.orientation==='reversed'?d.card.reversed:d.card.upright}`).join('\n')}\n\n## 牌间关系\n\n牌面与方向来自冻结的本地抽牌记录；这里验证流式显示，不作为真实供应商解读效果。\n\n## 可以尝试的行动\n\n记下一个今天可以实践的小步骤。`:'## 卦象总览\n\n这是用于界面验收的本地模拟内容。卦象与数字来自真实起卦算法，这段文字未调用真实供应商。\n\n## 体用与变化\n\n体卦代表此刻的立足点，用卦代表正在发生的变化。读一遍起卦过程，留意动爻所连接的本卦与变卦。\n\n## 结合所问\n\n把问题拆成今天可以看清的一件小事。卦象可以提供一个观察角度，现实判断仍依赖你掌握的信息。\n\n## 今日可做之事\n\n整理眼前的一步，给自己留一点安静。此处仅验证页面、流式显示和首次解读限制。';
+    if(['xiaoliu','lenormand','liuyao'].includes(record.moduleId)){
+      const result=record.result??{};
+      const details=record.moduleId==='xiaoliu'?`${result.name}；农历${result.lunar?.month}月${result.lunar?.day}日${result.lunar?.hourBranch}时。${result.meaning}`:record.moduleId==='lenormand'?`${result.spread?.name}：${(result.cards??[]).map(item=>item.card.name).join('、')}。相邻组合${result.adjacentPairs?.length??0}组；镜像${result.mirrors?.length??0}组。`:`${result.primary?.title}变${result.changed?.title}，动爻${result.movingLines?.join('、')||'无'}；月建${result.calendar?.monthBranch}，日辰${result.calendar?.dayGanzhi}，旬空${result.calendar?.voidBranches?.join('、')}。`;
+      text=`本地模拟解读，不调用真实 API。\n\n${details}\n\n问题：${record.question??''}。\n\n这些字段来自本地冻结结果。此回答验证流式显示、共享背景和多轮上下文；真实供应商语义质量尚未验证。`;
+    }
     const questions=(options.messages??[]).filter(message=>message.role==='user');
     if(questions.length>1){
       const question=questions.at(-1).content.filter(block=>block.type==='text').map(block=>block.text).join('\n');
       const answers=(options.messages??[]).filter(message=>message.role==='assistant');
       const previous=answers.at(-1)?.content.filter(block=>block.type==='text').map(block=>block.text).join(' ').slice(0,120)??'';
-      text=`这是第 ${questions.length-1} 轮本地模拟追问，不调用真实 API。\n\n你问的是：${question}\n\n我收到的上一轮回答摘要：${previous}\n\n固定${record.moduleId==='tarot'?'牌阵':'卦象'}仍来自最初记录，之前的问答已按顺序传入。这个模拟回答用于验证多轮上下文、流式显示和取消恢复，实际建议需要所选真实模型解读。`;
+      text=`这是第 ${questions.length-1} 轮本地模拟追问，不调用真实 API。\n\n你问的是：${question}\n\n我收到的上一轮回答摘要：${previous}\n\n固定${['tarot','lenormand'].includes(record.moduleId)?'牌序':record.moduleId==='xiaoliu'?'起课':'卦象'}仍来自最初记录，之前的问答已按顺序传入。这个模拟回答用于验证多轮上下文、流式显示和取消恢复，实际建议需要所选真实模型解读。`;
     }
     const delay=Number(process.env.DSH_DEMO_DELAY_MS??400);
     yield {type:'block-start',index:0,blockType:'text'};

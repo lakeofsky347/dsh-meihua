@@ -31,7 +31,7 @@ function setup(module:Module,generate:(options:GenerateOptions,index:number)=>As
   const calls:GenerateOptions[]=[],events:LogEvent[]=[],durable=new Set<string>(),gate=new GenerationGate();
   const ctx:HostContext={
     llm:{listProviders:()=>[{id:route.provider,name:'Configured'}],listModels:async()=>[{id:route.model,name:'Chosen'}],stream:options=>{
-      assert.ok(durable.has(options.sessionId),'this request must be durable before streaming');calls.push(options);return generate(options,calls.length-1);
+      assert.equal(durable.size,calls.length+1,'each request metadata must be durable before streaming');assert.equal(options.sessionId,undefined,'private provider requests omit the ordinary Session ID');calls.push(options);return generate(options,calls.length-1);
     }},
     sessions:{prepare:id=>new Session(id!,undefined,{id,version:4,createdAt:Date.now(),isSeeded:false})},
     sessionPersistence:{create:async header=>{
@@ -60,7 +60,7 @@ async function partialArrived(service:Service):Promise<void>{
 }
 
 for(const module of ['meihua','tarot'] as const){
-  test(`${module} 多轮追问保持首解读与固定结果、原模型，完整角色顺序进入请求和日志`,async()=>{
+  test(`${module} 多轮追问保持首解读与固定结果、原模型，完整角色顺序只进入私人模型请求`,async()=>{
     const s=setup(module),original=await first(s.service);
     await s.service.followup(original.id,'第一轮具体怎么做？',0);const one=await settled(s.service);
     assert.equal(one.conversation!.length,1);assert.equal(one.conversation![0]!.status,'complete');assert.equal(one.conversation![0]!.text,'追问回答 1');
@@ -74,6 +74,9 @@ for(const module of ['meihua','tarot'] as const){
     assert.ok(s.calls[2]!.messages[0]!.content[0]!.text.includes(input.question));assert.ok(s.calls[2]!.system.includes('不重复首次解读的固定四段格式'));
     assert.notEqual(conversation![0]!.logSessionId,original.logSessionId);assert.notEqual(conversation![1]!.logSessionId,conversation![0]!.logSessionId);
     const starts=s.events.filter(event=>event.type==='turn/start');assert.equal(starts.length,3);
+    assert.equal(s.events.filter(event=>event.type==='private/request').length,3);
+    assert.ok(!s.events.some(event=>event.type==='system/message'||event.type==='user/message'));
+    const log=JSON.stringify(s.events);for(const fragment of [input.question,original.text,'第一轮具体怎么做？','结合刚才的建议，第二步呢？','追问回答 1','追问回答 2'])assert.ok(!log.includes(fragment));
     await assert.rejects(s.service.interpret(original.id,route),/第一次/);s.gate.assertIdle();await s.service.dispose();
   });
   test(`${module} 双窗口重复追问只提交一轮；繁忙时禁止重起与重新解读`,async()=>{
@@ -109,7 +112,7 @@ for(const module of ['meihua','tarot'] as const){
       if(mode==='cancel')s.service.cancel(original.id,s.service.snapshot()!.conversation![0]!.id);if(mode==='dispose')await s.service.dispose();
       const final=await settled(s.service),turn=final.conversation![0]!;
       assert.equal(turn.status,'cancelled');assert.equal(turn.text,'保留部分回答');assert.equal(turn.error!.code,mode==='timeout'?'TIMEOUT':'CANCELLED');
-      const {conversation,...unchanged}=final;assert.deepEqual(unchanged,original);assert.ok(s.events.some(event=>event.type==='assistant/attempt'));s.gate.assertIdle();await s.service.dispose();
+      const {conversation,...unchanged}=final;assert.deepEqual(unchanged,original);assert.ok(s.events.some(event=>event.type==='private/result'&&(event.data as {status:string}).status==='cancelled'));s.gate.assertIdle();await s.service.dispose();
     }
   });
   test(`${module} 模型错误、截断、空输出只结束当前轮，下一轮保留失败上下文`,async()=>{
@@ -195,7 +198,7 @@ test('首次解读失败或取消但已有文字时可追问，完整保留原�
     await s.service.dispose();
   }
 });
-test('官方 DSH JSONL 后端读回两模块多轮全文、角色顺序与当前轮终态',async()=>{
+test('官方 DSH JSONL 后端读回两模块当前轮终态元信息，无私人问答或固定结果全文',async()=>{
   const cordisPackage:string='@deepseek-ai/cordis';type Fiber={await():Promise<void>;dispose():Promise<void>};
   const {Context}=await import(cordisPackage) as {Context:new()=>{plugin(plugin:unknown,config:object):Fiber;get(name:string):unknown}};
   const module=await import(pathToFileURL(resolve('.local/runtime/node_modules/@deepseek-ai/dsh-session-persistence-jsonl/lib/index.js')).href) as {default:unknown};
@@ -208,12 +211,13 @@ test('官方 DSH JSONL 后端读回两模块多轮全文、角色顺序与当前
         const original=await first(s.service);await s.service.followup(original.id,'第一轮持久化问题',0);await settled(s.service);await s.service.followup(original.id,'第二轮持久化问题',1);
         const final=await settled(s.service),turn=final.conversation![1]!;assert.equal(turn.status,'complete');assert.equal(turn.error,undefined);
         const handle=await persistence.open(turn.logSessionId!,'read'),{events}=await handle.read();await handle.close();
-        const messageEvents=events.filter(event=>event.type==='user/message'||event.type==='assistant/message');
-        assert.deepEqual(messageEvents.map(event=>event.type),['user/message','assistant/message','user/message','assistant/message','user/message','assistant/message']);
+        assert.deepEqual(events.map(event=>event.type),['turn/start','step/start','request/header','private/request','private/result','step/end','turn/end']);
+        assert.equal((events.find(event=>event.type==='private/result')!.data as {status:string}).status,'complete');
+        assert.ok(events.filter(event=>event.type.startsWith('private/')).every(event=>(event as LogEvent&{ignorable?:boolean}).ignorable===true));
         assert.equal(events.at(-1)!.type,'turn/end');assert.deepEqual((events.at(-1)!.data as {reason:unknown}).reason,{kind:'completed'});
         const body=await readFile(persistence.locate({id:turn.logSessionId!,version:4,createdAt:0}).path,'utf8');
-        for(const fragment of [input.question,original.text,'第一轮持久化问题','追问回答 1','第二轮持久化问题','追问回答 2'])assert.ok(body.includes(fragment));
-        if('cards' in original)assert.ok(body.includes(original.cards[0]!.card!.id));else assert.ok(body.includes(original.result.primary.name));
+        for(const fragment of [input.question,original.text,'第一轮持久化问题','追问回答 1','第二轮持久化问题','追问回答 2'])assert.ok(!body.includes(fragment));
+        if('cards' in original)assert.ok(!body.includes(original.cards[0]!.card!.id));else assert.ok(!body.includes(original.result.primary.name));
         assert.equal(s.calls.length,3);
       }finally{await s.service.dispose();}
     }
