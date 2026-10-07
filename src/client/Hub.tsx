@@ -7,7 +7,7 @@ import type { ModelRoute } from '../shared/protocol.ts';
 import { readingIsBusy } from '../shared/protocol.ts';
 import type { TarotPageProps } from './TarotPage.tsx';
 import type { HubState, ModuleId, ViewId } from './hub-controller.ts';
-import { Portal, Starfield, CosmosMark } from './Portal.tsx';
+import { Portal, Starfield, CosmosMark, modulePresentation } from './Portal.tsx';
 import { MemoryPanel, type MemoryActions } from './MemoryPanel.tsx';
 import type { MemoryPageState } from './memory-controller.ts';
 import {MODULES} from '../shared/modules.ts';
@@ -65,7 +65,7 @@ export function Hub(props:HubProps) {
   return <main ref={ref} className={`wx-hub ${stateClass}`} data-view={view} data-scheme={hub.scheme}>
     <nav className="wx-topbar" aria-label="占卜导航" hidden={view==='portal'} {...viewInteraction}>
       <button className="wx-home" onClick={()=>navigate('portal')} disabled={busy||pending||!!hub.journey}><CosmosMark/><span>返回星空</span></button>
-      <div className="wx-module-tabs">{MODULES.map(({id,title})=><button key={id} aria-current={view===id?'page':undefined} disabled={busy||pending||!!hub.journey} onClick={()=>navigate(id)}>{title}</button>)}</div>
+      <div className="wx-module-tabs">{MODULES.map(({id,title})=><button key={id} data-module={id} aria-current={view===id?'page':undefined} disabled={busy||pending||!!hub.journey} onClick={()=>navigate(id)}><span className="wx-tab-dot" aria-hidden="true"/>{title}</button>)}</div>
       <span className="wx-nav-note">{busy?'解读进行中 · 取消后可切换':'问象 · 占卜'}</span>
       {memory&&props.onOpenMemory&&<button className="wm-entry" onClick={props.onOpenMemory} disabled={!!hub.journey}>共享背景<small>{memory.status?.updating?'更新中':memory.status?.unlocked?'已解锁':'已锁定'}</small></button>}
     </nav>
@@ -76,7 +76,7 @@ export function Hub(props:HubProps) {
     {(['xiaoliu','lenormand','liuyao'] as NewMethodId[]).map(id=>methods[id]&&props.methodActions&&<div key={id} className="wx-view wx-view-module" {...viewInteraction} hidden={view!==id}><MethodPage key={memory?.privacyEpoch??0} moduleId={id} state={methods[id]!} {...props.methodActions[id]} memory={memory} onOpenMemory={props.onOpenMemory} t={props.t}/></div>)}
     {hub.error&&<p className="wx-hub-error" role="alert">{hub.error}</p>}
     {hub.journey&&<div className={`wx-journey ${hub.journey.to==='portal'?'wx-journey-return':'wx-journey-enter'}`} style={{'--wx-journey-ms':`${hub.journey.duration}ms`,'--wx-origin-x':`${hub.journey.origin.x*100}%`,'--wx-origin-y':`${hub.journey.origin.y*100}%`} as React.CSSProperties} aria-label="星空转场" role="status" onKeyDown={event=>{if(event.key==='Tab'){event.preventDefault();event.currentTarget.querySelector<HTMLButtonElement>('button')?.focus();}}}>
-      <Starfield active journey={hub.journey}/><div className="wx-journey-wash"/><p>{hub.journey.to==='portal'?'归于星河':hub.journey.to==='meihua'?'墨生万象':'星启秘仪'}</p><button onClick={props.onSkipJourney}>跳过转场 ↗</button>
+      <Starfield active journey={hub.journey}/><div className="wx-journey-wash"/><p>{hub.journey.to==='portal'?'归于星河':modulePresentation[hub.journey.to].caption}</p><button onClick={props.onSkipJourney}>跳过转场 ↗</button>
     </div>}
     {memory?.open&&props.memoryActions&&<MemoryPanel key={memory.privacyEpoch} state={memory} {...props.memoryActions}/>}
   </main>;

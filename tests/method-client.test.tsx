@@ -94,7 +94,10 @@ test('三模块实际本地结果可查看；未解锁禁用解读，展开过�
       }else{
         const result=reading.result as LiuyaoResult,rows=Array.from(container().querySelectorAll('tbody tr'));assert.equal(rows.length,6);assert.deepEqual(rows.map(row=>row.querySelector('td')!.textContent),['6','5','4','3','2','1']);
         assert.ok(container().textContent?.includes(result.calendar.dayGanzhi));assert.ok(container().textContent?.includes(result.calendar.voidBranches.join('、')));assert.ok(container().textContent?.includes(`世${result.palace.shi}应${result.palace.ying}`));
-        for(const line of result.lines){const row=rows.find(row=>row.querySelector('td')!.textContent===String(line.position))!;for(const fragment of [line.spirit,line.relative,line.najia,line.label,line.changed.najia])assert.ok(row.textContent?.includes(fragment),`${line.position}: ${fragment}`);if(line.moving)assert.ok(row.textContent?.includes('○动'));}
+        for(const line of result.lines){const row=rows.find(row=>row.querySelector('td')!.textContent===String(line.position))!;for(const fragment of [line.spirit,line.relative,line.najia,line.label,line.changed.najia])assert.ok(row.textContent?.includes(fragment),`${line.position}: ${fragment}`);if(line.moving)assert.ok(row.textContent?.includes(line.yinYang?'○动':'×动'));}
+        const changedDiagram=container().querySelector<HTMLElement>(`[aria-label="变卦 ${result.changed.title}"]`)!;
+        assert.ok(changedDiagram.textContent?.includes(`${result.changedPalace.name}宫${result.changedPalace.element}`));
+        assert.ok(changedDiagram.textContent?.includes(`世${result.changedPalace.shi}应${result.changedPalace.ying}`));
         for(const line of result.steps)assert.ok(container().textContent?.includes(line));assert.ok(container().textContent?.includes(result.calendar.previousJie.localTime));assert.ok(container().textContent?.includes(result.calendar.nextJie.localTime));
       }
     }
