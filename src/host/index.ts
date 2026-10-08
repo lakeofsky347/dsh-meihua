@@ -23,7 +23,7 @@ export function apply(ctx:HostContext, config:unknown):void {
   ctx.effect(()=>ctx.reflect.provide('meihua',service),'meihua: extensions');
   ctx.effect(()=>()=>tarot.dispose(),'tarot: generation lifetime');
   registerTransport(ctx,service);
-  registerModuleTransport(ctx,'tarot',tarot,['catalog','current','start','select','reveal','interpret','followup','cancel','checkpoint','preferences']);
+  registerModuleTransport(ctx,'tarot',tarot,['catalog','current','start','select','reveal','interpret','followup','resume','cancel','checkpoint','preferences']);
   registerModuleTransport(ctx,'memory',memory,MEMORY_ENDPOINTS);
   for(const module of MODULES){
     if(module.id==='meihua'||module.id==='tarot')continue;

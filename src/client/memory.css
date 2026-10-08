@@ -58,3 +58,9 @@
 .wm-end-row button { font:inherit;background:none;border:0;color:inherit;text-decoration:underline;text-underline-offset:4px;cursor:pointer; }
 html[data-platform=darwin] .wm-entry-portal { top:calc(20px + var(--dsh-frame-top-clearance,48px)); }
 @media(max-width:600px) { .wm-backdrop { padding:9px; }.wm-panel { padding:20px 17px;border-radius:12px; }.wm-diff,.wm-version-list { grid-template-columns:1fr; }.wm-entry small { display:none; }.wm-entry-portal { right:13px;top:13px;font-size:11px; }.wm-entry { font-size:11px!important; }.wm-description { font-size:12px; } }
+@container paneldialog (max-width:600px) {
+  .wm-panel {padding:20px 17px;border-radius:12px;}
+  .wm-diff,.wm-version-list {grid-template-columns:minmax(0,1fr);}
+}
+.wm-header {position:sticky;top:0;z-index:1;background:var(--wm-paper);}
+html[data-platform=darwin] .wx-hub .wx-panel-backdrop {padding-top:var(--dsh-frame-overlay-top,68px);}

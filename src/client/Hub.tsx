@@ -20,6 +20,8 @@ export interface HubProps {
   useTarot:<T>(selector:(state:TarotPageState)=>T)=>T;
   onNavigate:(view:ViewId,origin?:{x:number;y:number})=>void;onSkipJourney:()=>void;
   onMeihuaCast:PageProps['onCast'];onMeihuaInterpret:PageProps['onInterpret'];onMeihuaCancel:PageProps['onCancel'];
+  onMeihuaResume?:PageProps['onResume'];
+  onTarotResume?:TarotPageProps['onResume'];
   onMeihuaFollowup?:PageProps['onFollowup'];
   onMeihuaRefresh:PageProps['onRefresh'];onMeihuaSkip:PageProps['onSkip'];onMeihuaDraft:NonNullable<PageProps['onDraftChange']>;
   onTarotStart:(input:TarotStartInput)=>Promise<void>;onTarotSelect:(slot:number)=>Promise<void>;
@@ -53,7 +55,9 @@ export function Hub(props:HubProps) {
   useEffect(()=>{
     const nav=ref.current?.querySelector<HTMLElement>('.wx-topbar');
     if(!nav)return;
-    const measure=()=>{const height=nav.getBoundingClientRect().height;if(height>0)ref.current?.style.setProperty('--wx-nav-height',`${height}px`);};
+    // The offset is consumed as CSS pixels; a zoomed bounding rect would apply
+    // the page scale a second time and leave a gap under the navigation.
+    const measure=()=>{const height=nav.offsetHeight;if(height>0)ref.current?.style.setProperty('--wx-nav-height',`${height}px`);};
     measure();
     if(typeof ResizeObserver==='undefined')return;
     const observer=new ResizeObserver(measure);observer.observe(nav);return()=>observer.disconnect();
@@ -71,9 +75,9 @@ export function Hub(props:HubProps) {
     </nav>
     {view==='portal'&&memory&&props.onOpenMemory&&<button className="wm-entry wm-entry-portal" onClick={props.onOpenMemory} disabled={!!hub.journey} {...viewInteraction}>共享背景<small>{memory.status?.updating?'更新中':memory.status?.unlocked?'已解锁':'已锁定'}</small></button>}
     <div className="wx-view wx-view-portal" {...viewInteraction} hidden={view!=='portal'}><Portal active={view==='portal'&&!hub.journey} onEnter={navigate}/></div>
-    <div className="wx-view wx-view-module" {...viewInteraction} hidden={view!=='meihua'}><Page key={memory?.privacyEpoch??0} t={props.t} useMeihua={props.useMeihua} onCast={props.onMeihuaCast} onInterpret={props.onMeihuaInterpret} onFollowup={props.onMeihuaFollowup} onCancel={props.onMeihuaCancel} onRefresh={props.onMeihuaRefresh} onSkip={props.onMeihuaSkip} onDraftChange={props.onMeihuaDraft} memoryState={memory} onOpenMemory={props.onOpenMemory} onCheckpoint={props.onMeihuaCheckpoint}/></div>
-    <div className="wx-view wx-view-module" {...viewInteraction} hidden={view!=='tarot'}><TarotPage key={memory?.privacyEpoch??0} useTarot={props.useTarot} onStart={props.onTarotStart} onSelect={props.onTarotSelect} onReveal={props.onTarotReveal} onInterpret={props.onTarotInterpret} onFollowup={props.onTarotFollowup} onCancel={props.onTarotCancel} onRefresh={props.onTarotRefresh} onSkip={props.onTarotSkip} onDraftChange={props.onTarotDraft} onActivityChange={props.onTarotActive} active={view==='tarot'&&!hub.journey} scheme={hub.scheme} memoryState={memory} onOpenMemory={props.onOpenMemory} onCheckpoint={props.onTarotCheckpoint}/></div>
-    {(['xiaoliu','lenormand','liuyao'] as NewMethodId[]).map(id=>methods[id]&&props.methodActions&&<div key={id} className="wx-view wx-view-module" {...viewInteraction} hidden={view!==id}><MethodPage key={memory?.privacyEpoch??0} moduleId={id} state={methods[id]!} {...props.methodActions[id]} memory={memory} onOpenMemory={props.onOpenMemory} t={props.t}/></div>)}
+    <div className="wx-view wx-view-module" {...viewInteraction} hidden={view!=='meihua'}><Page key={memory?.privacyEpoch??0} t={props.t} useMeihua={props.useMeihua} onCast={props.onMeihuaCast} onInterpret={props.onMeihuaInterpret} active={view==='meihua'&&!hub.journey} onResume={props.onMeihuaResume} onFollowup={props.onMeihuaFollowup} onCancel={props.onMeihuaCancel} onRefresh={props.onMeihuaRefresh} onSkip={props.onMeihuaSkip} onDraftChange={props.onMeihuaDraft} memoryState={memory} onOpenMemory={props.onOpenMemory} onCheckpoint={props.onMeihuaCheckpoint}/></div>
+    <div className="wx-view wx-view-module" {...viewInteraction} hidden={view!=='tarot'}><TarotPage key={memory?.privacyEpoch??0} useTarot={props.useTarot} onStart={props.onTarotStart} onSelect={props.onTarotSelect} onReveal={props.onTarotReveal} onInterpret={props.onTarotInterpret} onResume={props.onTarotResume} onFollowup={props.onTarotFollowup} onCancel={props.onTarotCancel} onRefresh={props.onTarotRefresh} onSkip={props.onTarotSkip} onDraftChange={props.onTarotDraft} onActivityChange={props.onTarotActive} active={view==='tarot'&&!hub.journey} scheme={hub.scheme} memoryState={memory} onOpenMemory={props.onOpenMemory} onCheckpoint={props.onTarotCheckpoint}/></div>
+    {(['xiaoliu','lenormand','liuyao'] as NewMethodId[]).map(id=>methods[id]&&props.methodActions&&<div key={id} className="wx-view wx-view-module" {...viewInteraction} hidden={view!==id}><MethodPage active={view===id&&!hub.journey} key={memory?.privacyEpoch??0} moduleId={id} state={methods[id]!} {...props.methodActions[id]} memory={memory} onOpenMemory={props.onOpenMemory} t={props.t}/></div>)}
     {hub.error&&<p className="wx-hub-error" role="alert">{hub.error}</p>}
     {hub.journey&&<div className={`wx-journey ${hub.journey.to==='portal'?'wx-journey-return':'wx-journey-enter'}`} style={{'--wx-journey-ms':`${hub.journey.duration}ms`,'--wx-origin-x':`${hub.journey.origin.x*100}%`,'--wx-origin-y':`${hub.journey.origin.y*100}%`} as React.CSSProperties} aria-label="星空转场" role="status" onKeyDown={event=>{if(event.key==='Tab'){event.preventDefault();event.currentTarget.querySelector<HTMLButtonElement>('button')?.focus();}}}>
       <Starfield active journey={hub.journey}/><div className="wx-journey-wash"/><p>{hub.journey.to==='portal'?'归于星河':modulePresentation[hub.journey.to].caption}</p><button onClick={props.onSkipJourney}>跳过转场 ↗</button>

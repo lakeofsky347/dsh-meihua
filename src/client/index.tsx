@@ -54,17 +54,17 @@ export function apply(ctx:ClientContext):void {
       else if(before.view!=='portal'){const pending=methods[before.view].checkpoint();void memory.load();void pending.finally(()=>memory.load());}
     }
   };
-  const methodActions=Object.fromEntries(Object.entries(methods).map(([id,method])=>[id,{onStart:method.start,onLocal:method.local,onInterpret:method.interpret,onFollowup:method.followup,onCancel:method.cancel,onRefresh:method.load.bind(method),onDraft:method.updateDraft,onCheckpoint:async()=>{const pending=method.checkpoint(true);void memory.load();await pending;await memory.load();}}])) as Record<NewMethodId,MethodActions>;
+  const methodActions=Object.fromEntries(Object.entries(methods).map(([id,method])=>[id,{onStart:method.start,onLocal:method.local,onInterpret:method.interpret,onFollowup:method.followup,onResume:method.resume,onCancel:method.cancel,onRefresh:method.load.bind(method),onDraft:method.updateDraft,onCheckpoint:async()=>{const pending=method.checkpoint(true);void memory.load();await pending;await memory.load();}}])) as Record<NewMethodId,MethodActions>;
   ctx.slots.inject('main',()=>ctx.slots.register({name:'main',key:'meihua',locale:'meihua',inject:()=>({
     hooks:{hub,meihua:controller,tarot,memory,...methods},methodActions,onNavigate:navigate,onSkipJourney:hub.skip,
     onOpenMemory:memory.open,memoryActions:{onClose:memory.close,onRefresh:memory.load.bind(memory),onInitialize:memory.initialize,onUnlock:memory.unlock,onLock:memory.lock,onSave:memory.save,onRollback:memory.rollback,onClear:memory.clear,onChangePassphrase:memory.changePassphrase},
     onMeihuaCheckpoint:()=>checkpointMeihua(true),onTarotCheckpoint:()=>checkpointTarot(true),
     onMeihuaCast:controller.cast.bind(controller),onMeihuaInterpret:controller.interpret.bind(controller),
-    onMeihuaFollowup:controller.followup.bind(controller),
+    onMeihuaFollowup:controller.followup.bind(controller),onMeihuaResume:controller.resume.bind(controller),
     onMeihuaCancel:controller.cancel.bind(controller),onMeihuaRefresh:controller.load.bind(controller),onMeihuaSkip:controller.skipAnimation,onMeihuaDraft:controller.updateDraft,
     onTarotStart:tarot.start.bind(tarot),onTarotSelect:tarot.select.bind(tarot),onTarotReveal:tarot.reveal.bind(tarot),
     onTarotInterpret:tarot.interpret.bind(tarot),onTarotCancel:tarot.cancel.bind(tarot),onTarotRefresh:tarot.load.bind(tarot),
-    onTarotFollowup:tarot.followup.bind(tarot),
+    onTarotFollowup:tarot.followup.bind(tarot),onTarotResume:tarot.resume.bind(tarot),
     onTarotSkip:tarot.skipShuffle,onTarotDraft:tarot.updateDraft,onTarotActive:tarot.setActive
   })},Hub));
   ctx.slots.inject('sidebar.panellist',()=>ctx.slots.register({name:'sidebar.panellist',id:'meihua',order:30,label:()=>t('hubPanel'),locale:'meihua'},CosmosMark));

@@ -1,6 +1,6 @@
 {
   "name": "dsh-meihua",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "问象 · 五种占卜与口令加密共享背景：梅花、塔罗、小六壬、雷诺曼、六爻纳甲",
   "type": "module",
   "engines": {

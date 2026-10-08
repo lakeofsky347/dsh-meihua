@@ -38,5 +38,10 @@ export function parseConfig(value:unknown):PluginConfig {
     if (typeof value !== 'number' || !Number.isInteger(value) || value < min || value > max) throw new Error(`${key} must be an integer between ${min} and ${max}`);
     return value;
   };
-  return { timeZone, animationMs:limit('animationMs',0,15000), interpretationTimeoutMs:limit('interpretationTimeoutMs',1000,600000), maxOutputTokens:limit('maxOutputTokens',256,16000), pollIntervalMs:limit('pollIntervalMs',100,2000) };
+  const optional=(key:string,fallback:number,min:number,max:number):number=>raw[key]===undefined?fallback:limit(key,min,max);
+  return { timeZone, animationMs:limit('animationMs',0,15000), interpretationTimeoutMs:limit('interpretationTimeoutMs',1000,3600000),
+    maxOutputTokens:raw.maxOutputTokens==='model-maximum'?'model-maximum':limit('maxOutputTokens',256,Number.MAX_SAFE_INTEGER),
+    pollIntervalMs:limit('pollIntervalMs',100,2000),maxContextCharacters:optional('maxContextCharacters',60000,1000,10000000),
+    contextSafetyTokens:optional('contextSafetyTokens',4096,256,1000000),summaryMaxOutputTokens:optional('summaryMaxOutputTokens',3000,256,32000),
+    summaryTimeoutMs:optional('summaryTimeoutMs',120000,1000,600000) };
 }

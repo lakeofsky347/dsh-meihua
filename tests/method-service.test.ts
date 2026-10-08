@@ -103,3 +103,23 @@ test('跨旧新模块共用生成锁；取消保留部分文字，再追问延�
 test('锁定/清空取消新模块并失效所有旧页面，不允许迟到数据恢复',async()=>{
   const s=await setup();try{const readings=await Promise.all(ids.map(id=>s.ready(id)));const old=(await s.memory.status()).epoch;await s.memory.clear(old);for(const [index,id] of ids.entries()){assert.equal(s.services[id].snapshot(),null);failure(await s.services[id].rpc('start',{question:'旧数据',epoch:old}),'MEMORY_STALE');failure(await s.call(id,'checkpoint',{id:readings[index]!.id,route}));}assert.equal((await doc(s.memory)).content,'');const r=await s.ready('xiaoliu');await s.memory.lock();assert.equal(s.services.xiaoliu.snapshot(),null);failure(await s.call('xiaoliu','interpret',{id:r.id,...route}),'MEMORY_LOCKED');}finally{await s.cleanup();}
 });
+
+
+test('三模块手动恢复沿用原背景，完整保留未完成前缀，清空后陈旧请求不能恢复',async()=>{
+  let count=0;
+  const s=await setup(async function*(request){if(summary(request)){yield* normal(request);return;}const current=count++;yield {type:'text-delta',index:0,text:current%2===0?'合成未完成前缀':'合成补全正文'};yield {type:'finish',reason:{kind:current%2===0?'max-tokens':'stop'}};});
+  try {
+    for(const id of ids){
+      await s.memory.save(`原背景_PRIVATE_${id}`,(await doc(s.memory)).revision,(await s.memory.status()).epoch);
+      const reading=await s.ready(id);unwrap(await s.call(id,'interpret',{id:reading.id,...route}));const before=await settled(s.services[id]);
+      await s.memory.save(`新背景_NEW_${id}`,(await doc(s.memory)).revision,(await s.memory.status()).epoch);
+      unwrap(await s.call(id,'resume',{id:reading.id,expectedTurnCount:0,expectedAttempt:0}));const after=await settled(s.services[id]);
+      assert.equal(after.status,'complete');assert.equal(after.text,'合成未完成前缀\n\n合成补全正文');assert.deepEqual(after.result,before.result);assert.deepEqual(after.memory,before.memory);
+      const last=s.calls.at(-1)!;assert.ok(last.messages[0]!.content[0]!.text.includes(`PRIVATE_${id}`));assert.ok(!last.messages[0]!.content[0]!.text.includes(`NEW_${id}`));
+      failure(await s.call(id,'resume',{id:reading.id,expectedTurnCount:0,expectedAttempt:0}),'CONVERSATION_CHANGED');
+    }
+    const epoch=(await s.memory.status()).epoch,last=s.services.liuyao.snapshot()!;await s.memory.clear(epoch);
+    failure(await s.services.liuyao.rpc('resume',{id:last.id,expectedTurnCount:0,expectedAttempt:1,epoch}),'MEMORY_STALE');
+    const metadata=JSON.stringify(s.events);assert.ok(!metadata.includes('PRIVATE_'));assert.ok(!metadata.includes('合成未完成前缀'));
+  } finally {await s.cleanup();}
+});

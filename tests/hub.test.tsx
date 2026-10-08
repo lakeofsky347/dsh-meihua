@@ -4,7 +4,7 @@ import { act, useSyncExternalStore } from 'react';
 import { createRequire } from 'node:module';
 import { readFile } from 'node:fs/promises';
 import { runInNewContext } from 'node:vm';
-import { Hub, type HubProps } from '../src/client/Hub.tsx';
+import type {HubProps} from '../src/client/Hub.tsx';
 import { Starfield } from '../src/client/Portal.tsx';
 import { HubController, type HubState } from '../src/client/hub-controller.ts';
 import { MeihuaController, type PageState } from '../src/client/controller.ts';
@@ -24,6 +24,7 @@ for(const [key,value] of Object.entries({window:dom.window,document:dom.window.d
 }
 // Initialize react-dom after the DOM so its controlled-input event detection is real.
 const { createRoot }=await import('react-dom/client');
+const {Hub}=await import('../src/client/Hub.tsx');
 const media=(reduced:boolean)=>Object.defineProperty(globalThis,'matchMedia',{value:()=>({matches:reduced}),configurable:true,writable:true});
 const noop=async()=>{};
 const config={timeZone:'Asia/Shanghai',animationMs:4800,interpretationTimeoutMs:1500,maxOutputTokens:3000,pollIntervalMs:100};

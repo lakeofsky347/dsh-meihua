@@ -262,3 +262,61 @@ html[data-platform=darwin] .wx-portal { padding-top:calc(78px + var(--dsh-frame-
 }
 @container (max-width:780px) { .wx-topbar .wx-module-tabs { order:3;flex-basis:100%;gap:22px; }.wx-topbar .wx-nav-note { display:none; } }
 @media(prefers-reduced-motion:reduce) { .wx-hub * { animation:none!important;transition:none!important; }.wx-journey-wash { display:none; }.wx-journey { opacity:.25; }.wx-portals { translate:none; } }
+
+/* Reading controls share spacing across all five methods. */
+.wx-reading-text {overflow-wrap:anywhere;line-height:1.9;}
+.wx-reading-text>p {white-space:pre-wrap;}
+.wx-reading-text>p+p,.wx-reading-text>ul,.wx-reading-text>ol {margin-top:12px;}
+.wx-reading-text h4 {font-size:16px;font-weight:600;line-height:1.7;margin:24px 0 10px;}
+.wx-reading-text h4:first-child {margin-top:0;}
+.wx-reading-text ul,.wx-reading-text ol {padding-left:1.6em;margin-bottom:14px;}
+.wx-reading-text li+li {margin-top:7px;}
+.wx-reading-text code {font:inherit;background:color-mix(in srgb,currentColor 7%,transparent);padding:1px 4px;border-radius:3px;}
+.wx-reading-text strong {font-weight:600;}
+.wx-generation {font-size:11px;line-height:1.7;opacity:.8;margin:14px 0;}
+.wx-generation p {margin:3px 0!important;}
+.wx-resume {display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:15px 0;}
+.wx-resume span {font-size:11px;opacity:.7;}
+.wx-resume button,.wx-reading-jump button {font:inherit;font-size:11px;line-height:1.7;color:inherit;background:transparent;border:1px solid color-mix(in srgb,currentColor 25%,transparent);border-radius:5px;padding:6px 11px;cursor:pointer;min-height:34px;}
+.wx-resume button:disabled {opacity:.5;cursor:default;}
+.wx-reading-jump {position:sticky;top:0;z-index:4;display:flex;justify-content:flex-end;flex-wrap:wrap;gap:7px;padding:5px 0 9px;margin-bottom:8px;background:var(--mh-paper,var(--tr-bg,var(--method-paper,#f4f0e6)));}
+.wx-reading-jump button:focus-visible,.wx-resume button:focus-visible {outline:2px solid currentColor;outline-offset:3px;}
+.wx-hub [data-reading-result],.wx-hub [data-reading-interpretation] {scroll-margin-block-start:65px;}
+.wx-hub [data-reading-result]:focus,.wx-hub [data-reading-interpretation]:focus {outline:none;}
+[data-reading-end] {display:block;height:1px;}
+
+/* The Hub alone consumes desktop chrome clearance; module pages start below it. */
+html[data-platform=darwin] .wx-hub .mh-page {padding-top:28px;}
+html[data-platform=darwin] .wx-hub .mh-header {padding-left:0;}
+.mh-result-panel {container:meihuaresult / inline-size;}
+.mh-hex-card {min-width:0;}
+.mh-hex-card h3 {white-space:normal;overflow-wrap:anywhere;}
+.mh-page input:not([type=checkbox]),.mh-page select,.mh-page textarea,.mh-model-row label {min-width:0;max-width:100%;}
+.mh-model-row {grid-template-columns:repeat(2,minmax(0,1fr));}
+.mh-actions,.mh-section-heading,.mh-copy-row {flex-wrap:wrap;}
+@container meihuapage (max-width:790px) {
+  .wx-hub .mh-result-panel {padding:20px 12px;}
+  .wx-hub .mh-hex-card-main .mh-hex {width:min(110px,100%);height:auto;}
+}
+@container meihuaresult (max-width:460px) {
+  .wx-hub .mh-hex {width:min(92px,100%);height:auto;}
+  .wx-hub .mh-hex-card-main .mh-hex {width:min(110px,100%);}
+  .mh-hex-card {padding:15px 6px;}
+  .mh-hex-card h3 {font-size:18px;}
+  .mh-hexagrams {gap:6px;}
+  .mh-model-row {grid-template-columns:minmax(0,1fr);}
+  .wx-conversation-send {align-items:flex-start;flex-direction:column;}
+  .wx-conversation-send button {align-self:flex-end;}
+}
+@container meihuaresult (max-width:300px) {
+  .wx-hub .mh-hexagrams {grid-template-columns:repeat(2,minmax(0,1fr));}
+  .wx-hub .mh-hex-card-main {grid-column:1/-1;order:0;}
+  .wx-hub .mh-hex-card:nth-child(2) {order:1;}
+  .wx-hub .mh-hex-card:nth-child(3) {order:2;}
+}
+.wx-hub .wx-panel-backdrop {position:absolute;inset:0;z-index:30;container:paneldialog / inline-size;padding:20px;}
+.mh-ritual-circle {width:min(300px,100%);height:auto;aspect-ratio:1;}
+.mh-ritual-circle>.mh-bagua {width:100%;height:auto;}
+.wx-preflight {display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:12px 0;font-size:12px;}
+.wx-preflight button {font:inherit;color:inherit;background:transparent;border:1px solid color-mix(in srgb,currentColor 24%,transparent);border-radius:4px;padding:7px 11px;cursor:pointer;}
+.wx-reading-jump .wx-preflight {flex-basis:100%;justify-content:space-between;padding:4px 0;}

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { generatePrivate, withBackground } from '../src/host/private-generation.ts';
 import type { PrivateGeneration } from '../src/host/private-generation.ts';
 import type { MemoryService } from '../src/host/memory-service.ts';
-import type { GenerateOptions, HostContext, LlmChunk, LogEvent, LogSession } from '../src/host/platform.ts';
+import type { GenerateOptions, HostContext, LlmChunk, LogEvent, LogSession, ModelInfo, PreparedCall } from '../src/host/platform.ts';
 import type { PluginConfig } from '../src/shared/protocol.ts';
 
 const sessionPackage:string='@deepseek-ai/dsh-session';
@@ -93,4 +93,104 @@ test('共享背景作为用户资料附加，停用和空文档不追加上下�
   assert.ok(text.startsWith('冻结占卜记录'));assert.ok(text.includes(canary));assert.ok(text.includes('"revision":7'));
   assert.equal(withBackground('冻结占卜记录',{...snapshot,enabled:false}),'冻结占卜记录');
   assert.equal(withBackground('冻结占卜记录',{...snapshot,markdown:'  '}),'冻结占卜记录');
+});
+
+
+test('最高思考与真实模型上限同时发送，prepareCall配置与日志保持一致',async()=>{
+  const s=setup(async function*(){yield {type:'reasoning-delta',index:0,text:'PRIVATE_REASONING'};yield {type:'text-delta',index:1,text:output};yield {type:'usage',usage:{reasoningTokens:123}};yield {type:'finish',reason:{kind:'stop'}};});
+  s.ctx.llm.resolveModelInfo=async()=>({provider:'fixture',id:'local',name:'Fixture',context:{contextWindow:262144},defaultMaxTokens:3000,maxOutputTokens:65536,outputTokenAccounting:'includes-reasoning',reasoning:{efforts:[{id:'maximum-fixture',name:'最大'},{id:'off',name:'关闭'}],maxEffort:'maximum-fixture'}});
+  const phases:string[]=[];
+  let preparedCalls=0;
+  s.ctx.llm.prepareCall=async config=>{preparedCalls++;return {config,context:{contextWindow:262144},maxOutputTokens:65536,outputTokenAccounting:'includes-reasoning',reasoning:{efforts:[{id:'maximum-fixture',name:'最大'},{id:'off',name:'关闭'}],maxEffort:'maximum-fixture'},stream:options=>s.ctx.llm.stream(options)};};
+  const result=await generatePrivate(s.ctx,{...config,maxOutputTokens:'model-maximum'},{...request,onGeneration:info=>phases.push(info.phase)},new AbortController());
+  assert.equal(result.status,'complete');assert.equal(preparedCalls,1);assert.equal(s.calls[0]!.maxTokens,65536);assert.equal(s.calls[0]!.reasoningEffort,'maximum-fixture');
+  assert.equal(result.generation.budgetSource,'model-maximum');assert.equal(result.generation.reasoningStatus,'maximum');assert.ok(phases.includes('thinking'));assert.ok(phases.includes('responding'));assert.equal(phases.at(-1),'finished');
+  assert.ok(JSON.stringify(s.events).includes('reasoningTokens'));assert.ok(!JSON.stringify(s.events).includes('PRIVATE_REASONING'));assertPrivateLog(s.events);
+});
+
+test('默认预算不冒充模型最大；未知档位不猜测，禁用思考的路由仍可用',async()=>{
+  for(const reasoning of [undefined,{efforts:[{id:'off',name:'关闭'}],maxEffort:'off'},{efforts:[{id:'mystery',name:'未知档位'}]}]){
+    const s=setup(async function*(){yield {type:'text-delta',index:0,text:output};yield {type:'finish',reason:{kind:'stop'}};});
+    s.ctx.llm.resolveModelInfo=async()=>({provider:'fixture',id:'local',name:'Fixture',defaultMaxTokens:8192,reasoning});
+    const result=await generatePrivate(s.ctx,{...config,maxOutputTokens:'model-maximum'},request,new AbortController());
+    assert.equal(result.status,'complete');assert.equal(s.calls[0]!.maxTokens,8192);assert.equal(s.calls[0]!.reasoningEffort,undefined);assert.equal(result.generation.budgetSource,'host-default');assert.notEqual(result.generation.reasoningStatus,'maximum');
+  }
+});
+
+test('旧宿主未知预算保持省略，上下文已知时保留超过60000字符的全部原文',async()=>{
+  const s=setup(async function*(){yield {type:'text-delta',index:0,text:output};yield {type:'finish',reason:{kind:'stop'}};});
+  const first=await generatePrivate(s.ctx,{...config,maxOutputTokens:'model-maximum'},request,new AbortController());
+  assert.equal(first.status,'complete');assert.equal(s.calls[0]!.maxTokens,undefined);
+  s.ctx.llm.resolveModelInfo=async()=>({provider:'fixture',id:'local',name:'Fixture',context:{contextWindow:262144},maxOutputTokens:65536});
+  const messages=[{...request.messages[0]!,content:[{type:'text' as const,text:'x'.repeat(70000)}]}];
+  const result=await generatePrivate(s.ctx,{...config,maxOutputTokens:'model-maximum'},{...request,id:'large-context',messages},new AbortController());
+  assert.equal(result.status,'complete');assert.equal(s.calls[1]!.messages[0]!.content[0]!.text.length,70000);assert.ok(result.generation.contextLimitCharacters!>60000);
+});
+
+test('上下文无空间时拒绝模型调用；已知空间会限制请求预算但不删前文',async()=>{
+  const s=setup(async function*(){yield {type:'text-delta',index:0,text:output};yield {type:'finish',reason:{kind:'stop'}};});
+  s.ctx.llm.resolveModelInfo=async()=>({provider:'fixture',id:'local',name:'Fixture',context:{contextWindow:8192},maxOutputTokens:65536});
+  const tooLarge={...request,messages:[{...request.messages[0]!,content:[{type:'text' as const,text:'字'.repeat(3000)}]}]};
+  const failure=await generatePrivate(s.ctx,{...config,maxOutputTokens:'model-maximum'},tooLarge,new AbortController());
+  assert.equal(failure.error?.code,'CONTEXT_LIMIT');assert.equal(s.calls.length,0);
+  const result=await generatePrivate(s.ctx,{...config,maxOutputTokens:'model-maximum'},request,new AbortController());
+  assert.equal(result.status,'complete');assert.ok(s.calls[0]!.maxTokens!<8192);assert.equal(s.calls[0]!.messages[0]!.content[0]!.text,canary);
+});
+
+test('prepared上下文缩小或新声明的窗口已不足时，在请求日志和派发前拒绝',async()=>{
+  for(const mode of ['smaller','newly-known'] as const){
+    const s=setup(async function*(){yield {type:'text-delta',index:0,text:output};yield {type:'finish',reason:{kind:'stop'}};});
+    s.ctx.llm.resolveModelInfo=async()=>({provider:'fixture',id:'local',name:'Fixture',...(mode==='smaller'?{context:{contextWindow:32768}}:{}),maxOutputTokens:16384});
+    s.ctx.llm.prepareCall=async call=>({config:call,context:{contextWindow:mode==='smaller'?8192:4096},maxOutputTokens:16384,stream:options=>s.ctx.llm.stream(options)});
+    const result=await generatePrivate(s.ctx,{...config,maxOutputTokens:'model-maximum'},request,new AbortController());
+    assert.equal(result.error?.code,'MODEL_CHANGED',mode);assert.equal(result.status,'failed');assert.equal(result.text,'');
+    assert.equal(s.calls.length,0);assert.equal(s.events.length,0);
+  }
+});
+
+test('prepare后补宿主默认预算仍受冻结上下文约束，安全预算按实际值显示',async()=>{
+  for(const budget of [16384,1024]){
+    const s=setup(async function*(){yield {type:'text-delta',index:0,text:output};yield {type:'finish',reason:{kind:'stop'}};});
+    s.ctx.llm.resolveModelInfo=async()=>({provider:'fixture',id:'local',name:'Fixture',context:{contextWindow:8192}});
+    s.ctx.llm.prepareCall=async call=>{assert.equal(call.maxTokens,undefined);return {config:{...call,maxTokens:budget},context:{contextWindow:8192},stream:options=>s.ctx.llm.stream(options)};};
+    const result=await generatePrivate(s.ctx,{...config,maxOutputTokens:'model-maximum'},request,new AbortController());
+    if(budget===16384){assert.equal(result.error?.code,'MODEL_CHANGED');assert.equal(s.calls.length,0);assert.equal(s.events.length,0);}
+    else{assert.equal(result.status,'complete');assert.equal(s.calls[0]!.maxTokens,1024);assert.equal(result.generation.maxTokens,1024);assert.equal(result.generation.budgetSource,'host-default');assertPrivateLog(s.events);}
+  }
+});
+
+test('prepared支持档位、最高档、输出硬上限或计量口径发生变化均不使用过期声明',async()=>{
+  const info:ModelInfo={provider:'fixture',id:'local',name:'Fixture',context:{contextWindow:32768},maxOutputTokens:8192,outputTokenAccounting:'includes-reasoning',reasoning:{efforts:[{id:'high',name:'高'},{id:'max',name:'最大'}],maxEffort:'max'}};
+  const changes:Partial<PreparedCall>[]=[
+    {reasoning:{efforts:[{id:'max',name:'最大'}],maxEffort:'max'}},
+    {reasoning:{efforts:info.reasoning!.efforts,maxEffort:'high'}},
+    {maxOutputTokens:16384},
+    {maxOutputTokens:4096},
+    {outputTokenAccounting:'excludes-reasoning'},
+  ];
+  for(const change of changes){
+    const s=setup(async function*(){yield {type:'text-delta',index:0,text:output};yield {type:'finish',reason:{kind:'stop'}};});
+    s.ctx.llm.resolveModelInfo=async()=>info;
+    s.ctx.llm.prepareCall=async call=>({config:call,context:info.context,maxOutputTokens:info.maxOutputTokens,reasoning:info.reasoning,outputTokenAccounting:info.outputTokenAccounting,stream:options=>s.ctx.llm.stream(options),...change});
+    const result=await generatePrivate(s.ctx,{...config,maxOutputTokens:'model-maximum'},request,new AbortController());
+    assert.equal(result.error?.code,'MODEL_CHANGED',JSON.stringify(change));assert.equal(s.calls.length,0);assert.equal(s.events.length,0);
+  }
+});
+
+test('旧prepared接口省略新能力字段仍兼容，已知档位顺序与名称变化不误判',async()=>{
+  for(const legacy of [true,false]){
+    const s=setup(async function*(){yield {type:'text-delta',index:0,text:output};yield {type:'finish',reason:{kind:'stop'}};});
+    s.ctx.llm.resolveModelInfo=async()=>({provider:'fixture',id:'local',name:'Fixture',context:{contextWindow:32768},maxOutputTokens:8192,outputTokenAccounting:'includes-reasoning',reasoning:{efforts:[{id:'high',name:'高'},{id:'max',name:'最大'}],maxEffort:'max'}});
+    s.ctx.llm.prepareCall=async call=>({config:call,context:{contextWindow:32768},...(legacy?{}:{maxOutputTokens:8192,outputTokenAccounting:'includes-reasoning' as const,reasoning:{efforts:[{id:'max',name:'最高'},{id:'high',name:'高'}],maxEffort:'max'}}),stream:options=>s.ctx.llm.stream(options)});
+    const result=await generatePrivate(s.ctx,{...config,maxOutputTokens:'model-maximum'},request,new AbortController());
+    assert.equal(result.status,'complete');assert.equal(s.calls[0]!.maxTokens,8192);assert.equal(s.calls[0]!.reasoningEffort,'max');assert.equal(result.generation.reasoningStatus,'maximum');
+    assert.equal(result.generation.reasoningLabel,legacy?'最大':'最高');assertPrivateLog(s.events);
+  }
+});
+
+test('旧prepared接口和未知模型能力不冒充已知思考支持',async()=>{
+  const s=setup(async function*(){yield {type:'text-delta',index:0,text:output};yield {type:'finish',reason:{kind:'stop'}};});
+  s.ctx.llm.prepareCall=async call=>({config:call,stream:options=>s.ctx.llm.stream(options)});
+  const result=await generatePrivate(s.ctx,{...config,maxOutputTokens:'model-maximum'},request,new AbortController());
+  assert.equal(result.status,'complete');assert.equal(result.generation.reasoningStatus,'unknown');assert.equal(result.generation.maxTokens,undefined);
 });

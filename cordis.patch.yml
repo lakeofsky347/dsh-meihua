@@ -4,6 +4,10 @@
       config:
         timeZone: Asia/Shanghai
         animationMs: 4800
-        interpretationTimeoutMs: 120000
-        maxOutputTokens: 3000
+        interpretationTimeoutMs: 600000
+        maxOutputTokens: model-maximum
+        maxContextCharacters: 60000
+        contextSafetyTokens: 4096
+        summaryMaxOutputTokens: 3000
+        summaryTimeoutMs: 120000
         pollIntervalMs: 250

@@ -53,7 +53,7 @@ async function setup(initialize=false){
       yield {type:'text-delta',index:0,text:JSON.stringify({items:input.messages.map(message=>({kind:'concern',category:'持续关注的问题',sourceMessageId:message.id,quote:message.text}))})};
       yield {type:'finish',reason:{kind:'stop'}};return;
     }
-    const followup=options.system.includes('最后一个追问');
+    const followup=options.messages.some(message=>message.role==='assistant');
     yield {type:'text-delta',index:0,text:followup?'追问已收到的前缀':'首解已收到的前缀'};
     if(hold){await new Promise<void>(resolve=>{if(options.signal.aborted)resolve();else options.signal.addEventListener('abort',()=>resolve(),{once:true});});yield {type:'finish',reason:{kind:'aborted',failure:{code:'ABORTED',message:'合成取消'}}};}
     else {yield {type:'text-delta',index:0,text:followup?'；这是完整追问回答。':'；这是完整首次回答。'};yield {type:'finish',reason:{kind:'stop'}};}

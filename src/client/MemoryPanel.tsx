@@ -40,8 +40,8 @@ export function MemoryPanel({state,...actions}:MemoryActions&{state:MemoryPageSt
   const document=state.document,status=state.status;
   useEffect(()=>{
     const previous=window.document.activeElement as HTMLElement|null;
-    close.current?.focus();
-    return ()=>previous?.focus();
+    close.current?.focus({preventScroll:true});
+    return ()=>previous?.focus({preventScroll:true});
   },[]);
   useEffect(()=>{if(document&&!dirty){setContent(document.content);setBaseRevision(document.revision);}},[document?.revision,dirty]);
   const keyDown=(event:React.KeyboardEvent)=>{
@@ -68,7 +68,7 @@ export function MemoryPanel({state,...actions}:MemoryActions&{state:MemoryPageSt
   };
   const selected=state.versions.find(version=>version.id===selectedVersion);
   const changedOutside=dirty&&document?.revision!==baseRevision;
-  return <div className="wm-backdrop" onClick={event=>{if(event.target===event.currentTarget)actions.onClose();}}>
+  return <div className="wm-backdrop wx-panel-backdrop" onClick={event=>{if(event.target===event.currentTarget)actions.onClose();}}>
     <div ref={panel} className="wm-panel" role="dialog" aria-modal="true" aria-labelledby="wm-title" onKeyDown={keyDown}>
       <header className="wm-header"><div><p className="wm-eyebrow">问象 · 私人资料</p><h2 id="wm-title">共享背景</h2></div><button ref={close} className="wm-close" aria-label="关闭共享背景" onClick={actions.onClose}>×</button></header>
       <p className="wm-description">同一份背景供各占卜模块参考。结束问询时，新增的用户信息会自动提炼；解读与追问使用开始时的背景版本。</p>

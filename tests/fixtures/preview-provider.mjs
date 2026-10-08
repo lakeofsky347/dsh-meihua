@@ -2,6 +2,8 @@
 import { LlmAdapter } from '@deepseek-ai/dsh-llm';
 export const inject=['llm'];
 class OfflineAdapter extends LlmAdapter {
+  seen=new Set();
+  async resolveModel(provider,model){return {provider,id:model,name:'模拟解读（不调用真实 API）',context:{contextWindow:262144},maxOutputTokens:65536,defaultMaxTokens:3000,outputTokenAccounting:'includes-reasoning',reasoning:{efforts:[{id:'off',name:'关闭'},{id:'max',name:'最大'}],maxEffort:'max',defaultEffort:'off'}};}
   providerInfo(id){return {id,name:'本地演示 · 模拟供应商'};}
   async listModels(provider){return [{provider,id:'offline-demo',name:'模拟解读（不调用真实 API）'}];}
   async *stream(options){
@@ -35,6 +37,12 @@ class OfflineAdapter extends LlmAdapter {
       const previous=answers.at(-1)?.content.filter(block=>block.type==='text').map(block=>block.text).join(' ').slice(0,120)??'';
       text=`这是第 ${questions.length-1} 轮本地模拟追问，不调用真实 API。\n\n你问的是：${question}\n\n我收到的上一轮回答摘要：${previous}\n\n固定${['tarot','lenormand'].includes(record.moduleId)?'牌序':record.moduleId==='xiaoliu'?'起课':'卦象'}仍来自最初记录，之前的问答已按顺序传入。这个模拟回答用于验证多轮上下文、流式显示和取消恢复，实际建议需要所选真实模型解读。`;
     }
+    const key=fixedInput;
+    const interrupt=process.env.DSH_DEMO_MAX_TOKENS_ONCE==='1'&&!this.seen.has(key);
+    this.seen.add(key);
+    if(process.env.DSH_DEMO_LONG==='1')text+='\n\n## 更多白话说明\n\n'+Array.from({length:35},(_,i)=>`### 第 ${i+1} 个观察角度\n\n这是合成的长文验收段落，不代表真实模型判断。可以把当前问题拆成具体的小步骤，先记录已知条件，再观察行动后是否出现新的反馈。保持已有卦象或牌阵，只补充解释。\n\n- 今天可以做的一步：列出可以核实的信息。\n- 接下来观察：信息是否支持原来的想法。`).join('\n\n');
+    if(options.reasoningEffort==='max'){yield {type:'reasoning-delta',index:0,text:'合成思考进度，仅用于阶段验证。'};await new Promise(resolve=>setTimeout(resolve,120));}
+    if(interrupt)text=text.slice(0,1800);
     const delay=Number(process.env.DSH_DEMO_DELAY_MS??400);
     yield {type:'block-start',index:0,blockType:'text'};
     for(let i=0;i<text.length;i+=12){
@@ -44,7 +52,7 @@ class OfflineAdapter extends LlmAdapter {
       yield {type:'text-delta',index:0,text:text.slice(i,i+12)};
     }
     yield {type:'block-end',index:0,block:{type:'text',text}};
-    yield {type:'finish',reason:{kind:'stop'}};
+    yield {type:'finish',reason:{kind:interrupt?'max-tokens':'stop'}};
   }
 }
 export function apply(ctx){ctx.llm.registerAdapter(['meihua-offline'],new OfflineAdapter());}

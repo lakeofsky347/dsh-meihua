@@ -1,3 +1,5 @@
+import {ReadingText} from './ReadingText.tsx';
+import {GenerationStatus,ResumeReading} from './GenerationStatus.tsx';
 import { useEffect, useRef, useState } from 'react';
 import type { ConversationTurn } from '../shared/protocol.ts';
 import type { LocaleKey, Translate } from './locales.ts';
@@ -22,11 +24,12 @@ interface ConversationProps {
   t:Translate;
   onDraftChange?:(question:string)=>void;
   onSend:(question:string)=>Promise<boolean|void>;
+  onResume?:(turnId:string)=>Promise<boolean|void>;
   onCancel:()=>Promise<void>;
 }
 
 /** Provider text is rendered through React text nodes; HTML is never interpreted. */
-export function Conversation({readingId,turns,busy,pending,draft='',theme,t,onDraftChange,onSend,onCancel}:ConversationProps) {
+export function Conversation({readingId,turns,busy,pending,draft='',theme,t,onDraftChange,onSend,onCancel,onResume}:ConversationProps) {
   const [question,setQuestion]=useState(draft),[submitting,setSubmitting]=useState(false),[error,setError]=useState('');
   const current=useRef({readingId,question}),mounted=useRef(true);
   const inFlight=useRef(false);
@@ -55,7 +58,8 @@ export function Conversation({readingId,turns,busy,pending,draft='',theme,t,onDr
       {turns.map((turn,index)=><li key={turn.id} className="wx-conversation-turn" data-status={turn.status}>
         <div className="wx-conversation-question"><p className="wx-conversation-label">{String(index+1).padStart(2,'0')} · {t('followupQuestion')}</p><p>{turn.question}</p></div>
         <div className="wx-conversation-answer"><div className="wx-conversation-answer-heading"><p className="wx-conversation-label">{t('followupAnswer')}</p><span className={`${theme}-status ${theme}-status-${turn.status}`} role="status">{t(statusKey(turn.status))}</span></div>
-          {turn.text?<div className="wx-conversation-text">{turn.text.split('\n').map((line,i)=><p key={i}>{line || '\u00a0'}</p>)}</div>:<p className={`${theme}-hint`}>{t('followupPending')}</p>}
+          <GenerationStatus generation={turn.generation} busy={turn.status==='streaming'}/>{turn.text?<ReadingText className="wx-conversation-text" text={turn.text}/>:<p className={`${theme}-hint`}>{t('followupPending')}</p>}
+          <span data-reading-end/><ResumeReading status={turn.status} text={turn.text} busy={busy||pending} onResume={index===turns.length-1&&onResume?()=>onResume(turn.id):undefined}/>
           {turn.error&&<p className={`${theme}-notice`} role="alert">{turn.error.message}</p>}
           {turn.status==='streaming'&&<div className={`${theme}-actions`}><button className={`${theme}-link`} type="button" onClick={()=>void onCancel()}>{t('cancelFollowup')}</button></div>}
         </div>

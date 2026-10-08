@@ -1,3 +1,6 @@
+import {ReadingText} from './ReadingText.tsx';
+import {GenerationStatus,ResumeReading} from './GenerationStatus.tsx';
+import {ReadingJump,useReadingNavigation} from './reading-navigation.tsx';
 import { useEffect, useState } from 'react';
 import type { CastInput, Hexagram, RuleInfo } from '../core/types.ts';
 import { localTimestamp, wallTimeToInstant } from '../core/calendar.ts';
@@ -14,6 +17,8 @@ export interface PageProps {
   useMeihua:<T>(selector:(state:PageState)=>T)=>T;
   onCast:(input:CastInput)=>Promise<void>;
   onInterpret:(route:ModelRoute,options?:BackgroundOptions)=>Promise<void>;
+  active?:boolean;
+  onResume?:(turnId?:string)=>Promise<boolean|void>;
   onFollowup?:(question:string)=>Promise<boolean|void>;
   onCancel:()=>Promise<void>;
   onRefresh:()=>Promise<void>;
@@ -68,21 +73,13 @@ function HexagramCard({hex,label,moving=0,main=false}:{hex:Hexagram;label:string
   </article>;
 }
 
-/** Compact, safe rendering of provider text; model output never becomes HTML. */
-function InterpretationText({text}:{text:string}) {
-  return <div className="mh-reading-text">{text.split(/\n\s*\n/).filter(Boolean).map((part,i)=>{
-    const rows=part.split('\n');
-    return <div key={i} className="mh-reading-paragraph">{rows.map((row,j)=>/^#{1,4}\s/.test(row) ? <h4 key={j}>{row.replace(/^#{1,4}\s+/,'')}</h4> : <p key={j}>{row.replace(/\*\*(.*?)\*\*/g,'$1')}</p>)}</div>;
-  })}</div>;
-}
-
 function formatCopy(reading:Reading,t:Translate):string {
   const r=reading.result;
   const status:LocaleKey=reading.status==='complete'?'complete':reading.status==='cancelled'?'cancelled':reading.status==='failed'?'failed':'interpreting';
   return `${t('panel')}\n${t('question')}：${r.input.question}\n${t('localTime')}：${r.lunar.localTime.replace('T',' ')} (${r.input.environment.timeZone})\n${t('primary')}：${r.primary.title}\n${t('mutual')}：${r.mutual.title}\n${t('changed')}：${r.changed.title}\n${t('moving')}：${r.movingLine}\n${t('body')}：${r.body.name}（${r.body.element}） · ${t('application')}：${r.application.name}（${r.application.element}） · ${r.relationship}\n\n${r.steps.join('\n')}\n\n${reading.route?`${t('source')}：${reading.route.provider} / ${reading.route.model}\n\n`:''}${reading.status!=='ready'?`${t('readingStatus')}：${t(status)}\n`:''}${reading.text}${reading.error?`\n${reading.error.message}`:''}${formatConversationCopy(reading.conversation,t)}`;
 }
 
-export function Page({t,useMeihua,onCast,onInterpret,onFollowup,onCancel,onRefresh,onSkip,onDraftChange,memoryState,onOpenMemory,onCheckpoint}:PageProps) {
+export function Page({t,useMeihua,onCast,onInterpret,onFollowup,onResume,active=true,onCancel,onRefresh,onSkip,onDraftChange,memoryState,onOpenMemory,onCheckpoint}:PageProps) {
   const state=useMeihua(state=>state),{catalog,reading}=state;
   const draft=state.draft??initialMeihuaDraft;
   const [question,setQuestion]=useState(draft.question),[ruleId,setRule]=useState(draft.ruleId);
@@ -115,10 +112,12 @@ export function Page({t,useMeihua,onCast,onInterpret,onFollowup,onCancel,onRefre
   };
   const interpret=async()=>{setSubmitting(true);try{if(memoryState)await onInterpret(route,{useBackground:draft.useBackground!==false,forOthers:!!draft.forOthers});else await onInterpret(route);}finally{setSubmitting(false);}};
   const copy=async()=>{if(!reading)return;try{await navigator.clipboard.writeText(formatCopy(reading,t));setCopyStatus('copied');}catch{setCopyStatus('copyFailed');}};
+  const navigation=useReadingNavigation({navigation:state.navigation,active,contentKey:`${reading?.id}:${reading?.text.length}:${reading?.conversation?.map(turn=>`${turn.id}:${turn.text.length}`).join(',')}`,busy});
   const error=localError || state.error;
   const statusKey:LocaleKey=reading?.status==='complete'?'complete':reading?.status==='cancelled'?'cancelled':reading?.status==='failed'?'failed':'interpreting';
   const failureKey=(code:string):LocaleKey=>code==='CANCELLED'?'cancelled':code==='TIMEOUT'?'timeout':['AUTH','MISSING_CREDENTIAL','INVALID_CREDENTIAL'].includes(code)?'authFailure':['QUOTA','ACCOUNT_QUOTA','RATE_LIMIT'].includes(code)?'quotaFailure':'genericFailure';
-  return <main className="mh-page">
+  return <main ref={navigation.ref} className="mh-page">
+    {reading&&<ReadingJump onJump={navigation.jump} hasNewContent={navigation.hasNewContent} preflight={!!reading.preflight} onCancel={onCancel}/>}
     <div className="mh-landscape" aria-hidden="true"><svg viewBox="0 0 1400 360" preserveAspectRatio="none"><path d="M0 310 130 253 235 284 402 166 518 230 680 86 807 199 946 139 1054 240 1220 180 1400 302V360H0Z"/><path d="M0 328 164 303 351 244 468 291 665 203 855 282 990 219 1167 291 1400 247V360H0Z"/></svg></div>
     <header className="mh-header"><div><p className="mh-eyebrow">{t('eyebrow')}</p><h1>{t('title')}<span className="mh-seal" aria-hidden="true">梅<br/>花</span></h1><p className="mh-subtitle">{t('subtitle')}</p></div><div className="mh-header-mark"><Bagua size={83}/></div></header>
     {state.loading ? <div className="mh-loading" role="status"><Bagua size={56} spinning/><span>{t('loading')}</span></div> : !catalog ? <div className="mh-notice" role="alert">{t('loadFailed')}<p>{error}</p><button className="mh-link" onClick={()=>void onRefresh()}>{t('refresh')}</button></div> : <div className="mh-workspace">
@@ -133,22 +132,22 @@ export function Page({t,useMeihua,onCast,onInterpret,onFollowup,onCancel,onRefre
         {busy && <p className="mh-hint">{t('inputLocked')}</p>}
         {error && <div className="mh-notice" role="alert"><p>{error}</p>{state.error&&<button className="mh-link" type="button" disabled={!!state.interpreting||state.casting} onClick={()=>void onRefresh()}>{t('refreshReading')}</button>}</div>}
       </form><footer className="mh-input-footer"><span className="mh-footer-line"/>{t('entertainment')}</footer></section>
-      <section className="mh-result-panel" aria-label={t('primary')}>
+      <section data-reading-result className="mh-result-panel" aria-label={t('primary')}>
         {!reading ? <div className="mh-empty"><Bagua size={195}/><h2>{t('waiting')}</h2><p>{t('waitingText')}</p></div> : animating ? <Animation reading={reading} startedAt={state.animationStartedAt!} duration={catalog.config.animationMs} t={t} onSkip={onSkip}/> : <>
           <p className="mh-result-question">{reading.result.input.question}</p>
           <div className="mh-result-meta"><span>{reading.result.lunar.localTime.replace('T',' ').slice(0,16)} · {reading.result.input.environment.timeZone}</span><span>{reading.result.lunar.yearBranch}{t('year')}{reading.result.lunar.leapMonth?t('leap'):''}{reading.result.lunar.month}{t('month')}{reading.result.lunar.day}{t('day')} · {reading.result.lunar.hourBranch}{t('hour')}</span></div>
           <div className="mh-hexagrams"><HexagramCard hex={reading.result.primary} label={t('primary')} moving={reading.result.movingLine} main/><HexagramCard hex={reading.result.mutual} label={t('mutual')}/><HexagramCard hex={reading.result.changed} label={t('changed')}/></div>
           <div className="mh-facts"><span>{t('body')} <b>{reading.result.body.name} · {reading.result.body.element}</b></span><span>{t('application')} <b>{reading.result.application.name} · {reading.result.application.element}</b></span><span className="mh-relation">{reading.result.relationship}</span><span>{t('moving')} <b>{reading.result.movingLine}{t('lineSuffix')}</b></span></div>
           <details className="mh-calculation"><summary>{t('calculation')} <span>＋</span></summary><ol>{reading.result.steps.map((step,i)=><li key={i}>{step}</li>)}</ol>{reading.result.input.environment.details.observation && <p>{String(reading.result.input.environment.details.observation)}</p>}</details>
-          <section className="mh-interpretation"><div className="mh-section-heading"><h2>{t('interpretation')}</h2>{reading.status!=='ready' && <span className={`mh-status mh-status-${reading.status}`}>{t(statusKey)}</span>}</div>
+          <section data-reading-interpretation className="mh-interpretation"><div className="mh-section-heading"><h2>{t('interpretation')}</h2>{reading.status!=='ready' && <span className={`mh-status mh-status-${reading.status}`}>{t(statusKey)}</span>}</div>
             {memoryState&&onOpenMemory&&reading.memory&&<BackgroundControls state={memoryState} options={{useBackground:draft.useBackground!==false,forOthers:!!draft.forOthers}} onChange={patch=>onDraftChange?.(patch)} onOpen={onOpenMemory} disabled usage={reading.memory}/>}
             {reading.status==='ready' ? <><p className="mh-hint">{t('interpretationHint')}</p>{providers.length===0 ? <p className="mh-notice">{t('noProviders')}</p> : <div className="mh-model-row"><label>{t('provider')}<select value={route.provider} onChange={e=>{const p=providers.find(p=>p.id===e.target.value);setRoute({provider:e.target.value,model:p?.models[0]?.id??''});}}>{providers.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}</select></label><label>{t('model')}<select value={route.model} onChange={e=>setRoute({...route,model:e.target.value})}>{group?.models.length?group.models.map(m=><option key={m.id} value={m.id}>{m.name}</option>):<option value="">{t('noModels')}</option>}</select></label></div>}
-              {group?.error && <p className="mh-notice">{group.error}</p>}<div className="mh-actions"><button className="mh-button mh-interpret-button" onClick={()=>void interpret()} disabled={!route.provider || !route.model || submitting||!!memoryState&&!memoryState.status?.unlocked}>{submitting?t('interpreting'):t('interpret')} <span aria-hidden="true">↗</span></button><button className="mh-link" onClick={()=>void onRefresh()}>{t('refresh')}</button></div>
-            </> : <><p className="mh-route">{reading.route?.provider} / {reading.route?.model}</p>{reading.text?<InterpretationText text={reading.text}/>:<p className="mh-pending" role="status">{t('outputPending')}</p>}
+              {group?.error && <p className="mh-notice">{group.error}</p>}<div className="mh-actions"><button className="mh-button mh-interpret-button" onClick={()=>void interpret()} disabled={busy||!route.provider || !route.model || submitting||!!memoryState&&!memoryState.status?.unlocked}>{submitting?t('interpreting'):t('interpret')} <span aria-hidden="true">↗</span></button><button className="mh-link" onClick={()=>void onRefresh()}>{t('refresh')}</button></div>
+            </> : <><GenerationStatus generation={reading.generation} busy={reading.status==='streaming'}/><p className="mh-route">{reading.route?.provider} / {reading.route?.model}</p>{reading.text?<ReadingText className="mh-reading-text" text={reading.text}/>:<p className="mh-pending" role="status">{t('outputPending')}</p>}
               {reading.error && <p className="mh-notice" role="alert">{reading.error.code==='LOG_WRITE'?reading.error.message:t(failureKey(reading.error.code))}</p>}
               <div className="mh-actions">{reading.status==='streaming'?<button className="mh-link" onClick={()=>void onCancel()}>{t('cancel')}</button>:<span className="mh-hint">{t('firstOnly')}</span>}</div>
             </>}
-          </section>{onFollowup&&['complete','failed','cancelled'].includes(reading.status)&&!!reading.text.trim()&&<Conversation key={reading.id} readingId={reading.id} turns={reading.conversation??[]} busy={readingIsBusy(reading)} pending={!!state.interpreting} draft={draft.followupQuestion} theme="mh" t={t} onDraftChange={value=>onDraftChange?.({followupQuestion:value})} onSend={onFollowup} onCancel={onCancel}/>}<div className="mh-copy-row"><button className="mh-link" onClick={()=>void copy()}>{t(copyStatus)}</button><span className="mh-hint">{reading.result.algorithmVersion}</span></div>
+          <span data-reading-end/><ResumeReading status={reading.status} text={reading.text} busy={busy||!!state.interpreting} onResume={!reading.conversation?.length&&onResume?()=>onResume():undefined}/></section>{onFollowup&&['complete','failed','cancelled'].includes(reading.status)&&!!reading.text.trim()&&<Conversation key={reading.id} readingId={reading.id} turns={reading.conversation??[]} busy={readingIsBusy(reading)} pending={!!state.interpreting} draft={draft.followupQuestion} theme="mh" t={t} onDraftChange={value=>onDraftChange?.({followupQuestion:value})} onSend={onFollowup} onCancel={onCancel} onResume={onResume}/>}<div className="mh-copy-row"><button className="mh-link" onClick={()=>void copy()}>{t(copyStatus)}</button><span className="mh-hint">{reading.result.algorithmVersion}</span></div>
           {onCheckpoint&&!busy&&<div className="wm-end-row"><button onClick={()=>void onCheckpoint()} disabled={state.casting||!!memoryState&&!memoryState.status?.unlocked||!!memoryState?.status?.updating}>结束本轮并更新背景</button>{reading.memory?.forOthers&&<p className="wm-caption">替他人占卜，不写入本人记忆。</p>}</div>}
         </>}
       </section>

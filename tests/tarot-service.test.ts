@@ -103,12 +103,12 @@ test('并发interpret只提交一次，固定牌阵进入模型，普通日志�
   assert.equal((s.events.find(event=>event.type==='private/result')!.data as {status:string}).status,'complete');
   await assert.rejects(s.service.interpret(reading.id,route),/第一次/);assert.equal(s.calls.length,1);s.gate.assertIdle();await s.service.dispose();
 });
-test('十牌阵有独立5000token预算，模型目录校验失败不消耗首次机会',async()=>{
+test('十牌阵遵循统一配置预算，模型目录校验失败不消耗首次机会',async()=>{
   const s=setup(),reading=ready(s.service,'celtic-cross');
   await assert.rejects(s.service.interpret(reading.id,{...route,model:'missing'}),/模型/);
   assert.equal(s.service.snapshot()!.status,'ready');assert.equal(s.calls.length,0);
   await s.service.interpret(reading.id,route);assert.equal((await settled(s.service)).status,'complete');
-  assert.equal(s.calls[0]!.maxTokens,5000);assert.equal(reading.cards.length,10);await s.service.dispose();
+  assert.equal(s.calls[0]!.maxTokens,config.maxOutputTokens);assert.equal(reading.cards.length,10);await s.service.dispose();
 });
 test('模型目录异步等待期间换轮或卸载，不会提交过期牌阵和占用共享锁',async()=>{
   for(const mode of ['replace','dispose']){
@@ -161,6 +161,7 @@ test('同一个GenerationGate跨梅花与塔罗阻止并发，取消后才允许
   const meihuaReading=await meihua.cast({ruleId:'three-numbers',question:'并发测试',values:{a:2,b:3,c:2},environment:{capturedAt:'2026-10-03T04:00:00Z',timeZone:'Asia/Shanghai',details:{}}});
   const concurrent=await Promise.allSettled([s.service.interpret(tarot.id,route),meihua.interpret(meihuaReading.id,route)]);
   assert.equal(concurrent.filter(result=>result.status==='fulfilled').length,1);assert.equal(concurrent.filter(result=>result.status==='rejected').length,1);
+  for(let index=0;index<100&&!s.calls.length;index++)await new Promise(resolve=>setTimeout(resolve,2));
   assert.throws(()=>s.service.start(startInput),/解读/);
   await assert.rejects(meihua.cast({ruleId:'time',question:'测试',values:{},environment:{capturedAt:'2026-10-03T04:00:00Z',timeZone:'Asia/Shanghai',details:{}}}),/解读/);
   if(s.service.snapshot()!.status==='streaming'){s.service.cancel(tarot.id);await settled(s.service);}

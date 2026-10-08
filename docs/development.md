@@ -2,11 +2,11 @@
 
 [返回使用指南](../README.md)
 
-本文面向需要修改、测试或扩展插件的开发者，内容对应 `dsh-meihua 0.6.0` 和 DeepSeek Harness 桌面端 `0.2.0-rc.2`。日常安装、起卦、抽牌和共享背景的操作请先看使用指南。
+本文面向需要修改、测试或扩展插件的开发者。安装基线为 `dsh-meihua 0.6.0` / DeepSeek Harness `0.2.0-rc.2`；本轮源码中的集中提示词、模型能力策略与手动恢复见 [施工与验收说明](v7-implementation.md)。实际构建、日常安装及真实供应商验证须分别确认，旧版验收记录不能证明当前工作区已经发布。日常操作请先看使用指南。
 
 ## 1. 准备本地环境
 
-插件源码位于本仓库。参考仓库 `dsh_clone` 和已安装的 DSH 桌面应用用于读取接口、运行库与开发工具，不应在开发插件时顺带修改它们。
+插件源码位于本仓库。通常从 `dsh_clone` 和已安装的 DSH 桌面应用读取接口、运行库与开发工具。本轮用户已选择扩展 DSH 模型能力接口，允许在 `dsh_clone` 内实施限定的宿主改动；这不等于可以自动覆盖日常桌面安装。宿主与插件的构建、测试和安装证据须分别记录。
 
 依赖版本以 [package.json](../package.json) 为准。使用 Node.js 22.18+ 的 22.x 或 24+；隐私扫描还要求该 Node 版本提供 `node:zlib` 的 `zstdDecompressSync`，例如 Node 24。完整集成测试会直接加载 `.local/runtime` 下的正式 DSH JSON storage 和 JSONL 后端，因此仅安装 npm 依赖不足以运行全部测试。
 
@@ -139,17 +139,21 @@ node scripts/verify-memory-privacy.mjs \
 
 ## 4. 插件配置
 
-默认配置在 [cordis.patch.yml](../cordis.patch.yml)，由 [parseConfig](../src/host/validation.ts) 在插件加载时校验。配置解析器要求这些字段完整存在，不在解析时补默认值。
+默认配置在 [cordis.patch.yml](../cordis.patch.yml)，由 [parseConfig](../src/host/validation.ts) 在插件加载时校验。原有必需字段仍须完整提供；新增的上下文与背景提炼配置可省略，由解析器补齐默认值。
 
 | 字段 | 默认值 | 接受范围与作用 |
 | --- | --- | --- |
 | `timeZone` | `Asia/Shanghai` | 运行环境 `Intl.DateTimeFormat` 支持的时区，用于默认时间解释 |
 | `animationMs` | `4800` | `0–15000` 的整数，梅花起卦仪式时长，单位为毫秒 |
-| `interpretationTimeoutMs` | `120000` | `1000–600000` 的整数，生成超时，单位为毫秒 |
-| `maxOutputTokens` | `3000` | `256–16000` 的整数，常规解读与追问的输出上限 |
+| `interpretationTimeoutMs` | `600000` | `1000–3600000` 的整数，解读和追问超时，单位为毫秒；默认 10 分钟 |
+| `maxOutputTokens` | `model-maximum` | 请求宿主声明的模型最大输出；也接受大于等于 `256` 的安全整数，实际请求受模型上限及剩余上下文限制 |
+| `maxContextCharacters` | `60000` | `1000–10000000` 的整数；模型上下文容量未知时的全文字符回退阈值 |
+| `contextSafetyTokens` | `4096` | `256–1000000` 的整数；模型上下文估算的保留空间 |
+| `summaryMaxOutputTokens` | `3000` | `256–32000` 的整数，背景提炼的独立输出额度 |
+| `summaryTimeoutMs` | `120000` | `1000–600000` 的整数，背景提炼的独立超时，单位为毫秒 |
 | `pollIntervalMs` | `250` | `100–2000` 的整数，客户端轮询间隔，单位为毫秒 |
 
-塔罗凯尔特十字的首次解读在服务中单独使用 `5000` tokens 上限；追问仍使用通用配置。背景提炼使用 `min(3000, maxOutputTokens)`，不能把 `maxOutputTokens` 理解为所有模型请求的统一上限。修改工作区配置或提示词后，已安装的旧包不会自动更新。
+五模块首次解读、追问及手动恢复使用统一的模型能力策略，不再为凯尔特十字硬编码 `5000` tokens。`model-maximum` 优先使用宿主声明的最大输出；最大值未知时使用宿主默认，连默认值也未知时不猜测一个“最大值”。最高思考也从当前模型能力中解析，未知或未开放时明确回退。背景提炼仍使用独立额度和超时，不跟随长篇解读扩大。修改工作区配置、提示词或宿主接口后，已安装的旧包不会自动更新。
 
 ## 5. 代码入口与独立规则模块
 
@@ -160,6 +164,8 @@ node scripts/verify-memory-privacy.mjs \
 | [src/host/module-framework.ts](../src/host/module-framework.ts) | 背景选项、模型路由和目录校验 |
 | [src/host/private-generation.ts](../src/host/private-generation.ts) | 流式生成、终态、取消、私人加密记录和普通 Session 元信息 |
 | [src/host/conversation.ts](../src/host/conversation.ts) | 冻结结果下的追问、完整上下文和轮次校验 |
+| [src/host/generation-policy.ts](../src/host/generation-policy.ts) | 模型最高思考、输出额度、全文上下文容量与明确回退 |
+| [src/host/interpretation-prompts.ts](../src/host/interpretation-prompts.ts) | 五模块首次、追问与恢复提示词 |
 | [src/client/](../src/client/) | 页面、控制器、主题、导航与本地素材呈现 |
 
 五个规则入口通过包导出提供，不要求先启动插件页面：
@@ -219,7 +225,7 @@ export function apply(ctx) {
 
 [`transport.ts`](../src/host/transport.ts) 注册 `/api/<模块>/<操作>` 的 POST 精确路由，认证由宿主 `/api` 承载。请求必须使用 `application/json` 和宿主 Connection 的 `client-request` 信封，信封 `method` 必须与路由一致；响应保留原 `rpcId`。直接向这些路径发送裸业务 JSON 不能替代 RPC 信封。
 
-各模块共用 `catalog`、`current`、`interpret`、`followup`、`cancel`、`checkpoint` 和 `preferences`，本地操作如下：
+各模块共用 `catalog`、`current`、`interpret`、`followup`、`resume`、`cancel`、`checkpoint` 和 `preferences`，本地操作如下：
 
 | 命名空间 | 本地操作 |
 | --- | --- |
@@ -236,28 +242,39 @@ export function apply(ctx) {
 - **记忆代次 `epoch`：** 先读取 `memory/status`，五模块的变更请求均携带当前代次。初始化、解锁、锁定、清空和重启等操作会改变代次，旧请求返回 `MEMORY_STALE`。旧版 `0.3` 直接 RPC 客户端需要补齐此字段，保留路由名称不代表旧 payload 全部兼容。
 - **背景版本 `expectedRevision`：** 手动保存和恢复旧版时同时携带当前版本及 `epoch`，避免另一窗口或后台提炼覆盖刚刚完成的编辑。
 - **追问轮数 `expectedTurnCount`：** `followup` 业务 payload 为 `{ id, question, expectedTurnCount, epoch }`，轮数必须等于当前已记录追问数量，不匹配返回 `CONVERSATION_CHANGED`。
-- **取消轮次 `turnId`：** 取消追问使用 `{ id, turnId, epoch }`，只能取消该条正在生成的追问。首次解读仍可使用 `{ id, epoch }`。不要让旧窗口仅凭结果 ID 取消新一轮回答。
+- **恢复轮次与次数：** `resume` 使用 `{ id, expectedTurnCount, expectedAttempt, turnId?, epoch }`。首次解读只能在没有追问时恢复；追问只允许恢复最后一轮，须携带其 `turnId`。`expectedAttempt` 必须匹配该轮当前生成次数，防止双窗口或重复点击重复调用。
+- **取消轮次与尝试次数：** 取消追问使用 `{ id, turnId, expectedAttempt, epoch }`，取消首次解读使用 `{ id, expectedAttempt, epoch }`。`expectedAttempt` 必须匹配正在生成的尝试；仅初代 `attempt=0` 兼容省略此字段。旧窗口不能仅凭结果或轮次 ID 取消恢复后的新尝试。
+- **能力预检 `preflightId`：** 追问和恢复先进行有界预检；`current` 快照临时附带 `preflight: { id }`，取消使用 `{ id, preflightId, epoch }`。预检期间客户端轮询快照，显示检查状态并允许取消。此字段不存入私人结果；预检失败不新增追问、不递增恢复次数，保留草稿。
 - **本地进度 `expectedCount`：** 雷诺曼 `select` 与六爻 `toss/record` 用它核对已选槽位或已记爻的数量，拒绝重复或过期操作。
 
-初始解读和追问使用相同的冻结结果、背景快照及首次模型路由。初始解读已有文字并到达终态后才能追问；每条追问最多 2000 字符，包含系统提示词的完整上下文超过 60000 字符时返回 `CONTEXT_LIMIT`，不会静默删除旧问答。取消、失败和截断保留已收到的文字，不自动重试。
+初始解读、追问和手动恢复使用相同的冻结结果、背景快照及首次模型路由。初始解读已有文字并到达终态后才能追问；每条追问最多 2000 字符。全文上下文不自动摘要，也不静默删除旧问答。宿主提供 `contextWindow` 时，策略按 UTF-8 字节及消息开销做保守估算，扣除默认 4096 安全余量后分配输出空间，至少需剩余 256 的输出空间，必要时缩减输出额度而不裁剪历史；已知大上下文模型可超过 60000 字符回退阈值。这不是精确 tokenizer 计数，也不等同于模型声明的输出最大值。能力未知时按 `maxContextCharacters` 检查，无法容纳请求时返回 `CONTEXT_LIMIT` 并保留原文。
+
+取消、失败和截断保留已收到的文字，不自动重试。无正文的最近一轮回答允许通过「重试本轮」重试，首次解读与追问均适用；有部分正文时可通过「继续完成」手动补全。恢复须经过与正常生成相同的记忆代次、模型可用性、生成锁和上下文检查，不能绕过私人记录保存或把后台重试伪装成用户操作。
+
+`prepareCall` 冻结实际派发配置后再次核对上下文、输出预算、最高思考和计量信息。能力发生影响请求的变化时，返回 `MODEL_CHANGED`，本次不派发；不会沿用过期容量继续发送。能力预检与生成分别受 `interpretationTimeoutMs` 约束。即使能力查询不响应取消信号，预检自身也能结束，迟到结果不能提交新一轮。
 
 `GenerationGate` 在全插件范围内限制同时生成。背景提炼也占用该生成位，但不会阻止本地起卦、抽牌或投币；新首解会等待正在进行的背景提炼结束，再冻结最新成功版本。`catalog/current` 不触发解读或提炼，不过模型目录读取可能由宿主供应商实现其自身的查询逻辑。
 
 ## 8. 提示词与解读角色
 
-| 场景 | 源码位置 |
+五模块提示词集中在 [interpretation-prompts.ts](../src/host/interpretation-prompts.ts)，由共用事实与隐私边界、写作规范、模块规则、首次或追问结构组成。
+
+| 导出 | 作用 |
 | --- | --- |
-| 梅花首次解读 | [prompt.ts](../src/host/prompt.ts) 的 `INTERPRETATION_SYSTEM` |
-| 塔罗首次解读 | [tarot-service.ts](../src/host/tarot-service.ts) 的 `TAROT_INTERPRETATION_SYSTEM` |
-| 梅花、塔罗追问 | [conversation.ts](../src/host/conversation.ts) 的 `followupSystem` |
-| 小六壬、雷诺曼、六爻首次解读与追问 | [method-service.ts](../src/host/method-service.ts) 的 `METHOD_RULES` 与 `methodSystem` |
-| 共享背景提炼 | [memory-service.ts](../src/host/memory-service.ts) |
+| `INTERPRETATION_SYSTEM` / `TAROT_INTERPRETATION_SYSTEM` | 梅花与塔罗首次解读；`prompt.ts` 继续导出梅花常量并保留固定记录序列化 |
+| `methodSystem(module, followup)` | 小六壬、雷诺曼、六爻的首次解读或追问 |
+| `followupSystem(module)` | 梅花、塔罗的追问 |
+| `interpretationSystem(module, mode)` | 五模块集中组合入口，`mode` 为 `initial` 或 `followup` |
+| `CONTINUATION_INSTRUCTION` | 已有部分正文时的手动补全要求；不重写完整段落 |
+| `RETRY_INSTRUCTION` | 无正文最近一轮的重试要求，分别遵循首次或追问结构 |
 
-提示词由 Host 直接传给所选模型，无需用户复制到聊天窗口。修改后要重新构建并更新实际使用的插件包。
+共享背景提炼仍在 [memory-service.ts](../src/host/memory-service.ts)，不与面向用户的解读混用。提示词由 Host 直接传给模型，无需用户复制到聊天窗口；修改后须重新构建并更新实际使用的插件包。
 
-解读角色是耐心、平和的中文讲解者。重要结论要说明本次结果中的依据，把术语讲成日常语言，再解释与问题的联系；用户陈述、传统象征和未知情况要分开表达。模型不能更改本地冻结结果，不能编造卦爻引文、经历、他人想法或必然结局。
+首次解读统一为“先说结论、为什么这样看、有利条件与需要留意的地方、接下来可以怎么做、还需要知道什么”。取消旧版短篇字数目标，按复杂度覆盖必要依据。先白话再术语，使用“具体结果 → 白话含义 → 当前问题”的解释方式，加入日常例子的正反例。追问直接回答新问题，用户说没看懂时解释对应部分，不机械重写全文。
 
-梅花首次解读采用“卦象总览、体用与变化、结合所问、今日可做之事”；塔罗采用“牌阵总览、逐牌解读、牌间关系、可以尝试的行动”。梅花、单牌和三牌参考长度为 600–1000 汉字，十牌为 1200–1800 汉字。三个新增模块使用“结果与依据、结合所问、可以尝试的行动”。追问直接回答新问题，不机械重复首次解读的整套结构。
+模块规则仍相互独立：梅花完整解释本互变与已计算体用；塔罗不能漏十牌或混淆正逆位；小六壬覆盖月日时三宫；雷诺曼覆盖所有相邻组合及五牌的两组镜像；六爻覆盖多动爻和已有装卦依据，不能补造未提供的用神、伏神。模型只呈现可核对的解释，不输出内部思考过程。
+
+新增的 [提示词契约测试](../tests/interpretation-prompts.test.ts) 可以检查这些指令是否缺失，不能证明真实模型已经遵守。真实模型质量须用固定样本另行阅读验证。开源参考及明确排除的行为见 [本轮来源记录](v7-implementation.md#prompt-sources)；当前中文提示词由本项目编写，只借鉴组织结构。
 
 ## 9. 素材、许可与离线实现
 

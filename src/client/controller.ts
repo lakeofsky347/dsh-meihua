@@ -1,9 +1,11 @@
+import type {ReadingNavigation} from './reading-navigation.tsx';
 import type { CastInput } from '../core/types.ts';
 import type { Catalog, ClientRpc, ModelRoute, Reading } from '../shared/protocol.ts';
 import { readingIsBusy } from '../shared/protocol.ts';
 import type { BackgroundOptions } from './MemoryPanel.tsx';
 
 export interface PageState {
+  navigation?:ReadingNavigation;
   catalog:Catalog | null;
   reading:Reading | null;
   loading:boolean;
@@ -25,6 +27,7 @@ export class MeihuaController {
   private revision = 0;
   private snapshotRequest = 0;
   private preferencesRequest = 0;
+  private pendingGenerationRevision:number|undefined;
   constructor(private readonly rpc:ClientRpc,private readonly getMemoryEpoch?:()=>number|undefined) {}
   getSnapshot = ():PageState => this.state;
   subscribe = (listener:()=>void):(()=>void) => { this.listeners.add(listener); return ()=>{this.listeners.delete(listener);}; };
@@ -45,12 +48,12 @@ export class MeihuaController {
       });
     }
   };
-  private async call<T>(endpoint:string,payload:unknown = {}):Promise<T> {
+  private async call<T>(endpoint:string,payload:unknown = {},signal=this.abort.signal):Promise<T> {
     if(this.getMemoryEpoch&&endpoint!=='catalog'&&endpoint!=='current'){
       const epoch=this.getMemoryEpoch();if(epoch===undefined)throw new Error('正在读取共享背景状态，请稍后重试。');
       payload={...(payload as object),epoch};
     }
-    const response = await this.rpc.call('/api',`meihua/${endpoint}`,payload,this.abort.signal);
+    const response = await this.rpc.call('/api',`meihua/${endpoint}`,payload,signal);
     if (!response.ok) throw new Error(response.error.message);
     return response.value as T;
   }
@@ -78,77 +81,100 @@ export class MeihuaController {
       clearTimeout(this.animationTimer);
       const duration = this.state.catalog?.config.animationMs ?? 0;
       const reduce = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-      this.update({reading,casting:false,draft:{...(this.state.draft??initialMeihuaDraft),followupQuestion:''},animationStartedAt:reduce || duration === 0 ? null : Date.now()});
+      this.update({reading,casting:false,navigation:{sequence:(this.state.navigation?.sequence??0)+1,target:'result'},draft:{...(this.state.draft??initialMeihuaDraft),followupQuestion:''},animationStartedAt:reduce || duration === 0 ? null : Date.now()});
       if (!reduce && duration > 0) this.animationTimer = setTimeout(()=>this.skipAnimation(),duration);
     } catch (error) { if(revision===this.revision)this.update({casting:false,error:message(error)}); }
   }
   skipAnimation = ():void => { clearTimeout(this.animationTimer); this.update({animationStartedAt:null}); };
   async interpret(route:ModelRoute,options?:BackgroundOptions):Promise<void> {
     const reading = this.state.reading;
-    if (!reading || reading.status !== 'ready' || this.state.interpreting || this.state.casting) return;
+    if (!reading || reading.status !== 'ready' || readingIsBusy(reading) || this.state.interpreting || this.state.casting) return;
     const revision=++this.revision;
-    this.update({error:'',interpreting:true});
+    this.pendingGenerationRevision=revision;
+    this.update({error:'',interpreting:true});void this.poll();
     try {
       const next=await this.call<Reading>('interpret',{id:reading.id,...route,options:options??{useBackground:this.state.draft?.useBackground!==false,forOthers:!!this.state.draft?.forOthers}});
+      if(this.pendingGenerationRevision===revision)this.pendingGenerationRevision=undefined;
       if(revision!==this.revision||this.state.reading?.id!==reading.id)return;
       ++this.snapshotRequest;
-      this.update({reading:next});await this.poll();
+      this.update({reading:next,navigation:{sequence:(this.state.navigation?.sequence??0)+1,target:'interpretation'}});await this.poll();
     }
     catch (error) { if(revision===this.revision)this.update({error:message(error)}); }
-    finally {if(revision===this.revision)this.update({interpreting:false});}
+    finally {if(this.pendingGenerationRevision===revision)this.pendingGenerationRevision=undefined;if(revision===this.revision)this.update({interpreting:false});}
   }
   /** Resolves at accepted submission so clearing a sent draft never removes a later draft. */
   async followup(question:string):Promise<boolean> {
     const reading=this.state.reading,trimmed=question.trim();
     if(!reading||!['complete','failed','cancelled'].includes(reading.status)||!reading.text.trim()||!trimmed||trimmed.length>2000||this.state.interpreting||this.state.casting||readingIsBusy(reading))return false;
     const revision=++this.revision,expectedTurnCount=reading.conversation?.length??0;
-    this.update({interpreting:true,error:''});
+    this.pendingGenerationRevision=revision;
+    this.update({interpreting:true,error:''});void this.poll();
     try {
       const next=await this.call<Reading>('followup',{id:reading.id,question:trimmed,expectedTurnCount});
+      if(this.pendingGenerationRevision===revision)this.pendingGenerationRevision=undefined;
       if(revision!==this.revision||this.state.reading?.id!==reading.id)return false;
       ++this.snapshotRequest;
-      this.update({reading:next,interpreting:false});
+      this.update({reading:next,interpreting:false,navigation:{sequence:(this.state.navigation?.sequence??0)+1,target:'latest'}});
       if(readingIsBusy(next))void this.poll();
       return (next.conversation?.length??0)>expectedTurnCount;
     } catch(error) {if(revision===this.revision)this.update({error:message(error)});return false;}
-    finally {if(revision===this.revision)this.update({interpreting:false});}
+    finally {if(this.pendingGenerationRevision===revision)this.pendingGenerationRevision=undefined;if(revision===this.revision)this.update({interpreting:false});}
   }
-  private polling = false;
-  private async poll():Promise<void> {
-    if (this.polling) return;
-    this.polling = true;
-    try {
-      while (!this.disposed && readingIsBusy(this.state.reading)) {
+  private pollFlight:{signal:AbortSignal;revision:number;promise:Promise<void>}|undefined;
+  private needsPoll():boolean {return this.pendingGenerationRevision===this.revision||readingIsBusy(this.state.reading);}
+  private poll():Promise<void> {
+    const signal=this.abort.signal;
+    if(this.pollFlight?.signal===signal&&this.pollFlight.revision===this.revision)return this.pollFlight.promise;
+    const flight={signal,revision:this.revision,promise:Promise.resolve()};this.pollFlight=flight;
+    flight.promise=(async()=>{try {
+      while (!this.disposed&&!signal.aborted&&flight.revision===this.revision&&this.needsPoll()) {
+        const revision=this.revision;
         await new Promise<void>(resolve=>{
           const timer = setTimeout(finish,this.state.catalog?.config.pollIntervalMs ?? 250);
-          const signal = this.abort.signal;
           function finish() { clearTimeout(timer);signal.removeEventListener('abort',finish);resolve(); }
           signal.addEventListener('abort',finish,{once:true});
+          if(signal.aborted)finish();
         });
-        if (this.disposed) break;
-        const revision=this.revision,id=this.state.reading?.id;
+        if(this.disposed||signal.aborted||!this.needsPoll())break;
+        if(revision!==this.revision)break;
+        const id=this.state.reading?.id;if(!id)break;
         const snapshotRequest=++this.snapshotRequest;
         try {
-          const reading=await this.call<Reading|null>('current');
-          if(revision===this.revision&&snapshotRequest===this.snapshotRequest&&id===this.state.reading?.id)this.update({reading});
+          const reading=await this.call<Reading|null>('current',{},signal);
+          if(!signal.aborted&&revision===this.revision&&snapshotRequest===this.snapshotRequest&&id===this.state.reading?.id)this.update({reading});
         } catch(error) {
-          if(revision===this.revision&&snapshotRequest===this.snapshotRequest&&id===this.state.reading?.id){this.update({error:message(error)});break;}
+          if(!signal.aborted&&revision===this.revision&&snapshotRequest===this.snapshotRequest&&id===this.state.reading?.id){this.update({error:message(error)});break;}
         }
       }
-    } catch (error) { this.update({error:message(error)}); }
-    finally { this.polling = false; }
+    }finally {if(this.pollFlight===flight)this.pollFlight=undefined;}})();
+    return flight.promise;
+  }
+  async resume(turnId?:string):Promise<boolean> {
+    const reading=this.state.reading;
+    if(!reading||readingIsBusy(reading)||this.state.interpreting||this.state.casting)return false;
+    const turn=turnId?reading.conversation?.at(-1):undefined;
+    if(turnId? !turn||turn.id!==turnId||!['failed','cancelled'].includes(turn.status):!!reading.conversation?.length||!['failed','cancelled'].includes(reading.status))return false;
+    const revision=++this.revision;this.pendingGenerationRevision=revision;this.update({interpreting:true,error:''});void this.poll();
+    try {
+      const next=await this.call<Reading>('resume',{id:reading.id,expectedTurnCount:reading.conversation?.length??0,expectedAttempt:(turnId?reading.conversation?.find(turn=>turn.id===turnId)?.generation:reading.generation)?.attempt??0,...(turnId?{turnId}:{})});
+      if(this.pendingGenerationRevision===revision)this.pendingGenerationRevision=undefined;
+      if(revision!==this.revision||this.state.reading?.id!==reading.id)return false;
+      ++this.snapshotRequest;this.update({reading:next,interpreting:false,navigation:{sequence:(this.state.navigation?.sequence??0)+1,target:turnId?'latest':'interpretation'}});
+      if(readingIsBusy(next))void this.poll();return true;
+    }catch(error){if(revision===this.revision)this.update({error:message(error)});return false;}
+    finally{if(this.pendingGenerationRevision===revision)this.pendingGenerationRevision=undefined;if(revision===this.revision)this.update({interpreting:false});}
   }
   async cancel():Promise<void> {
     const reading = this.state.reading;
     if (!reading||!readingIsBusy(reading)) return;
     const turn=reading.status==='streaming'?undefined:reading.conversation?.find(value=>value.status==='streaming');
-    const payload={id:reading.id,...(turn?{turnId:turn.id}:{})};
+    const payload=reading.preflight?{id:reading.id,preflightId:reading.preflight.id}:{id:reading.id,expectedAttempt:(turn?turn.generation:reading.generation)?.attempt??0,...(turn?{turnId:turn.id}:{})};
     const revision=++this.revision;
     try {
       const next=await this.call<Reading>('cancel',payload);
-      if(revision===this.revision&&this.state.reading?.id===reading.id){++this.snapshotRequest;this.update({reading:next,error:''});if(readingIsBusy(next))void this.poll();}
+      if(revision===this.revision&&this.state.reading?.id===reading.id){++this.snapshotRequest;this.update({reading:next,interpreting:false,error:''});if(readingIsBusy(next))void this.poll();}
     }
-    catch (error) { this.update({error:message(error)}); }
+    catch (error) { if(revision===this.revision)this.update({error:message(error)}); }
   }
   async checkpoint(retry=false):Promise<void> {
     const reading=this.state.reading;
@@ -158,7 +184,7 @@ export class MeihuaController {
   }
   /** Invalidate late RPC replies before erasing drafts when the vault locks or is cleared. */
   resetPrivate=():void=>{
-    ++this.revision;++this.snapshotRequest;++this.preferencesRequest;this.abort.abort();this.abort=new AbortController();clearTimeout(this.animationTimer);
+    ++this.revision;++this.snapshotRequest;++this.preferencesRequest;this.pendingGenerationRevision=undefined;this.abort.abort();this.abort=new AbortController();clearTimeout(this.animationTimer);
     const route=this.state.draft?.route??initialMeihuaDraft.route;
     this.update({reading:null,casting:false,interpreting:false,animationStartedAt:null,error:'',draft:{...initialMeihuaDraft,numbers:{...initialMeihuaDraft.numbers},route}});
   };

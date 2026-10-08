@@ -1,8 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { act } from 'react';
-import { Page } from '../src/client/Page.tsx';
-import { TarotPage } from '../src/client/TarotPage.tsx';
 import { Conversation } from '../src/client/Conversation.tsx';
 import { MeihuaController,initialMeihuaDraft,type PageState } from '../src/client/controller.ts';
 import { TarotController,type TarotPageState } from '../src/client/tarot-controller.ts';
@@ -17,6 +15,8 @@ const dom=new JSDOM('<!doctype html><html><body><div id="conversation-root"></di
 for(const [key,value] of Object.entries({window:dom.window,document:dom.window.document,navigator:dom.window.navigator,IS_REACT_ACT_ENVIRONMENT:true}))Object.defineProperty(globalThis,key,{value,configurable:true,writable:true});
 // Load the DOM event system after its browser globals are ready, so real textarea input is exercised.
 const {createRoot}=await import('react-dom/client');
+const {TarotPage}=await import('../src/client/TarotPage.tsx');
+const {Page}=await import('../src/client/Page.tsx');
 const t:Translate=key=>zh[key],route={provider:'configured',model:'selected'};
 const config={timeZone:'Asia/Shanghai',animationMs:0,interpretationTimeoutMs:1500,maxOutputTokens:3000,pollIntervalMs:5};
 const providers=[{id:route.provider,name:'已配置模型',models:[{id:route.model,name:'指定模型'}]}];
@@ -129,8 +129,8 @@ test('两控制器等待接收时防止重复调用，生成期间仍锁定；�
     assert.deepEqual(calls.filter(call=>call.endpoint==='followup').map(call=>call.payload),[{id:module==='meihua'?meihuaReading.id:tarotReading.id,question:'第一条追问',expectedTurnCount:0}]);
     assert.equal(calls.filter(call=>call.endpoint==='cast'||call.endpoint==='start').length,0);
     assert.equal(await controller.followup('生成中又一条'),false);
-    await controller.cancel();assert.deepEqual(calls.filter(call=>call.endpoint==='cancel').at(-1)!.payload,{id:current.id,turnId:'turn-1'});assert.equal(controller.getSnapshot().reading!.status,'complete');assert.equal(controller.getSnapshot().reading!.text,meihuaReading.text);assert.equal(controller.getSnapshot().reading!.conversation![0]!.status,'cancelled');
-    assert.equal(await controller.followup('取消后继续'),true);assert.deepEqual(calls.filter(call=>call.endpoint==='followup').at(-1)!.payload,{id:current.id,question:'取消后继续',expectedTurnCount:1});await controller.cancel();assert.deepEqual(calls.filter(call=>call.endpoint==='cancel').at(-1)!.payload,{id:current.id,turnId:'turn-2'});
+    await controller.cancel();assert.deepEqual(calls.filter(call=>call.endpoint==='cancel').at(-1)!.payload,{id:current.id,expectedAttempt:0,turnId:'turn-1'});assert.equal(controller.getSnapshot().reading!.status,'complete');assert.equal(controller.getSnapshot().reading!.text,meihuaReading.text);assert.equal(controller.getSnapshot().reading!.conversation![0]!.status,'cancelled');
+    assert.equal(await controller.followup('取消后继续'),true);assert.deepEqual(calls.filter(call=>call.endpoint==='followup').at(-1)!.payload,{id:current.id,question:'取消后继续',expectedTurnCount:1});await controller.cancel();assert.deepEqual(calls.filter(call=>call.endpoint==='cancel').at(-1)!.payload,{id:current.id,expectedAttempt:0,turnId:'turn-2'});
     if(controller instanceof MeihuaController)await controller.cast(input);else await controller.start({question:'新问题',spreadId:'single',includeReversed:true});
     assert.equal(controller.getSnapshot().draft!.followupQuestion,'');controller.dispose();
   }

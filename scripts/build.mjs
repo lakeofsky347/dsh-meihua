@@ -7,7 +7,7 @@ const css = (await readFile('src/client/styles.css','utf8'))+'\n'+(await readFil
 await build({ entry: { index: 'src/host/index.ts', core: 'src/core/index.ts',tarot:'src/tarot/index.ts',xiaoliu:'src/xiaoliu/index.ts',lenormand:'src/lenormand/index.ts',liuyao:'src/liuyao/index.ts' }, format: 'esm', platform: 'node', outDir: 'lib', clean: true, dts: false, sourcemap: false, outputOptions:{entryFileNames:'[name].js',chunkFileNames:'chunk-[hash].js'} });
 await build({
   entry: { client: 'src/client/index.tsx' }, format: 'cjs', platform: 'browser', outDir: 'lib', clean: false, dts: false, sourcemap: false,
-  deps:{neverBundle:['react','react/jsx-runtime']},
+  deps:{neverBundle:['react','react/jsx-runtime','react-dom']},
   plugins: [{name:'divination-css-text',resolveId(source){if(source.endsWith('.css?inline'))return '\0divination-css';},load(id){if(id==='\0divination-css')return `export default ${JSON.stringify(css)};`;}}],
   outputOptions: {
     entryFileNames:'client.js',

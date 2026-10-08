@@ -84,7 +84,7 @@ test('环境补充和额外数字方式可注册、冻结、撤销；缺失模�
   remove();assert.equal((await s.service.cast(input)).result.input.environment.details.weather,undefined);await s.service.dispose();
 });
 test('官方 Connection 精确路由支持完整 RPC 信封，错误信封被拒绝，贡献能撤销',async()=>{
-  const s=setup(complete);registerTransport(s.ctx,s.service);assert.equal(s.routes.size,8);
+  const s=setup(complete);registerTransport(s.ctx,s.service);assert.equal(s.routes.size,9);
   const endpoint=s.routes.get('/api/meihua/cast')!;
   const response=await endpoint.fetch(new Request('http://localhost/api/meihua/cast',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({type:'client-request',rpcId:'cast-1',method:'meihua/cast',payload:input})}));
   const envelope=await response.json() as {type:string;rpcId:string;result:{ok:boolean;value:Reading}};

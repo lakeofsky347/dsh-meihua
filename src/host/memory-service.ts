@@ -242,7 +242,7 @@ export class MemoryService {
     const data={currentDocument:this.state!.content,fixedParagraphs:this.state!.fixedParagraphs,messages:input.messages};
     const messages=[{id:randomUUID(),role:'user' as const,source:{kind:'user'},content:[{type:'text' as const,text:JSON.stringify(data)}]}];
     const audit:{system:string;messages:unknown;route:ModelRoute;chunks:unknown[];output:string;outcome:string}={system:SUMMARY_SYSTEM,messages,route,chunks:[],output:'',outcome:'starting'};
-    const timer=setTimeout(()=>controller.abort(),this.config.interpretationTimeoutMs);
+    const timer=setTimeout(()=>controller.abort(),this.config.summaryTimeoutMs??120000);
     try {
       if(!this.ctx.llm.listProviders().some(provider=>provider.id===route.provider)||(await this.ctx.llm.listModels(route.provider)).every(model=>model.id!==route.model))throw memoryError('MEMORY_MODEL','模型不可用');
       this.assertEpoch(epoch);controller.signal.throwIfAborted();release=this.gate?.acquire(auditId);
@@ -251,7 +251,7 @@ export class MemoryService {
       });
       await this.writeAudit(auditId,audit,epoch);controller.signal.throwIfAborted();
       let stopped=false;
-      for await(const chunk of this.ctx.llm.stream({...route,messages,system:SUMMARY_SYSTEM,maxTokens:Math.min(3000,this.config.maxOutputTokens),signal:controller.signal})){
+      for await(const chunk of this.ctx.llm.stream({...route,messages,system:SUMMARY_SYSTEM,maxTokens:this.config.summaryMaxOutputTokens??3000,signal:controller.signal})){
         audit.chunks.push(chunk);if(chunk.type==='text-delta'){audit.output+=chunk.text;if(audit.output.length>24000)throw memoryError('MEMORY_SUMMARY','提炼输出过长');}
         if(chunk.type==='finish'){if(chunk.reason.kind==='stop')stopped=true;else throw memoryError('MEMORY_SUMMARY','提炼未完成');}
       }

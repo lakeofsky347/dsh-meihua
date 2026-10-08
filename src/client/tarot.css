@@ -108,18 +108,20 @@
 .tr-orientation {font-size:10px;color:var(--tr-gold);letter-spacing:.08em;}
 .tr-reveal-hint {position:absolute;bottom:15px;left:0;right:0;font-size:10px;color:#d5b97d;letter-spacing:.08em;}
 .tr-missing-art {height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:16px;background:var(--tr-paper);border:1px solid var(--tr-line);color:var(--tr-gold);font-family:var(--tr-serif);}
-.tr-board-celtic-cross {grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(4,minmax(240px,auto));max-width:780px;gap:16px 18px;padding-top:6px;}
+.tr-board-celtic-cross {grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:minmax(240px,auto) minmax(270px,auto) repeat(2,minmax(240px,auto));max-width:780px;gap:16px 18px;padding-top:6px;}
 .tr-board-celtic-cross .tr-position-card {max-width:95px;}
 .tr-board-celtic-cross .tr-position h4 {font-size:12px;margin-top:6px;}
 .tr-board-celtic-cross .tr-position-label {font-size:9px;margin-bottom:6px!important;}
 .tr-board-celtic-cross .tr-position[data-position="1"] {grid-column:2;grid-row:2;}
-.tr-board-celtic-cross .tr-position[data-position="2"] {grid-column:2;grid-row:2;z-index:2;align-self:center;transform:translateY(9px);}
+.tr-board-celtic-cross .tr-position[data-position="2"] {grid-column:2;grid-row:2;z-index:2;align-self:stretch;justify-content:center;}
 .tr-board-celtic-cross .tr-position[data-position="2"] {pointer-events:none;}
 .tr-board-celtic-cross .tr-position[data-position="2"] .tr-position-card {pointer-events:auto;}
 .tr-board-celtic-cross .tr-position[data-position="2"]:not(.tr-position-revealed):not(.tr-position-next) .tr-position-card {pointer-events:none;}
-.tr-board-celtic-cross .tr-position[data-position="2"] .tr-position-card {transform:rotate(90deg) scale(.9);}
-.tr-board-celtic-cross .tr-position[data-position="2"] .tr-position-label {position:absolute;top:42%;left:76%;width:80px;justify-content:flex-start;flex-wrap:wrap;gap:2px 5px;text-align:left;background:var(--tr-bg);padding:2px 5px;border-radius:3px;z-index:2;}
-.tr-cross-direction {flex-basis:100%;color:var(--tr-gold);font-size:9px;letter-spacing:.07em;}
+.tr-board-celtic-cross .tr-position[data-position="2"] .tr-position-card {width:min(95px,66.6667%);transform:rotate(90deg) scale(.9);}
+/* Reserve the full rotated width inside this grid cell; its label belongs below
+   the central pair, so it cannot cover the neighbouring sixth position. */
+.tr-board-celtic-cross .tr-position[data-position="2"] .tr-position-label {position:absolute;top:auto;bottom:0;left:0;width:100%;min-height:0;justify-content:center;gap:5px;text-align:center;padding:2px 0;z-index:2;}
+.tr-cross-direction {color:var(--tr-gold);font-size:9px;letter-spacing:.07em;}
 .tr-board-celtic-cross .tr-position[data-position="2"] h4,.tr-board-celtic-cross .tr-position[data-position="2"]>.tr-orientation {visibility:hidden;}
 .tr-board-celtic-cross .tr-position[data-position="3"] {grid-column:2;grid-row:1;}
 .tr-board-celtic-cross .tr-position[data-position="4"] {grid-column:2;grid-row:3;}
@@ -198,9 +200,9 @@ html[data-platform=darwin] .tr-header {padding-left:var(--dsh-frame-leading-clea
 @container tarotstage (max-width:650px) {
   .tr-cross-overview {display:flex;}
   .tr-board-celtic-cross {grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:none;gap:20px 16px;max-width:550px;}
-  .tr-board-celtic-cross .tr-position[data-position] {grid-column:auto;grid-row:auto;transform:none;align-self:auto;}
-  .tr-board-celtic-cross .tr-position[data-position="2"] .tr-position-card {transform:none;}
-  .tr-board-celtic-cross .tr-position[data-position="2"] .tr-position-label {position:static;width:auto;justify-content:center;text-align:center;background:none;padding:0;}
+  .tr-board-celtic-cross .tr-position[data-position] {grid-column:auto;grid-row:auto;transform:none;align-self:auto;justify-content:flex-start;}
+  .tr-board-celtic-cross .tr-position[data-position="2"] .tr-position-card {width:100%;transform:none;}
+  .tr-board-celtic-cross .tr-position[data-position="2"] .tr-position-label {position:static;width:auto;min-height:30px;justify-content:center;text-align:center;background:none;padding:0;}
   .tr-board-celtic-cross .tr-position[data-position="2"] h4,.tr-board-celtic-cross .tr-position[data-position="2"]>.tr-orientation {visibility:visible;}
   .tr-cross-direction {display:none;}
   .tr-board-celtic-cross .tr-position-card {max-width:128px;}
@@ -213,3 +215,27 @@ html[data-platform=darwin] .tr-header {padding-left:var(--dsh-frame-leading-clea
 @container tarotpage (max-width:570px) {.tr-spread-options {grid-template-columns:repeat(2,minmax(0,1fr));}}
 @media (max-width:570px) {.tr-dialog-backdrop {padding:14px;}.tr-dialog {grid-template-columns:1fr;max-height:calc(100dvh - 28px);padding:29px 20px 23px;gap:20px;}.tr-dialog-art {width:min(60%,240px);margin:0 auto;}.tr-dialog-copy {padding-top:0;}.tr-header>.tr-glyph {display:none;}.tr-spread-options {grid-template-columns:repeat(2,minmax(0,1fr));}.tr-copy-row {align-items:flex-start;}.tr-subtitle {font-size:12px;}}
 @media (prefers-reduced-motion:reduce) {.tr-page * {animation:none!important;transition:none!important;scroll-behavior:auto!important;}.tr-dialog-backdrop {backdrop-filter:none;}}
+
+/* The card dialog stays inside the Hub and outside every module scroll area. */
+.tr-dialog-backdrop {--tr-bg:#151126;--tr-paper:#211a35;--tr-ink:#ece3d6;--tr-muted:#b6aac7;--tr-gold:#d5b97d;--tr-line:rgba(211,187,138,.23);--tr-serif:"Songti SC","Noto Serif CJK SC","SimSun",Georgia,serif;color:var(--tr-ink);font-family:var(--dsw-font-family,sans-serif);}
+.wx-hub[data-scheme=light] .tr-dialog-backdrop {--tr-bg:#f4efea;--tr-paper:#faf7f1;--tr-ink:#312740;--tr-muted:#7b6b87;--tr-gold:#94723b;--tr-line:rgba(117,82,142,.19);}
+.wx-hub .tr-dialog {max-height:100%;}
+html[data-platform=darwin] .wx-hub .tr-page {padding-top:28px;}
+html[data-platform=darwin] .wx-hub .tr-header {padding-left:0;}
+.tr-page select,.tr-model-row label {min-width:0;max-width:100%;}
+.tr-actions,.tr-section-heading,.tr-copy-row {flex-wrap:wrap;}
+.tr-position-card:hover:not(:disabled) {transform:none;filter:brightness(1.08);}
+.tr-board-celtic-cross .tr-position[data-position="2"] .tr-position-card:hover:not(:disabled) {transform:rotate(90deg) scale(.9);}
+@container tarotstage (max-width:650px) {.tr-board-celtic-cross .tr-position[data-position="2"] .tr-position-card:hover:not(:disabled) {transform:none;}}
+@container tarotpage (max-width:570px) {.tr-header>.tr-glyph {display:none;}.tr-header h1 {font-size:30px;}.tr-copy-row {align-items:flex-start;}.tr-subtitle {font-size:12px;}}
+@container tarotstage (max-width:440px) {.wx-conversation-send {flex-direction:column;align-items:flex-start;}.wx-conversation-send button {align-self:flex-end;}}
+@container paneldialog (max-width:620px) {
+  .tr-dialog {grid-template-columns:minmax(0,1fr);padding:32px 18px 22px;gap:18px;}
+  .tr-dialog-art {width:min(60%,220px);margin:0 auto;}
+  .tr-dialog-copy {padding-top:0;}
+}
+.tr-dialog {display:flex;flex-direction:column;overflow:hidden;padding:16px;}
+.tr-dialog-close {position:static;align-self:flex-end;flex-shrink:0;margin-bottom:4px;}
+.tr-dialog-content {display:grid;grid-template-columns:minmax(190px,310px) minmax(0,330px);gap:28px;min-height:0;overflow:auto;padding:4px 10px 14px;}
+@container paneldialog (max-width:620px) {.tr-dialog {padding:12px;}.tr-dialog-content {grid-template-columns:minmax(0,1fr);gap:18px;padding:2px 5px 10px;}}
+@media (max-width:570px) {.tr-dialog-content {grid-template-columns:minmax(0,1fr);}}

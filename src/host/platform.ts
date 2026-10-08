@@ -17,12 +17,31 @@ export type LlmChunk =
   | { type:'finish'; reason:FinishReason };
 export interface GenerateOptions {
   provider:string; model:string; messages:DurableMessage[]; system:string;
-  maxTokens:number; sessionId?:string; signal:AbortSignal;
+  maxTokens?:number; reasoningEffort?:string; sessionId?:string; signal:AbortSignal;
+}
+export interface ModelInfo {
+  provider:string;id:string;name:string;
+  context?:{contextWindow:number};
+  defaultMaxTokens?:number;
+  maxOutputTokens?:number;
+  outputTokenAccounting?:'includes-reasoning'|'excludes-reasoning';
+  reasoning?:{efforts:readonly {id:string;name:string}[];defaultEffort?:string;maxEffort?:string};
+}
+export interface CallConfig {provider:string;model:string;maxTokens?:number;reasoningEffort?:string}
+export interface PreparedCall {
+  config:CallConfig;
+  context?:{contextWindow:number};
+  maxOutputTokens?:number;
+  outputTokenAccounting?:'includes-reasoning'|'excludes-reasoning';
+  reasoning?:ModelInfo['reasoning'];
+  stream(options:GenerateOptions):AsyncIterable<LlmChunk>;
 }
 export interface HostLlm {
   listProviders(): { id:string; name:string }[];
   listModels(provider:string): Promise<{ id:string; name:string }[]>;
   stream(options:GenerateOptions): AsyncIterable<LlmChunk>;
+  resolveModelInfo?(provider:string,model:string,signal?:AbortSignal):Promise<ModelInfo>;
+  prepareCall?(config:CallConfig,signal?:AbortSignal):Promise<PreparedCall>;
 }
 export interface LogEvent { type:string; seq:number; time:number; data:unknown; surfaceOp?:'append'; ignorable?:true }
 export interface LogSession {

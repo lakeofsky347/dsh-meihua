@@ -71,7 +71,7 @@ for(const module of ['meihua','tarot'] as const){
     assert.deepEqual(s.calls[2]!.messages.map(message=>message.role),['user','assistant','user','assistant','user']);
     assert.equal(s.calls[2]!.messages[1]!.content[0]!.text,original.text);
     assert.equal(s.calls[2]!.messages[2]!.content[0]!.text,'第一轮具体怎么做？');assert.equal(s.calls[2]!.messages[3]!.content[0]!.text,'追问回答 1');
-    assert.ok(s.calls[2]!.messages[0]!.content[0]!.text.includes(input.question));assert.ok(s.calls[2]!.system.includes('不重复首次解读的固定四段格式'));
+    assert.ok(s.calls[2]!.messages[0]!.content[0]!.text.includes(input.question));assert.ok(s.calls[2]!.system.includes('不重复首次解读的固定结构'));
     assert.notEqual(conversation![0]!.logSessionId,original.logSessionId);assert.notEqual(conversation![1]!.logSessionId,conversation![0]!.logSessionId);
     const starts=s.events.filter(event=>event.type==='turn/start');assert.equal(starts.length,3);
     assert.equal(s.events.filter(event=>event.type==='private/request').length,3);
@@ -139,23 +139,27 @@ for(const module of ['meihua','tarot'] as const){
     const empty=setup(module,async function*(){yield {type:'finish',reason:{kind:'stop'}};}),emptyReading=await first(empty.service);
     await assert.rejects(empty.service.followup(emptyReading.id,'没有首解读',0),/无文字/);await empty.service.dispose();
   });
-  test(`${module} 目录异步读取期间换轮或卸载，过期追问不提交且不占锁`,async()=>{
-    for(const mode of ['replace','dispose']){
+  test(`${module} 目录预检期间禁止换轮，取消或卸载后迟到追问不提交`,async()=>{
+    for(const mode of ['cancel','dispose']){
       const s=setup(module),original=await first(s.service);let releaseModels!:(models:{id:string;name:string}[])=>void;
       s.ctx.llm.listModels=()=>new Promise(resolve=>{releaseModels=resolve;});
-      const followup=s.service.followup(original.id,'旧会话问题',0);const replacement=mode==='replace'?await ready(s.service):undefined;
-      if(mode==='dispose')await s.service.dispose();releaseModels([{id:route.model,name:'Chosen'}]);await assert.rejects(followup,/状态已变化/);
-      assert.equal(s.calls.length,1);assert.equal(s.service.snapshot()!.conversation,undefined);if(replacement)assert.equal(s.service.snapshot()!.id,replacement.id);
+      const followup=s.service.followup(original.id,'旧会话问题',0),rejected=assert.rejects(followup,{code:'CANCELLED'});
+      await assert.rejects(ready(s.service),{code:'GENERATION_BUSY'});
+      if(mode==='dispose')await s.service.dispose();else s.service.cancel(original.id,undefined,undefined,s.service.snapshot()!.preflight!.id);
+      await rejected;releaseModels([{id:route.model,name:'Chosen'}]);await new Promise(resolve=>setTimeout(resolve,2));
+      assert.equal(s.calls.length,1);assert.deepEqual(s.service.snapshot(),original);
       s.gate.assertIdle();await s.service.dispose();
     }
   });
 }
 
-test('不同窗口目录读取期间已有新轮完成，以 expectedTurnCount 拒绝陈旧提交',async()=>{
+test('不同窗口目录预检互斥，取消旧预检后迟到结果不覆盖新追问',async()=>{
   const s=setup('meihua'),original=await first(s.service);let releaseModels!:(models:{id:string;name:string}[])=>void;
   s.ctx.llm.listModels=()=>new Promise(resolve=>{releaseModels=resolve;});const stale=s.service.followup(original.id,'旧窗口草稿',0);
+  const rejected=assert.rejects(stale,{code:'CANCELLED'});await assert.rejects(s.service.followup(original.id,'新窗口追问',0),{code:'GENERATION_BUSY'});
+  s.service.cancel(original.id,undefined,undefined,s.service.snapshot()!.preflight!.id);await rejected;
   s.ctx.llm.listModels=async()=>[{id:route.model,name:'Chosen'}];await s.service.followup(original.id,'新窗口追问',0);await settled(s.service);
-  releaseModels([{id:route.model,name:'Chosen'}]);await assert.rejects(stale,/对话已变化/);assert.equal(s.calls.length,2);assert.equal(s.service.snapshot()!.conversation!.length,1);await s.service.dispose();
+  releaseModels([{id:route.model,name:'Chosen'}]);await new Promise(resolve=>setTimeout(resolve,2));assert.equal(s.calls.length,2);assert.equal(s.service.snapshot()!.conversation!.length,1);await s.service.dispose();
 });
 test('跨梅花与塔罗的追问共享 GenerationGate；取消后可继续另一个模块',async()=>{
   const s=setup('meihua',(options,index)=>index<2?complete(options,index):pending(options)),tarot=new TarotService(s.ctx,config,s.gate);
@@ -223,3 +227,70 @@ test('官方 DSH JSONL 后端读回两模块当前轮终态元信息，无私人
     }
   }finally{await fiber.dispose();await rm(root,{recursive:true,force:true});}
 });
+
+
+for(const module of ['meihua','tarot'] as const){
+  test(`${module} 手动补全保留固定结果、原文字、独立审计并拒绝过期恢复`,async()=>{
+    const s=setup(module,async function*(_options,index){yield {type:'text-delta',index:0,text:index===0?'未完成前缀':'补全正文'};yield {type:'finish',reason:{kind:index<2?'max-tokens':'stop'}};});
+    try {
+      const initial=await first(s.service),fixed='result'in initial?initial.result:initial.cards;
+      assert.equal(initial.status,'failed');assert.equal(s.calls.length,1);
+      const response=await s.service.rpc('resume',{id:initial.id,expectedTurnCount:0,expectedAttempt:0});assert.equal(response.ok,true);
+      const partial=await settled(s.service);assert.equal(partial.text,'未完成前缀\n\n补全正文');assert.equal(partial.generation?.attempt,1);
+      assert.deepEqual('result'in partial?partial.result:partial.cards,fixed);assert.notEqual(partial.logSessionId,initial.logSessionId);
+      const stale=await s.service.rpc('resume',{id:initial.id,expectedTurnCount:0,expectedAttempt:0});assert.equal(stale.ok,false);assert.equal(!stale.ok&&stale.error.code,'CONVERSATION_CHANGED');assert.equal(s.calls.length,2);
+      await s.service.resume(initial.id,{expectedTurnCount:0,expectedAttempt:1});const final=await settled(s.service);assert.equal(final.status,'complete');assert.equal(final.generation?.attempt,2);assert.ok(s.calls[2]!.messages.some(message=>message.role==='assistant'&&message.content[0]!.text===partial.text));
+      assert.ok(!JSON.stringify(s.events).includes('未完成前缀'));assert.ok(!JSON.stringify(s.events).includes('补全正文'));s.gate.assertIdle();
+    } finally {await s.service.dispose();}
+  });
+  test(`${module} 零正文失败在原结果重试，最新追问可补全而旧轮不可改写`,async()=>{
+    const s=setup(module,async function*(_options,index){if(index!==0)yield {type:'text-delta',index:0,text:index===2?'追问前缀':'完整正文'};yield {type:'finish',reason:{kind:index===2?'max-tokens':'stop'}};});
+    try {
+      const original=await first(s.service);assert.equal(original.text,'');assert.equal(original.status,'failed');
+      await s.service.resume(original.id,{expectedTurnCount:0,expectedAttempt:0});const firstAnswer=await settled(s.service);assert.equal(firstAnswer.status,'complete');
+      assert.equal(s.calls[0]!.messages[0]!.content[0]!.text,s.calls[1]!.messages[0]!.content[0]!.text);
+      await s.service.followup(original.id,'具体解释',0);const partial=await settled(s.service),turn=partial.conversation![0]!;assert.equal(turn.status,'failed');
+      await assert.rejects(s.service.resume(original.id,{expectedTurnCount:1,expectedAttempt:1}),{code:'CONVERSATION_CHANGED'});
+      await s.service.resume(original.id,{expectedTurnCount:1,expectedAttempt:0,turnId:turn.id});const final=await settled(s.service);
+      assert.equal(final.text,firstAnswer.text);assert.equal(final.conversation!.length,1);assert.equal(final.conversation![0]!.text,'追问前缀\n\n完整正文');assert.equal(final.conversation![0]!.status,'complete');
+    } finally {await s.service.dispose();}
+  });
+}
+
+for(const module of ['meihua','tarot'] as const)for(const target of ['initial','followup'] as const){
+  test(`${module} ${target} 恢复后的同轮新尝试不能被旧窗口取消`,async()=>{
+    const s=setup(module,async function*(options,index){
+      if(target==='followup'&&index===0){yield* complete(options,index);return;}
+      if(index===(target==='initial'?0:1)){yield {type:'text-delta',index:0,text:'未完成'};yield {type:'finish',reason:{kind:'max-tokens'}};return;}
+      yield* pending(options);
+    });
+    try{
+      const original=await first(s.service);
+      if(target==='followup'){await s.service.followup(original.id,'详细解释',0);await settled(s.service);}
+      const before=s.service.snapshot()!,turnId=before.conversation?.at(-1)?.id;
+      await s.service.resume(original.id,{expectedTurnCount:target==='initial'?0:1,expectedAttempt:0,...(turnId?{turnId}:{})});
+      for(let i=0;i<100&&s.calls.length<(target==='initial'?2:3);i++)await new Promise(resolve=>setTimeout(resolve,2));
+      const signal=s.calls.at(-1)!.signal;assert.equal(signal.aborted,false);
+      for(const expectedAttempt of [undefined,0]){
+        const cancelled=await s.service.rpc('cancel',{id:original.id,...(turnId?{turnId}:{}),...(expectedAttempt===undefined?{}:{expectedAttempt})});
+        assert.equal(cancelled.ok,false);assert.equal(!cancelled.ok&&cancelled.error.code,'CONVERSATION_CHANGED');assert.equal(signal.aborted,false);
+      }
+      const cancelled=await s.service.rpc('cancel',{id:original.id,...(turnId?{turnId}:{}),expectedAttempt:1});
+      assert.equal(cancelled.ok,true);assert.equal(signal.aborted,true);await settled(s.service);s.gate.assertIdle();
+    }finally{await s.service.dispose();}
+  });
+}
+
+for(const module of ['meihua','tarot'] as const){
+  test(`${module} 追问零正文失败重试原轮次并保留初答`,async()=>{
+    const s=setup(module,async function*(options,index){if(index===1){yield {type:'finish',reason:{kind:'stop'}};return;}yield* complete(options,index);});
+    try{
+      const initial=await first(s.service);await s.service.followup(initial.id,'解释原结论',0);
+      const failed=await settled(s.service),turn=failed.conversation![0]!;assert.equal(turn.status,'failed');assert.equal(turn.text,'');
+      await s.service.resume(initial.id,{turnId:turn.id,expectedTurnCount:1,expectedAttempt:0});
+      const recovered=await settled(s.service);assert.equal(recovered.text,initial.text);assert.equal(recovered.conversation!.length,1);
+      assert.equal(recovered.conversation![0]!.id,turn.id);assert.equal(recovered.conversation![0]!.status,'complete');
+      assert.equal(recovered.conversation![0]!.generation?.attempt,1);assert.ok(s.calls[2]!.messages.some(message=>message.content.some(block=>block.text==='解释原结论')));
+    }finally{await s.service.dispose();}
+  });
+}

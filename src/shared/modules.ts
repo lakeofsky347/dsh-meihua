@@ -10,4 +10,4 @@ export type ModuleId = typeof MODULES[number]['id'];
 export type NewMethodId = Exclude<ModuleId,'meihua'|'tarot'>;
 export const isModuleId=(value:unknown):value is ModuleId=>MODULES.some(module=>module.id===value);
 export const moduleInfo=(id:ModuleId)=>MODULES.find(module=>module.id===id)!;
-export const READING_ENDPOINTS=['catalog','current','interpret','followup','cancel','checkpoint','preferences'] as const;
+export const READING_ENDPOINTS=['catalog','current','interpret','followup','resume','cancel','checkpoint','preferences'] as const;

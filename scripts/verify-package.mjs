@@ -45,8 +45,8 @@ while(offset+512<=tar.length){
 assert.ok(terminated,'Tar has a complete terminator');
 const names=[...archiveFiles.keys()];
 const manifest=JSON.parse(archiveFiles.get('package/package.json')?.toString('utf8')??'null');
-assert.equal(manifest?.name,'dsh-meihua');assert.match(manifest.version,/^0\.(?:4|6)\.\d+$/,'Verifier explicitly supports 0.4 and 0.6 release layouts');
-const expanded=manifest.version.startsWith('0.6.');
+assert.equal(manifest?.name,'dsh-meihua');assert.match(manifest.version,/^0\.(?:4|6|7)\.\d+$/,'Verifier explicitly supports 0.4, 0.6 and 0.7 release layouts');
+const expanded=/^0\.(?:6|7)\./.test(manifest.version);
 const originalFixed=[
   'LICENSE','README.md','cordis.patch.yml','package.json',
   'lib/client.js','lib/core.js','lib/index.js','lib/styles.css','lib/tarot-assets-sources.json','lib/tarot-assets.md','lib/tarot.js',
@@ -267,7 +267,7 @@ if(expanded){
 const report={
   schemaVersion:2,checkedAt:new Date().toISOString(),result:'passed',
   package:{name:manifest.name,version:manifest.version,archive:path.relative(root,archive),installedDirectory:path.relative(root,installed),archiveBytes:archiveBytes.length,sha256:sha256(archiveBytes),npmSHA1:sha1(archiveBytes)},
-  installation:{archiveFileCount:names.length,installedFileCount:installedNames.length,allFilesByteIdentical:true,regularUSTARHeaders:true,explicitAllowlist:{layout:expanded?'0.6':'0.4',fixedPaths:expectedFixed.sort(),sharedChunks:chunks.sort(),expectedFileCount:expanded?40:22},relativeModuleEdges:importEdges,files:verifiedFiles},
+  installation:{archiveFileCount:names.length,installedFileCount:installedNames.length,allFilesByteIdentical:true,regularUSTARHeaders:true,explicitAllowlist:{layout:manifest.version.split('.').slice(0,2).join('.'),fixedPaths:expectedFixed.sort(),sharedChunks:chunks.sort(),expectedFileCount:expanded?40:22},relativeModuleEdges:importEdges,files:verifiedFiles},
   embeddedTarot:{cardCount:verifiedCards.length,totalImageBytes:verifiedCards.reduce((sum,card)=>sum+card.embeddedBytes,0),allMatchPackagedProvenance:true,uniqueImageCount:78,cards:verifiedCards},
   ...(expanded?{embeddedLenormand,thirdParty}:{}),
   exportSmoke,

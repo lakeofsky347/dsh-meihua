@@ -5,8 +5,9 @@ import { MemoryPanel, BackgroundControls, type MemoryActions } from '../src/clie
 import { MemoryController, type MemoryPageState } from '../src/client/memory-controller.ts';
 import { MeihuaController } from '../src/client/controller.ts';
 import { TarotController } from '../src/client/tarot-controller.ts';
-import { Page } from '../src/client/Page.tsx';
-import { TarotPage } from '../src/client/TarotPage.tsx';
+import { MethodController } from '../src/client/method-controller.ts';
+import type { MethodReading } from '../src/shared/methods.ts';
+import type { ModuleId } from '../src/shared/modules.ts';
 import { zh } from '../src/client/locales.ts';
 import { RuleRegistry } from '../src/core/index.ts';
 import { TAROT_CARDS, TAROT_DECK, TAROT_SPREADS, tarotSpread } from '../src/tarot/index.ts';
@@ -18,6 +19,8 @@ const {JSDOM}=await import(jsdomPackage) as {JSDOM:new(html:string,options:objec
 const dom=new JSDOM('<!doctype html><html><body><button id="opener">共享背景</button><div id="memory-root"></div></body></html>',{url:'http://localhost'});
 for(const [key,value] of Object.entries({window:dom.window,document:dom.window.document,navigator:dom.window.navigator,IS_REACT_ACT_ENVIRONMENT:true}))Object.defineProperty(globalThis,key,{value,configurable:true,writable:true});
 const {createRoot}=await import('react-dom/client');
+const {TarotPage}=await import('../src/client/TarotPage.tsx');
+const {Page}=await import('../src/client/Page.tsx');
 const container=()=>document.getElementById('memory-root')!;
 const button=(text:string)=>Array.from(container().querySelectorAll<HTMLButtonElement>('button')).find(value=>value.textContent?.includes(text))!;
 const now='2026-10-06T04:00:00Z';
@@ -190,4 +193,91 @@ test('两控制器提交背景选项；清理私人缓存后，迟到的解读�
   }
   const delayed=deferred<RpcResult>(),controller=new TarotController({call:async(_channel,endpoint)=>endpoint.endsWith('/catalog')?{ok:true,value:tarotCatalog}:endpoint.endsWith('/current')?{ok:true,value:{...tarotReading,status:'revealing'}}:delayed.promise});
   await controller.load();const reveal=controller.reveal(0);controller.resetPrivate();delayed.resolve({ok:true,value:tarotReading});await reveal;assert.equal(controller.getSnapshot().reading,null);controller.dispose();
+});
+
+function completedReading(moduleId:ModuleId,id:string):Reading|TarotReading|MethodReading {
+  const common={id,status:'complete' as const,text:'已完成的私人解读',route};
+  if(moduleId==='meihua')return {...reading,...common};
+  if(moduleId==='tarot')return {...tarotReading,...common};
+  return {...common,moduleId,question:input.question,createdAt:now,environment:input.environment,result:null,backgroundOptions:{},selectedSlots:[],selectionCount:0,coins:[]};
+}
+function privateController(moduleId:ModuleId,rpc:ClientRpc){
+  return moduleId==='meihua'?new MeihuaController(rpc,()=>7):moduleId==='tarot'?new TarotController(rpc,()=>7):new MethodController(moduleId,rpc,()=>7);
+}
+const flushMicrotasks=()=>new Promise<void>(resolve=>setImmediate(resolve));
+
+test('五模块清理发生在轮询计时器等待时，旧循环不能用新signal发起current或回填私人数据',async t=>{
+  t.mock.timers.enable({apis:['setTimeout']});
+  for(const moduleId of ['meihua','tarot','xiaoliu','lenormand','liuyao'] as const){
+    const original=completedReading(moduleId,`${moduleId}-old`),accepted=deferred<RpcResult>();let currentCalls=0;
+    const controller=privateController(moduleId,{call:async(_channel,endpoint)=>{
+      if(endpoint.endsWith('/catalog'))return {ok:true,value:{...catalog,...tarotCatalog,moduleId}};
+      if(endpoint.endsWith('/current')){currentCalls++;return {ok:true,value:original};}
+      if(endpoint.endsWith('/followup'))return accepted.promise;
+      throw new Error(`unexpected ${endpoint}`);
+    }});
+    try{
+      await controller.load();const pending=controller.followup('尚未发出的私人追问');controller.resetPrivate();
+      accepted.resolve({ok:true,value:original});assert.equal(await pending,false);await flushMicrotasks();
+      t.mock.timers.tick(config.pollIntervalMs*2);await flushMicrotasks();
+      assert.equal(currentCalls,1,moduleId);assert.equal(controller.getSnapshot().reading,null,moduleId);assert.equal(controller.getSnapshot().error,'',moduleId);
+    }finally{controller.dispose();}
+  }
+});
+
+test('五模块旧current悬而未决时清理并开始新轮，新轮仍能轮询且迟到旧响应不能恢复私人内容',async t=>{
+  t.mock.timers.enable({apis:['setTimeout']});
+  for(const moduleId of ['meihua','tarot','xiaoliu','lenormand','liuyao'] as const){
+    const original=completedReading(moduleId,`${moduleId}-old`),oldCurrent=deferred<RpcResult>(),oldAccepted=deferred<RpcResult>();
+    const oldPollEntered=deferred<void>();let current=original,currentCalls=0,followupCalls=0,holdOldCurrent=false;
+    const controller=privateController(moduleId,{call:async(_channel,endpoint)=>{
+      if(endpoint.endsWith('/catalog'))return {ok:true,value:{...catalog,...tarotCatalog,moduleId}};
+      if(endpoint.endsWith('/current')){
+        currentCalls++;if(holdOldCurrent){holdOldCurrent=false;oldPollEntered.resolve();return oldCurrent.promise;}
+        return {ok:true,value:current};
+      }
+      if(endpoint.endsWith('/followup')){
+        if(++followupCalls===1){holdOldCurrent=true;return oldAccepted.promise;}
+        current={...current,conversation:[{id:'new-turn',question:'新轮追问',text:'新轮输出',status:'streaming',route,createdAt:now}]};return {ok:true,value:current};
+      }
+      throw new Error(`unexpected ${endpoint}`);
+    }});
+    try{
+      await controller.load();const oldPending=controller.followup('旧轮私人追问');t.mock.timers.tick(config.pollIntervalMs);await oldPollEntered.promise;
+      controller.resetPrivate();assert.equal(controller.getSnapshot().reading,null);
+      current=completedReading(moduleId,`${moduleId}-new`);await controller.load();assert.equal(await controller.followup('新轮追问'),true);
+      current={...current,conversation:current.conversation!.map(turn=>({...turn,status:'complete' as const,text:'新轮完整输出'}))};
+      t.mock.timers.tick(config.pollIntervalMs);await flushMicrotasks();
+      assert.equal(controller.getSnapshot().reading?.conversation?.[0]?.text,'新轮完整输出',moduleId);
+      const completedCalls=currentCalls;
+      oldCurrent.resolve({ok:true,value:original});oldAccepted.resolve({ok:true,value:original});assert.equal(await oldPending,false);await flushMicrotasks();
+      t.mock.timers.tick(config.pollIntervalMs*2);await flushMicrotasks();
+      assert.equal(currentCalls,completedCalls,moduleId);assert.equal(controller.getSnapshot().reading?.id,`${moduleId}-new`,moduleId);
+      assert.equal(controller.getSnapshot().reading?.conversation?.[0]?.text,'新轮完整输出',moduleId);assert.equal(controller.getSnapshot().error,'',moduleId);
+    }finally{controller.dispose();}
+  }
+});
+
+test('五模块预检期间发出的旧current不能覆盖刚接收的追问，轮询继续更新新回答',async t=>{
+  t.mock.timers.enable({apis:['setTimeout']});
+  for(const moduleId of ['meihua','tarot','xiaoliu','lenormand','liuyao'] as const){
+    const original=completedReading(moduleId,`${moduleId}-reading`),oldCurrent=deferred<RpcResult>(),accepted=deferred<RpcResult>(),entered=deferred<void>();
+    let current=original,holdCurrent=false;
+    const controller=privateController(moduleId,{call:async(_channel,endpoint)=>{
+      if(endpoint.endsWith('/catalog'))return {ok:true,value:{...catalog,...tarotCatalog,moduleId}};
+      if(endpoint.endsWith('/current')){if(holdCurrent){holdCurrent=false;entered.resolve();return oldCurrent.promise;}return {ok:true,value:current};}
+      if(endpoint.endsWith('/followup')){holdCurrent=true;return accepted.promise;}
+      throw new Error(`unexpected ${endpoint}`);
+    }});
+    try{
+      await controller.load();const pending=controller.followup('本轮追问');t.mock.timers.tick(config.pollIntervalMs);await entered.promise;
+      current={...current,conversation:[{id:'accepted-turn',question:'本轮追问',text:'新回答前缀',status:'streaming',route,createdAt:now}]};
+      accepted.resolve({ok:true,value:current});assert.equal(await pending,true);
+      oldCurrent.resolve({ok:true,value:original});await flushMicrotasks();
+      assert.equal(controller.getSnapshot().reading?.conversation?.[0]?.text,'新回答前缀',moduleId);
+      current={...current,conversation:current.conversation!.map(turn=>({...turn,status:'complete' as const,text:'新回答完整正文'}))};
+      t.mock.timers.tick(config.pollIntervalMs);await flushMicrotasks();
+      assert.equal(controller.getSnapshot().reading?.conversation?.[0]?.text,'新回答完整正文',moduleId);
+    }finally{controller.dispose();}
+  }
 });

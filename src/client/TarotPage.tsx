@@ -1,3 +1,7 @@
+import {ReadingText} from './ReadingText.tsx';
+import {GenerationStatus,ResumeReading} from './GenerationStatus.tsx';
+import {ReadingJump,useReadingNavigation} from './reading-navigation.tsx';
+import {PanelLayer} from './PanelLayer.tsx';
 import { useEffect, useRef, useState } from 'react';
 import type { ModelRoute, TarotReading } from '../shared/protocol.ts';
 import { readingIsBusy } from '../shared/protocol.ts';
@@ -16,6 +20,7 @@ export interface TarotPageProps {
   onSelect:(slot:number)=>Promise<void>;
   onReveal:(position?:number,all?:boolean)=>Promise<void>;
   onInterpret:(route:ModelRoute,options?:BackgroundOptions)=>Promise<void>;
+  onResume?:(turnId?:string)=>Promise<boolean|void>;
   onFollowup?:(question:string)=>Promise<boolean|void>;
   onCancel:()=>Promise<void>;
   onRefresh:()=>Promise<void>;
@@ -62,8 +67,8 @@ function CardDialog({drawn,positionDescription,onClose}:{drawn:TarotDrawnCard;po
   const close=useRef<HTMLButtonElement>(null),dialog=useRef<HTMLDivElement>(null);
   useEffect(()=>{
     const previous=document.activeElement as HTMLElement|null;
-    close.current?.focus();
-    return ()=>previous?.focus();
+    close.current?.focus({preventScroll:true});
+    return ()=>previous?.focus({preventScroll:true});
   },[]);
   const card=drawn.card!;
   const keyDown=(event:React.KeyboardEvent)=>{
@@ -75,19 +80,17 @@ function CardDialog({drawn,positionDescription,onClose}:{drawn:TarotDrawnCard;po
       else if(!event.shiftKey && document.activeElement===last){event.preventDefault();first?.focus();}
     }
   };
-  return <div className="tr-dialog-backdrop" onClick={event=>{if(event.target===event.currentTarget)onClose();}}>
+  return <div className="tr-dialog-backdrop wx-panel-backdrop" onClick={event=>{if(event.target===event.currentTarget)onClose();}}>
     <div ref={dialog} className="tr-dialog" role="dialog" aria-modal="true" aria-labelledby="tr-dialog-title" onKeyDown={keyDown}>
       <button ref={close} className="tr-dialog-close" onClick={onClose} aria-label="关闭牌面详情">×</button>
+      <div className="tr-dialog-content">
       <div className="tr-dialog-art"><CardImage drawn={drawn} large/></div>
       <div className="tr-dialog-copy"><p className="tr-eyebrow">{String(drawn.positionIndex+1).padStart(2,'0')} · {drawn.positionLabel}</p><h2 id="tr-dialog-title">{card.name}</h2><p className="tr-card-name-en">{card.nameEn}</p><p className="tr-orientation">{drawn.orientation==='reversed'?'逆位':'正位'}</p>
         <h3>牌位说明</h3><p>{positionDescription}</p><p className="tr-keywords">{card.keywords.join(' · ')}</p><h3>正位牌义</h3><p>{card.upright}</p><h3>逆位牌义</h3><p>{card.reversed}</p><p className="tr-hint tr-dialog-note">经典 Rider–Waite–Smith 图像，Pamela Colman Smith 绘制。牌义为本地中文参考。</p>
       </div>
+      </div>
     </div>
   </div>;
-}
-
-function Interpretation({text}:{text:string}) {
-  return <div className="tr-reading-text">{text.split(/\n\s*\n/).filter(Boolean).map((part,i)=><div key={i}>{part.split('\n').map((line,j)=>/^#{1,4}\s/.test(line)?<h4 key={j}>{line.replace(/^#{1,4}\s+/,'')}</h4>:<p key={j}>{line.replace(/\*\*(.*?)\*\*/g,'$1')}</p>)}</div>)}</div>;
 }
 
 export function formatTarotCopy(reading:TarotReading):string {
@@ -96,7 +99,7 @@ export function formatTarotCopy(reading:TarotReading):string {
   return `塔罗牌占卜\n所问之事：${reading.question}\n牌阵：${reading.spread.name}\n抽牌时间：${reading.createdAt}\n使用逆位：${reading.includeReversed?'是':'否'}\n\n${cards}\n\n${reading.route?`使用模型：${reading.route.provider} / ${reading.route.model}\n\n`:''}${['streaming','complete','failed','cancelled'].includes(reading.status)?`解读状态：${status}\n`:''}${reading.text}${reading.error?`\n${reading.error.message}`:''}${formatConversationCopy(reading.conversation,conversationTranslate)}\n\n供娱乐与自省；未来位置表示趋势与可能性。`;
 }
 
-export function TarotPage({useTarot,onStart,onSelect,onReveal,onInterpret,onFollowup,onCancel,onRefresh,onSkip,onDraftChange,onActivityChange,active,scheme='dark',memoryState,onOpenMemory,onCheckpoint}:TarotPageProps) {
+export function TarotPage({useTarot,onStart,onSelect,onReveal,onInterpret,onFollowup,onResume,onCancel,onRefresh,onSkip,onDraftChange,onActivityChange,active,scheme='dark',memoryState,onOpenMemory,onCheckpoint}:TarotPageProps) {
   const state=useTarot(state=>state),{catalog,reading,draft}=state;
   const [copyStatus,setCopyStatus]=useState('复制结果'),[enlarged,setEnlarged]=useState<number|null>(null);
   const river=useRef<HTMLDivElement>(null);
@@ -105,6 +108,7 @@ export function TarotPage({useTarot,onStart,onSelect,onReveal,onInterpret,onFoll
   useEffect(()=>{if(!active)setEnlarged(null);},[active]);
   const spread=catalog?.spreads.find(s=>s.id===draft.spreadId);
   const busy=readingIsBusy(reading),locked=busy || state.acting || state.shuffling;
+  const navigation=useReadingNavigation({navigation:state.navigation,active,contentKey:`${reading?.id}:${reading?.text.length}:${reading?.conversation?.map(turn=>`${turn.id}:${turn.text.length}`).join(',')}`,busy});
   const inputLocked=locked || reading?.status==='selecting' || reading?.status==='revealing';
   const providers=catalog?.providers??[],provider=providers.find(p=>p.id===draft.route.provider);
   const revealed=reading?.cards.filter(d=>d.revealed && d.card)??[];
@@ -122,7 +126,8 @@ export function TarotPage({useTarot,onStart,onSelect,onReveal,onInterpret,onFoll
   };
   const status=reading?.status==='complete'?'完整解读':reading?.status==='cancelled'?'解读已取消':reading?.status==='failed'?'解读未完成':'正在解读';
   const modal=enlarged===null?undefined:reading?.cards.find(d=>d.positionIndex===enlarged && d.revealed && d.card);
-  return <main className="tr-page" data-scheme={scheme} data-active={active?'true':'false'}>
+  return <main ref={navigation.ref} className="tr-page" data-scheme={scheme} data-active={active?'true':'false'}>
+    {reading&&<ReadingJump onJump={navigation.jump} hasNewContent={navigation.hasNewContent} preflight={!!reading.preflight} onCancel={onCancel}/>}
     <div className="tr-ambient" aria-hidden="true"/>
     <header className="tr-header"><div><p className="tr-eyebrow">循着象征，照见此刻</p><h1>塔罗牌<span className="tr-title-star" aria-hidden="true">✧</span></h1><p className="tr-subtitle">在图像、直觉与故事之间，寻找一份新的视角。</p></div><TarotGlyph size={88}/></header>
     {state.loading?<div className="tr-loading" role="status"><TarotGlyph size={72}/><p>正在准备牌桌</p></div>:!catalog?<div className="tr-notice" role="alert">牌桌读取未完成<p>{state.error}</p><button className="tr-link" onClick={()=>void onRefresh()}>重新读取</button></div>:<div className="tr-workspace">
@@ -133,7 +138,7 @@ export function TarotPage({useTarot,onStart,onSelect,onReveal,onInterpret,onFoll
         <button className="tr-button tr-start" type="submit" disabled={locked||!!memoryState&&!memoryState.status}><span aria-hidden="true">✧</span>{state.acting?'正在准备':reading?'重新洗牌':'洗牌，开始抽取'}<span aria-hidden="true">→</span></button>
         {busy && <p className="tr-hint">解读进行中，请先等待完成或取消。</p>}{state.error && <div className="tr-notice" role="alert"><p>{state.error}</p><button className="tr-link" type="button" disabled={state.acting} onClick={()=>void onRefresh()}>重新读取结果</button></div>}
       </form><footer className="tr-input-footer"><span aria-hidden="true">☾</span><p>供娱乐与自省<br/><span>{catalog.deck.cardCount} 张完整牌组 · 经典 RWS 体系</span></p></footer></aside>
-      <section className="tr-stage" aria-label="塔罗牌桌">
+      <section data-reading-result className="tr-stage" aria-label="塔罗牌桌">
         {!reading?<div className="tr-empty"><div className="tr-empty-orbit"><TarotGlyph size={185}/><span className="tr-empty-spark"/></div><h2>静心，然后抽一张牌</h2><p>选择适合的问题与牌阵。<br/>牌义在本地即可查看，模型解读由你决定。</p><div className="tr-empty-rule"><span/>THE SYMBOLS ARE WAITING<span/></div></div>:state.shuffling?<div className="tr-shuffle" role="status"><div className="tr-shuffle-deck" aria-hidden="true">{Array.from({length:7},(_,i)=><div className="tr-shuffle-card" key={i} style={{'--tr-card-i':i} as React.CSSProperties}><CardBack/></div>)}</div><p className="tr-eyebrow">洗牌 · 静心 · 专注</p><h2>让牌面暂时归于未知</h2><p className="tr-hint">随后由你从 78 张背牌中选择。</p><button className="tr-link" onClick={onSkip}>跳过洗牌动画 ↗</button></div>:<>
           <div className="tr-result-heading"><div><p className="tr-eyebrow">{reading.spread.name} · {reading.spread.cardCount} 张</p><h2>{reading.question || '当下指引'}</h2><p className="tr-hint">{new Date(reading.createdAt).toLocaleString('zh-CN',{hour12:false})} · {reading.includeReversed?'包含逆位':'仅正位'}</p></div><TarotGlyph size={48}/></div>
           {reading.status==='selecting'?<section className="tr-selection"><div className="tr-section-heading"><h3>循着直觉，选择背牌</h3><span className="tr-selection-count" aria-live="polite">已选 {reading.selectionCount} / {reading.spread.cardCount}</span></div><p className="tr-hint">第 {reading.selectionCount+1} 张 · {reading.spread.positions[reading.selectionCount]}。左右滑动查看全部牌，牌面在揭示前保持隐藏。</p>
@@ -147,17 +152,17 @@ export function TarotPage({useTarot,onStart,onSelect,onReveal,onInterpret,onFoll
             {reading.spread.id==='celtic-cross' && <CrossPositionMap reading={reading} nextPosition={nextPosition}/>}
             <div className={`tr-board tr-board-${reading.spread.id}`} aria-label={`${reading.spread.name}牌阵`}>{reading.cards.map(d=><article key={d.positionIndex} className={`tr-position ${d.revealed?'tr-position-revealed':''} ${d.positionIndex===nextPosition?'tr-position-next':''}`} data-position={d.positionIndex+1}><p className="tr-position-label"><b>{String(d.positionIndex+1).padStart(2,'0')}</b>{d.positionLabel}{reading.spread.id==='celtic-cross'&&d.positionIndex===1&&d.revealed&&<span className="tr-cross-direction">{d.orientation==='reversed'?'逆位':'正位'}</span>}</p><button className="tr-position-card" onClick={()=>d.revealed?setEnlarged(d.positionIndex):void onReveal(d.positionIndex)} disabled={state.acting || (!d.revealed && (reading.status!=='revealing' || d.positionIndex!==nextPosition))} aria-label={d.card?`放大第 ${d.positionIndex+1} 张：${d.card.name}，${d.orientation==='reversed'?'逆位':'正位'}`:`揭示第 ${d.positionIndex+1} 张：${d.positionLabel}`}><CardImage drawn={d}/>{!d.revealed && <span className="tr-reveal-hint">{d.positionIndex===nextPosition?'点击揭示':'依次揭示'}</span>}</button><h4>{d.card?.name??'未知之牌'}</h4><p className="tr-orientation">{d.revealed?(d.orientation==='reversed'?'逆位':'正位'):'尚未揭示'}</p></article>)}</div>
             {revealed.length>0 && <section className="tr-meanings"><div className="tr-section-heading"><h3>牌面与本地牌义</h3><span className="tr-hint">点击牌面可放大</span></div><div className="tr-meaning-list">{revealed.map(d=><article key={d.positionIndex}><div className="tr-meaning-title"><span className="tr-meaning-number">{String(d.positionIndex+1).padStart(2,'0')}</span><div><p className="tr-eyebrow">{d.positionLabel}</p><h4>{d.card!.name}<span>{d.orientation==='reversed'?'逆位':'正位'}</span></h4></div><button className="tr-link" onClick={()=>setEnlarged(d.positionIndex)} aria-label={`查看${d.card!.name}完整牌面`}>查看牌面 ↗</button></div><p className="tr-position-description">牌位说明：{reading.spread.positionDescriptions[d.positionIndex]}</p><p className="tr-keywords">{d.card!.keywords.join(' · ')}</p><p>{d.orientation==='reversed'?d.card!.reversed:d.card!.upright}</p></article>)}</div></section>}
-            {allRevealed && <section className="tr-interpretation"><div className="tr-section-heading"><h3>解读这组牌</h3>{reading.status!=='ready' && <span className={`tr-status tr-status-${reading.status}`}>{status}</span>}</div>
+            {allRevealed && <section data-reading-interpretation className="tr-interpretation"><div className="tr-section-heading"><h3>解读这组牌</h3>{reading.status!=='ready' && <span className={`tr-status tr-status-${reading.status}`}>{status}</span>}</div>
               {memoryState&&onOpenMemory&&reading.memory&&<BackgroundControls state={memoryState} options={{useBackground:draft.useBackground!==false,forOthers:!!draft.forOthers}} onChange={onDraftChange} onOpen={onOpenMemory} disabled usage={reading.memory}/>}
-              {reading.status==='ready'?<><p className="tr-hint">选择 DSH 已配置模型，生成本次牌阵的一份完整解读。</p>{providers.length===0?<p className="tr-notice">还没有可用的模型，请先在 DSH 设置中配置供应商。</p>:<div className="tr-model-row"><label>供应商<select value={draft.route.provider} onChange={e=>{const p=providers.find(p=>p.id===e.target.value);onDraftChange({route:{provider:e.target.value,model:p?.models[0]?.id??''}});}}>{providers.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}</select></label><label>模型<select value={draft.route.model} onChange={e=>onDraftChange({route:{...draft.route,model:e.target.value}})}>{provider?.models.length?provider.models.map(m=><option key={m.id} value={m.id}>{m.name}</option>):<option value="">没有可选模型</option>}</select></label></div>}{provider?.error && <p className="tr-notice">{provider.error}</p>}<div className="tr-actions"><button className="tr-button tr-interpret-button" disabled={!draft.route.provider || !draft.route.model || state.acting||!!memoryState&&!memoryState.status?.unlocked} onClick={()=>void (memoryState?onInterpret(draft.route,{useBackground:draft.useBackground!==false,forOthers:!!draft.forOthers}):onInterpret(draft.route))}>{state.acting?'正在提交':'开始解读'} <span aria-hidden="true">↗</span></button><button className="tr-link" onClick={()=>void onRefresh()}>刷新模型目录</button></div></>:<><p className="tr-route">{reading.route?.provider} / {reading.route?.model}</p>{reading.text?<Interpretation text={reading.text}/>:<p className="tr-output-pending" role="status">解读将在这里徐徐展开</p>}{reading.error && <p className="tr-notice" role="alert">{reading.error.message}</p>}<div className="tr-actions">{reading.status==='streaming'?<button className="tr-link" onClick={()=>void onCancel()}>取消解读</button>:<p className="tr-hint">本次牌阵已保留第一次解读</p>}</div></>}
-            </section>}
-            {allRevealed&&onFollowup&&['complete','failed','cancelled'].includes(reading.status)&&!!reading.text.trim()&&<Conversation key={reading.id} readingId={reading.id} turns={reading.conversation??[]} busy={busy} pending={state.acting} draft={draft.followupQuestion} theme="tr" t={conversationTranslate} onDraftChange={value=>onDraftChange({followupQuestion:value})} onSend={onFollowup} onCancel={onCancel}/>}
+              {reading.status==='ready'?<><p className="tr-hint">选择 DSH 已配置模型，生成本次牌阵的一份完整解读。</p>{providers.length===0?<p className="tr-notice">还没有可用的模型，请先在 DSH 设置中配置供应商。</p>:<div className="tr-model-row"><label>供应商<select value={draft.route.provider} onChange={e=>{const p=providers.find(p=>p.id===e.target.value);onDraftChange({route:{provider:e.target.value,model:p?.models[0]?.id??''}});}}>{providers.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}</select></label><label>模型<select value={draft.route.model} onChange={e=>onDraftChange({route:{...draft.route,model:e.target.value}})}>{provider?.models.length?provider.models.map(m=><option key={m.id} value={m.id}>{m.name}</option>):<option value="">没有可选模型</option>}</select></label></div>}{provider?.error && <p className="tr-notice">{provider.error}</p>}<div className="tr-actions"><button className="tr-button tr-interpret-button" disabled={busy||!draft.route.provider || !draft.route.model || state.acting||!!memoryState&&!memoryState.status?.unlocked} onClick={()=>void (memoryState?onInterpret(draft.route,{useBackground:draft.useBackground!==false,forOthers:!!draft.forOthers}):onInterpret(draft.route))}>{state.acting?'正在提交':'开始解读'} <span aria-hidden="true">↗</span></button><button className="tr-link" onClick={()=>void onRefresh()}>刷新模型目录</button></div></>:<><GenerationStatus generation={reading.generation} busy={reading.status==='streaming'}/><p className="tr-route">{reading.route?.provider} / {reading.route?.model}</p>{reading.text?<ReadingText className="tr-reading-text" text={reading.text}/>:<p className="tr-output-pending" role="status">解读将在这里徐徐展开</p>}{reading.error && <p className="tr-notice" role="alert">{reading.error.message}</p>}<div className="tr-actions">{reading.status==='streaming'?<button className="tr-link" onClick={()=>void onCancel()}>取消解读</button>:<p className="tr-hint">本次牌阵已保留第一次解读</p>}</div></>}
+            <span data-reading-end/><ResumeReading status={reading.status} text={reading.text} busy={busy||state.acting} onResume={!reading.conversation?.length&&onResume?()=>onResume():undefined}/></section>}
+            {allRevealed&&onFollowup&&['complete','failed','cancelled'].includes(reading.status)&&!!reading.text.trim()&&<Conversation key={reading.id} readingId={reading.id} turns={reading.conversation??[]} busy={busy} pending={state.acting} draft={draft.followupQuestion} theme="tr" t={conversationTranslate} onDraftChange={value=>onDraftChange({followupQuestion:value})} onSend={onFollowup} onCancel={onCancel} onResume={onResume}/>}
           </>}
           <footer className="tr-copy-row"><button className="tr-link" onClick={()=>void copy()}>{copyStatus}</button><span className="tr-hint">{reading.algorithmVersion} · {catalog.deck.name}</span></footer>
           {onCheckpoint&&!busy&&<div className="wm-end-row"><button onClick={()=>void onCheckpoint()} disabled={state.acting||!!memoryState&&!memoryState.status?.unlocked||!!memoryState?.status?.updating}>结束本轮并更新背景</button>{reading.memory?.forOthers&&<p className="wm-caption">替他人占卜，不写入本人记忆。</p>}</div>}
         </>}
       </section>
     </div>}
-    {modal && active && <CardDialog drawn={modal} positionDescription={reading!.spread.positionDescriptions[modal.positionIndex]??''} onClose={()=>setEnlarged(null)}/>}
+    {modal && active && <PanelLayer><CardDialog drawn={modal} positionDescription={reading!.spread.positionDescriptions[modal.positionIndex]??''} onClose={()=>setEnlarged(null)}/></PanelLayer>}
   </main>;
 }
