@@ -7,6 +7,7 @@ import { resolve, relative } from 'node:path';
 import { createRequire } from 'node:module';
 import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
+import { homedir } from 'node:os';
 
 const root = resolve(import.meta.dirname, '..');
 const previewLog = resolve(root, '.local/frontend-review-preview.log');
@@ -19,37 +20,54 @@ if (!['127.0.0.1', 'localhost', '[::1]'].includes(base.hostname)) throw new Erro
 const runId = new Date().toISOString().replaceAll(':', '-').replaceAll('.', '-');
 const out = resolve(root, 'artifacts/verification-frontend-20261007', runId);
 mkdirSync(out, { recursive: true });
-const requireBundled = createRequire('/Users/skylake/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/package.json');
-const { chromium } = requireBundled('playwright');
-const chrome = process.env.DSH_FRONTEND_BROWSER ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+const dependencyRoots = [process.env.DSH_FRONTEND_DEPENDENCIES, root,
+  resolve(homedir(), '.cache/codex-runtimes/codex-primary-runtime/dependencies/node')].filter(Boolean);
+let chromium;
+for (const dependencyRoot of dependencyRoots) {
+  try { ({ chromium } = createRequire(resolve(dependencyRoot, 'package.json'))('playwright')); break; }
+  catch (error) { if (error.code !== 'MODULE_NOT_FOUND') throw error; }
+}
+if (!chromium) throw new Error('Install Playwright locally or set DSH_FRONTEND_DEPENDENCIES to its dependency directory.');
+const browserCandidates = process.platform === 'darwin'
+  ? ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome']
+  : process.platform === 'win32'
+    ? [process.env.PROGRAMFILES, process.env['PROGRAMFILES(X86)'], process.env.LOCALAPPDATA]
+      .filter(Boolean).map(directory => resolve(directory, 'Google/Chrome/Application/chrome.exe'))
+    : ['/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'];
+const chrome = process.env.DSH_FRONTEND_BROWSER ?? browserCandidates.find(existsSync);
+if (process.env.DSH_FRONTEND_BROWSER && !existsSync(chrome)) throw new Error('DSH_FRONTEND_BROWSER does not exist.');
 const browser = await chromium.launch({
-  ...(existsSync(chrome) ? { executablePath: chrome } : {}),
+  ...(chrome ? { executablePath: chrome } : {}),
   headless: true,
   args: ['--disable-background-networking', '--disable-component-update'],
 });
 const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'zh-CN', colorScheme: 'light', reducedMotion: 'reduce' });
 const report = {
   runId, baseURL: base.origin, evidence: 'real DSH Web runtime, real plugin bundle, browser DOM actions',
-  browser: { name: 'Chromium', version: browser.version(), executable: existsSync(chrome) ? chrome : 'existing Playwright browser' },
+  browser: { name: 'Chromium', version: browser.version(), executable: chrome ?? 'existing Playwright browser' },
   checks: [], screenshots: [], geometry: [], consoleErrors: [], pageErrors: [], failedResponses: [],
   blockedExternalRequests: [], rpcMethods: {}, prohibitedAiRequests: [], status: 'RUNNING',
+  hostPlatform: process.env.DSH_FRONTEND_HOST_PLATFORM ?? process.platform,
+  servedPluginBundles: [],
 };
-const previewManifest = resolve(root, '.local/frontend-review-home/profiles/meihua-v1/package.json');
+const previewManifest = resolve(root, process.env.DSH_FRONTEND_PROFILE_MANIFEST ?? '.local/frontend-review-home/profiles/meihua-v1/package.json');
 if (existsSync(previewManifest)) {
   const dependency = JSON.parse(readFileSync(previewManifest, 'utf8')).dependencies?.['dsh-meihua'];
   if (dependency?.startsWith('link:')) {
-    const pluginRoot = resolve(dependency.slice(5));
+    const linkedPluginRoot = resolve(dependency.slice(5));
+    const pluginRoot = resolve(process.env.DSH_FRONTEND_PLUGIN ?? linkedPluginRoot);
     const packageJson = resolve(pluginRoot, 'package.json');
     const clientBundle = resolve(pluginRoot, 'lib/client.js');
     const hostBundle = resolve(pluginRoot, 'lib/index.js');
     report.pluginArtifact = {
-      previewProfile: relative(root, previewManifest), previewPluginPath: pluginRoot,
+      previewProfile: relative(root, previewManifest), previewPluginPath: linkedPluginRoot,
+      verificationPluginPath: pluginRoot,
       ...(existsSync(packageJson) ? { version: JSON.parse(readFileSync(packageJson, 'utf8')).version } : {}),
       bundles: [clientBundle, hostBundle].filter(existsSync).map(path => ({ path, sha256: createHash('sha256').update(readFileSync(path)).digest('hex') })),
     };
   }
 }
-const archivePath = resolve(root, process.env.DSH_FRONTEND_ARCHIVE ?? 'artifacts/dsh-meihua-0.6.0-frontend-20261007.tgz');
+const archivePath = resolve(root, process.env.DSH_FRONTEND_ARCHIVE ?? 'artifacts/dsh-meihua-0.6.0-environment-20261007.tgz');
 if (existsSync(archivePath)) report.packageArchive = { path: archivePath, sha256: createHash('sha256').update(readFileSync(archivePath)).digest('hex') };
 // Browser-level defense in depth. The disposable preview disables real providers;
 // this lane additionally prevents interpretation/follow-up requests and external fetches.
@@ -71,13 +89,46 @@ await context.route('**/*', async route => {
 });
 const page = await context.newPage();
 page.setDefaultTimeout(12000);
+page.setDefaultNavigationTimeout(Number(process.env.DSH_FRONTEND_ENTRY_TIMEOUT ?? 120000));
+// The host's first-run notice may arrive after workspace initialization. Use
+// its real Continue button whenever it becomes visible during an action.
+await page.addLocatorHandler(page.getByText('预览版说明', { exact: true }), async () => {
+  await page.getByRole('button', { name: /^(继续|Continue)$/, exact: true }).click();
+  report.checks.push({ name: 'host: acknowledge first-run preview notice in isolated profile', status: 'PASS' });
+});
 const redact = value => String(value).replace(/([?&](?:token|auth|secret|api_key|password)=)[^\s&"']*/gi, '$1[redacted]');
+const servedBundleReads = [];
+const verifiedClientPath = report.pluginArtifact?.bundles?.find(bundle => bundle.path.endsWith('client.js'))?.path;
+const verifiedClientBytes = verifiedClientPath ? readFileSync(verifiedClientPath) : undefined;
+const pendingRequests = new Map();
+report.requestFailures = [];
+page.on('request', request => pendingRequests.set(request, new URL(request.url()).pathname));
+page.on('requestfinished', request => pendingRequests.delete(request));
+page.on('requestfailed', request => {
+  pendingRequests.delete(request);
+  report.requestFailures.push({ path: new URL(request.url()).pathname, error: request.failure()?.errorText });
+});
 page.on('console', message => { if (message.type() === 'error') report.consoleErrors.push(redact(message.text()).slice(0, 1500)); });
 page.on('pageerror', error => report.pageErrors.push(redact(error.message).slice(0, 1500)));
 page.on('response', response => {
   if (response.status() >= 400) {
     const url = new URL(response.url());
     report.failedResponses.push({ status: response.status(), path: url.pathname });
+  }
+  if (response.ok() && (response.request().resourceType() === 'script' || /javascript/.test(response.headers()['content-type'] ?? ''))) {
+    servedBundleReads.push((async () => {
+      try {
+        const bytes = await response.body();
+        // DSH serves all client factories in one /plugins/ response. Match the
+        // complete verified plugin bytes inside that response, not its first banner.
+        if (verifiedClientBytes && bytes.indexOf(verifiedClientBytes) !== -1) {
+          report.servedPluginBundles.push({ path: new URL(response.url()).pathname,
+            bytes: verifiedClientBytes.length, containerBytes: bytes.length,
+            sha256: createHash('sha256').update(verifiedClientBytes).digest('hex'),
+            match: 'Exact complete release client bytes inside the browser response' });
+        }
+      } catch { /* Only the known plugin response is evidence; redirects and disposed responses are ignored. */ }
+    })());
   }
 });
 
@@ -196,12 +247,12 @@ async function setScheme(scheme) {
 try {
   if (process.env.DSH_FRONTEND_EXPECT_PACKAGE_SHA256) await check('artifact: expected final package SHA256', () => {
     assert.equal(report.packageArchive?.sha256, process.env.DSH_FRONTEND_EXPECT_PACKAGE_SHA256);
-    assert.equal(report.pluginArtifact?.previewPluginPath, resolve(root, '.local/frontend-package/readback/package'));
+    assert.ok(report.pluginArtifact?.verificationPluginPath, 'An extracted release must be available for complete served-byte verification');
     return { packageSha256: report.packageArchive.sha256, previewPluginPath: report.pluginArtifact.previewPluginPath };
   });
   await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
   const entry = page.getByRole('button', { name: /问象.*占卜|Wenxiang.*Divination/ });
-  await entry.first().waitFor({ state: 'visible', timeout: 30000 });
+  await entry.first().waitFor({ state: 'visible', timeout: Number(process.env.DSH_FRONTEND_ENTRY_TIMEOUT ?? 120000) });
   const welcome = page.getByText('预览版说明', { exact: true });
   if (await welcome.isVisible()) {
     await page.getByRole('button', { name: /^(继续|Continue)$/, exact: true }).click();
@@ -326,8 +377,16 @@ try {
   await check('runtime: no console errors', () => assert.deepEqual(report.consoleErrors, []));
   await check('runtime: no failed HTTP responses', () => assert.deepEqual(report.failedResponses, []));
   await check('runtime: no interpretation or follow-up requests', () => assert.deepEqual(report.prohibitedAiRequests, []));
+  await Promise.all(servedBundleReads);
+  await check('runtime: served client matches verified release', () => {
+    const expected = report.pluginArtifact?.bundles?.find(bundle => bundle.path.endsWith('client.js'))?.sha256;
+    assert.ok(expected, 'Provide the actual preview profile manifest to bind the release');
+    assert.ok(report.servedPluginBundles.some(bundle => bundle.sha256 === expected), 'Actual browser-loaded client bytes match the extracted release');
+    return { sha256: expected, hostPlatform: report.hostPlatform };
+  });
 } catch (error) {
   report.checks.push({ name: 'runtime: complete frontend lane', status: 'FAIL', error: redact(error.message ?? error).slice(0, 1800) });
+  report.pendingRequests = [...pendingRequests.values()];
   try { await page.screenshot({ path: resolve(out, 'failure.png'), fullPage: true }); report.screenshots.push({ name: 'failure', file: relative(root, resolve(out, 'failure.png')) }); } catch {}
 } finally {
   report.status = report.checks.some(check => check.status === 'FAIL') ? 'FAIL' : 'PASS';

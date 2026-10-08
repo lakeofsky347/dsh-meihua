@@ -27,7 +27,7 @@
 
 ### 安装前准备
 
-准备好 DeepSeek Harness 和一个问象的 `.tgz` 安装包。当前前端优化包的文件名是 `dsh-meihua-0.6.0-frontend-20261007.tgz`，本地构建产物保存在 `artifacts/` 目录。安装包没有纳入 Git；如果你只有源码，请先按[开发指南](docs/development.md)构建和打包。
+准备好 DeepSeek Harness 和一个问象的 `.tgz` 安装包。当前环境适配包的文件名是 `dsh-meihua-0.6.0-environment-20261007.tgz`，本地构建产物保存在 `artifacts/` 目录，对应的 `.sha256` 文件记录归档校验值。安装包没有纳入 Git；如果你只有源码，请先按[开发指南](docs/development.md)构建和打包。
 
 如果需要 AI 解读，还要先在 **DSH 设置中配置可用的供应商和模型**。问象直接使用宿主的模型配置，无需在插件里再次填写 API Key。只体验起卦、抽牌和本地释义时，可以暂不配置模型。
 
@@ -38,15 +38,17 @@
 3. 确认插件已启用，然后从左侧打开 **「问象 · 占卜」**。
 4. 在星空首页选择一种方式，进入对应页面。
 
-这里的绝对路径是完整文件路径，例如 `/Users/你的用户名/Downloads/dsh-meihua-0.6.0-frontend-20261007.tgz`。请替换成自己电脑上的实际位置。
+这里的绝对路径是完整文件路径，例如 macOS/Linux 的 `/absolute/path/dsh-meihua-0.6.0-environment-20261007.tgz`，或 Windows 的 `D:\\Downloads\\dsh-meihua-0.6.0-environment-20261007.tgz`。请替换成自己电脑上的实际位置。
 
 如果已经配置好 `dsh` 命令，也可以通过命令行安装：
 
 ```sh
-dsh plugin add "/absolute/path/dsh-meihua-0.6.0-frontend-20261007.tgz" --profile desktop
+dsh plugin add "/absolute/path/dsh-meihua-0.6.0-environment-20261007.tgz" --profile desktop
 ```
 
 安装后找不到入口时，先回到插件列表检查启用状态。已有较早版本的用户，可以用新包按同一流程更新；已经下载的旧安装包不会随源码自动变化。
+
+Windows 桌面端与 Linux Web 宿主共用同一份安装包。需要 DSH **0.2.0-rc.2**；命令行使用 Node.js **22.18+（22.x）或 24+**，桌面端优先使用应用随附的运行库。Linux 服务器可在独立目录安装对应版本的 DSH，保持 Web 服务监听回环地址，再通过已有 SSH 连接转发到本机。构建工具、桌面运行库和日常背景数据应在各台机器分别准备。详细步骤与实际验证范围见[环境适配说明](docs/environment-adaptation.md)。
 
 <a id="quick-start"></a>
 

@@ -8,7 +8,7 @@
 
 插件源码位于本仓库。参考仓库 `dsh_clone` 和已安装的 DSH 桌面应用用于读取接口、运行库与开发工具，不应在开发插件时顺带修改它们。
 
-依赖版本以 [package.json](../package.json) 为准。脚本使用 Node.js 的 `import.meta.dirname` 等能力，隐私扫描还使用 `node:zlib` 的 `zstdDecompressSync`；运行这些脚本时，需要支持相应 API 的 Node.js。完整集成测试会直接加载 `.local/runtime` 下的正式 DSH JSON storage 和 JSONL 后端，因此仅安装 npm 依赖不足以运行全部测试。
+依赖版本以 [package.json](../package.json) 为准。使用 Node.js 22.18+ 的 22.x 或 24+；隐私扫描还要求该 Node 版本提供 `node:zlib` 的 `zstdDecompressSync`，例如 Node 24。完整集成测试会直接加载 `.local/runtime` 下的正式 DSH JSON storage 和 JSONL 后端，因此仅安装 npm 依赖不足以运行全部测试。
 
 在已有 DSH 桌面安装和参考仓库依赖的本机环境中，可以复用现有工具：
 
@@ -21,12 +21,13 @@ npm test
 
 [`prepare:local`](../scripts/prepare-local.mjs) 会读取桌面应用的 `app.asar`，把 DSH 运行库提取到本仓库的 `.local/runtime`，并在本仓库 `node_modules` 建立指向现有工具和运行库的符号链接。它不下载依赖，也不修改参考仓库或桌面安装。
 
-该脚本目前使用本机路径作为默认值，换到其他机器时应显式指定：
+脚本会探测当前平台的桌面安装位置，默认从相邻 `dsh_clone` 或本仓库已装开发依赖获取工具，也支持完整官方 runtime：
 
 | 环境变量 | 脚本默认值 | 说明 |
 | --- | --- | --- |
-| `DSH_RESOURCES` | `/Applications/DeepSeek Harness.app/Contents/Resources` | 需包含 `app.asar` 和相应的 `app.asar.unpacked` |
-| `DSH_REFERENCE` | `/Users/skylake/Work/Projects/dsh_clone` | 需已有脚本使用的开发依赖；不是自动推导的相邻目录 |
+| `DSH_RESOURCES` | 当前平台的常见桌面安装路径 | 需包含 `app.asar` 和相应的 `app.asar.unpacked`；可显式覆盖 |
+| `DSH_REFERENCE` | 相邻 `../dsh_clone` | 需已有声明版本的开发依赖；本仓库已装匹配 npm 开发依赖时也可直接使用 |
+| `DSH_RUNTIME` | 未设置 | 完整官方发行 runtime 目录，含 `package.json` 和 `node_modules`；在本仓库建立只读目录链接 |
 
 例如，参考仓库确实位于相邻目录时，在本仓库根目录运行：
 
@@ -34,7 +35,7 @@ npm test
 DSH_REFERENCE="$(cd ../dsh_clone && pwd)" npm run prepare:local
 ```
 
-脚本会跳过已经存在的提取文件和链接。更换 DSH 版本后，应先核对 `.local/runtime` 和链接实际指向的版本；重复执行 `prepare:local` 不会自动覆盖旧运行库。
+脚本逐项核对宿主 peer 和开发依赖版本，并记录运行库来源指纹。旧提取目录没有指纹时会先回读比对现有文件；来源或版本改变后会提示将本仓库缓存移开，阻止静默混用，不覆盖桌面安装。Windows 目录链接使用 junction。
 
 ## 2. 启动隔离预览
 
@@ -53,8 +54,8 @@ npm run preview
 
 | 环境变量 | 默认值 | 用途 |
 | --- | --- | --- |
-| `DSH_CLI` | `/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh` | 指定官方 CLI |
-| `DSH_PREVIEW_HOME` | `.local/test-home` | 指定隔离数据目录，相对路径按仓库根目录解析 |
+| `DSH_CLI` | 当前平台 Desktop runtime 或 PATH 中的官方 CLI | 支持可执行文件、Windows `.cmd/.bat` 和 CLI 的 `.js` 入口 |
+| `DSH_PREVIEW_HOME` | `.local/test-home` | 必须位于本仓库 `.local` 的独立子目录；拒绝日常 DSH home 和符号链接逃逸 |
 | `DSH_PREVIEW_PORT` | `19402` | 指定本地端口 |
 | `DSH_PREVIEW_PLUGIN` | 当前仓库 | 指向已构建的插件或解压后的 `package` 目录 |
 | `DSH_DEMO_DELAY_MS` | `400` | 模拟解读每段输出的间隔，单位为毫秒 |
@@ -116,7 +117,9 @@ node scripts/verify-frontend.mjs
 
 该脚本仅接受回环地址，会阻止浏览器外部请求和解读、追问请求。报告和截图写入 `artifacts/verification-frontend-20261007/<运行时间>/`。可用 `DSH_FRONTEND_BROWSER` 指定浏览器程序，用 `DSH_FRONTEND_ARCHIVE` 指定报告关联的安装包。
 
-脚本当前从本机 Codex 依赖目录加载 Playwright，并默认使用 macOS 的 Google Chrome 路径。这是本机复核工具，不是开箱即用的跨平台测试器；迁移机器时需核对脚本开头的依赖路径。报告关联的安装包哈希也不代表预览必然加载了该包，应一并核对报告中的实际插件路径与 bundle 哈希。
+脚本从本仓库或当前用户的 Codex 依赖目录加载 Playwright，并探测当前平台的 Chrome/Chromium。可用 `DSH_FRONTEND_DEPENDENCIES` 指定 Playwright 依赖目录、`DSH_FRONTEND_PROFILE_MANIFEST` 指定实际预览 profile 的 `package.json`。报告关联的安装包哈希也不代表预览必然加载了该包，应一并核对实际插件路径与 bundle 哈希；Linux Host 经 SSH 转发在 Mac 浏览器测试时，应明确记录这个组合。
+
+环境迁移时还可运行 `node --test tests/environment.test.mjs` 检查平台路径和隔离边界，以及 `node scripts/verify-environment.mjs --plugin <解压包目录> --runtime <官方runtime目录> --output <JSON报告>` 检查目标机五个规则入口、ICU、加密能力和宿主依赖版本。步骤与证据范围见[环境适配说明](environment-adaptation.md)。
 
 ### 隐私和历史验收脚本
 

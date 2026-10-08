@@ -3,6 +3,9 @@
   "version": "0.6.0",
   "description": "问象 · 五种占卜与口令加密共享背景：梅花、塔罗、小六壬、雷诺曼、六爻纳甲",
   "type": "module",
+  "engines": {
+    "node": "^22.18.0 || >=24.0.0"
+  },
   "license": "MIT",
   "main": "lib/index.js",
   "exports": {
@@ -80,6 +83,7 @@
     "build": "node scripts/build.mjs",
     "test": "node --import tsx --test tests/*.test.ts tests/*.test.tsx",
     "preview": "node scripts/preview.mjs",
+    "verify:environment": "node scripts/verify-environment.mjs",
     "prepack": "npm run typecheck && npm run build"
   }
 }
